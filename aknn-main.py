@@ -25,6 +25,8 @@ from pyspark.sql.functions import array, col
 import numpy as np
 from  data.datasets import fvecs_read,ivecs_read 
 from pyspark.mllib.clustering import KMeans,KMeansModel
+import pyspark.sql.functions as F
+import hnswlib
 path="/home/yaoheng/test/download/data.gz"
 
 findspark.init() 
@@ -37,6 +39,55 @@ def func(data,row):
     tmp = pd.DataFrame(d)
     data = pd.concat([data,tmp], axis = 1)
     return data
+
+
+def resample_in_partition(df, fraction, partition_col_name='partition_id', seed=42):
+      # create dictionary of sampling fractions per `partition_col_name`
+  #df = sql_context.createDataFrame([tuple([1 + n]) for n in range(200)], ['number'])
+  df = df.withColumn('partition_id', F.spark_partition_id())
+  fractions = df\
+    .select(partition_col_name)\
+    .distinct()\
+    .withColumn('fraction', F.lit(fraction))\
+    .rdd.collectAsMap()
+  # stratified sampling
+  sampled_df = df.stat.sampleBy(partition_col_name, fractions, seed)
+  return sampled_df
+
+"""
+转化成pandas dataframe fit hnsw
+sampledf schema
+root
+ |-- features: array (nullable = true)
+ |    |-- element: double (containsNull = true)
+ |-- id: integer (nullable = true)
+ |-- partitionCol: integer (nullable = true)
+ |-- normalized_features: array (nullable = true)
+ |    |-- element: double (containsNull = false)
+ |-- partition_id: integer (nullable = false)
+
+"""
+
+def hnsw_global_index(spark_df): # df = df.withColumn('partition_id', F.spark_partition_id())
+    pddf = spark_df.toPandas()
+    dim = 128
+    num_elements = 10000
+
+    # Generating sample data
+    data = np.float32(np.random.random((num_elements, dim)))
+    # Declaring index
+    p = hnswlib.Index(space='l2', dim=dim)  # possible options are l2, cosine or ip
+    p.init_index(max_elements=num_elements, ef_construction=100, M=16)
+    # Controlling the recall by setting ef:
+    # higher ef leads to better accuracy, but slower search
+    p.set_ef(10)
+    # Set number of threads used during batch search/construction
+    # By default using all available cores
+    p.set_num_threads(4)
+    # adding data
+    p.add_items(data)
+    return p
+
 
 
 
@@ -97,7 +148,11 @@ def test_normalizer(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-
     words_df=normalizer.transform(words_df)
     words_df.printSchema()
     words_df=words_df.withColumnRenamed('_id1','id')
-
+    sampledf = resample_in_partition(words_df,0.2,)
+    print("sampledf schema")
+    sampledf.printSchema()
+    print("sampledf.count()",sampledf.count())
+    print("sampledf.take(1):",sampledf.take(1))
     query_df=genRandomQueryCols(sc,sql_context,querydatapath,4,100,3,"querypartitions")
     query_df.printSchema()
     query_df=query_df.withColumnRenamed('_id1','id')
@@ -215,3 +270,11 @@ def test_func():
 
 if __name__ == "__main__":
     test_normalizer()
+
+
+
+# todo
+"""
+分区sample 
+全局索引
+"""
