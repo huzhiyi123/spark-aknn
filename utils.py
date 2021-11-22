@@ -27,22 +27,6 @@ from pyspark.ml.linalg import Vectors
 from pyspark.sql import SQLContext,DataFrame
 from pyspark.sql.types import *
 
-
-def hnsw_global_index(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
-    print("hnsw_global_index test")
-    data = np.array(pddf[nf_col].values.tolist())
-    p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
-    p.init_index(max_elements=max_elements, ef_construction=100, M=16)
-
-    # Controlling the recall by setting ef:
-    # higher ef leads to better accuracy, but slower search
-    p.set_ef(10)
-    p.set_num_threads(4)  # by default using all available cores
-    print("Adding first batch of %d elements" % (len(data)))
-    p.add_items(data)
-    return p
-
-
 def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
     print("hnsw_global_index test")
     data = np.array(pddf[nf_col].values.tolist())
@@ -91,6 +75,7 @@ def getMapCols(queryVecList,labels,partitionColName):
 # custom function to sample rows within partitions
 # df spark-df and return spark-df
 # fraction 采样比例
+# 从spark各个分区采样dataframe
 def resample_in_partition(df, fraction, partition_col_name='partition_id', seed=42):
       # create dictionary of sampling fractions per `partition_col_name`
   #df = sql_context.createDataFrame([tuple([1 + n]) for n in range(200)], ['number'])
@@ -121,33 +106,8 @@ def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname):
     res=traindata_df.join(outputi_df,traindata_df._id1==outputi_df._id2,"inner").drop("_id2")
     return res
 
-def genRandomQueryCols(sc,sql_context,querydatapath,partionnum=4,row=100,col=3,querycolname="queryCols"):
-    querydata = fvecs_read(querydatapath).tolist()
-    querydata_rdd = sc.parallelize(querydata)
-    querydata_rddi=querydata_rdd.zipWithIndex()
-    
-    curschema = StructType([StructField("features",ArrayType(DoubleType())),StructField("_id1", IntegerType() )])
-    querydata_df = sql_context.createDataFrame(querydata_rddi,curschema)
-
-    ar=np.random.randint(partionnum,size=(row,col)).tolist()
-    partionnum_rdd = sc.parallelize(ar).zipWithIndex()
-    curschema = StructType([StructField(querycolname,ArrayType(IntegerType())),StructField("_id2", IntegerType() )])
-    partionnum_rdd_df = sql_context.createDataFrame(partionnum_rdd,curschema)
-    
-    res=querydata_df.join(partionnum_rdd_df,querydata_df._id1==partionnum_rdd_df._id2,"inner").drop("_id2")
-    return res
-
-def getStructType(doublenum=300,intnum=3):
-    schema = [StructField("id", StringType())]
-    for i in range(doublenum):
-        cur = "_c" + str(i+1)
-        schema.append(StructField(cur,DoubleType()))
-    for i in range(intnum):
-        cur = "_c" + str(doublenum+1+i)
-        schema.append(StructField(cur,IntegerType()))
-    return StructType(schema)
-
 """
+把返回的最近领向量所在的区号的colist去重后再填充不同的区号到k
 ar numpy ndarray
 k 需要hnsw扫描的不同分区总数
 partitionnum 总数
@@ -191,38 +151,3 @@ def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=
     cur['features'] = queryVec.tolist()
     cur[partitionIdColName] = cols
     return cur
-
-
-def ggf(df):
-    curschema = StructType([StructField("features",ArrayType(DoubleType())),StructField("_id1", IntegerType() )])
-
-"""
-def hnsw_global_index(spark_df,nf_col="normalized_features",partitionid_col="partition_id"): # df = df.withColumn('partition_id', F.spark_partition_id())
-    dim=128
-    num_elements = spark_df.count()
-
-    pddf = spark_df.select(nf_col,partitionid_col).toPandas()
-    print("hnsw_global_index test")
-    #dataframe  这一列转化
-    print(pddf.columns)
-    print(pddf.dtypes)
-    print(pddf.index)
-    data = pddf[nf_col].apply(lambda x: np.array(x))
-    idx = pddf[partitionid_col]
-    
-    p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
-    p.init_index(max_elements=num_elements, ef_construction=100, M=16)
-
-    # Controlling the recall by setting ef:
-    # higher ef leads to better accuracy, but slower search
-    p.set_ef(10)
-
-    p.set_num_threads(4)  # by default using all available cores
-    print("Adding first batch of %d elements" % (len(data)))
-    p.add_items(data)
-    cur = data[num_elements-20:]
-    # Query the elements for themselves and measure recall:
-    labels, distances = p.knn_query(cur, k=8)
-    print(labels)
-
-"""
