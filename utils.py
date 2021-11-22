@@ -42,6 +42,40 @@ def hnsw_global_index(pddf,max_elements,dim,nf_col="normalized_features",partiti
     p.add_items(data)
     return p
 
+
+def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
+    print("hnsw_global_index test")
+    data = np.array(pddf[nf_col].values.tolist())
+    p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
+    p.init_index(max_elements=max_elements, ef_construction=100, M=16)
+
+    # Controlling the recall by setting ef:
+    # higher ef leads to better accuracy, but slower search
+    p.set_ef(10)
+    p.set_num_threads(4)  # by default using all available cores
+    print("Adding first batch of %d elements" % (len(data)))
+    p.add_items(data)
+    return p
+
+
+# insert spark df into index
+# return model and pandas df inserted into the index
+# pandas df: col = nf_col partitionid_col
+def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
+    print("hnsw_global_index test")
+    pddf = sparkdf.select(nf_col,partitionid_col).toPandas()
+    data = np.array(pddf[nf_col].values.tolist())
+    #print("np.array(pddf[nf_col].values.tolist()) data.shape",data.shape)
+    p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
+    p.init_index(max_elements=max_elements, ef_construction=100, M=16)
+    # Controlling the recall by setting ef:
+    # higher ef leads to better accuracy, but slower search
+    p.set_ef(10)
+    p.set_num_threads(4)  # by default using all available cores
+    print("Adding first batch of %d elements" % (len(data)))
+    p.add_items(data)
+    return p,pddf
+
 # 从queryVecList里面
 # queryVecList pd.dataframe labels:ndarrary
 def getMapCols(queryVecList,labels,partitionColName):
@@ -146,12 +180,14 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # knnQueryNum knn选取最近的knnQueryNum向量 然后找到最近向量所在的分区（topkPartitionNum个）
 # 默认的分区总部概述是partitionnum
 # df: id features partitionIdColName
+# globaIndexDf:pd df
 def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
     cols = getMapCols(globaIndexDf,labels,partitionIdColName)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
-    cur = pd.DataFrame(np.arange(queryVec.shape[0]),"id")
+    length = queryVec.shape[0]
+    cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
     cur[partitionIdColName] = cols
     return cur

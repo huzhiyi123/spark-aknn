@@ -23,14 +23,15 @@ from pyspark.sql.types import *
 from pyspark_hnsw.knn import BruteForceSimilarity
 from pyspark.sql.functions import array, col
 import numpy as np
-from  data.datasets import fvecs_read,ivecs_read,fvecs_read_norm,ivecs_read_norm
+
 from pyspark.mllib.clustering import KMeans,KMeansModel
 import pyspark.sql.functions as F
 import hnswlib
 from sklearn.preprocessing import normalize
-from hnsw_global import hnsw_global_index_sparkdf
+import sys
+sys.path.append("/home/yaoheng/test/spark-aknn")
 from utils import *
-
+from datasets import fvecs_read,ivecs_read,fvecs_read_norm,ivecs_read_norm
 path="/home/yaoheng/test/download/data.gz"
 
 findspark.init() 
@@ -154,6 +155,7 @@ def test_normalizer(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-
     traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
     querydatapath="/home/yaoheng/test/data/siftsmall/siftsmall_query.fvecs"
     partitioncolname="partitionCol"
+    queryPartitionsCol='querypartitions'
     partitionnum=8
     nfcolname="normalized_features"
 
@@ -164,7 +166,7 @@ def test_normalizer(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-
     words_df=normalizer.transform(words_df)
     words_df.printSchema()
     words_df=words_df.withColumnRenamed('_id1','id')
-    hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',queryPartitionsCol='querypartitions',featuresCol='normalized_features', 
+    hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',queryPartitionsCol=queryPartitionsCol,featuresCol='normalized_features', 
                         distanceFunction='inner-product', m=16, ef=5, k=10, efConstruction=200, numPartitions=8, 
                         excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
     hnsw.setPartitionCol(partitioncolname)
@@ -176,18 +178,19 @@ def test_normalizer(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-
     sampledf.printSchema()
     print("sampledf.count()",sampledf.count())
     print("sampledf.take(1):",sampledf.take(1))
-    hnsw_global_model,global_df = hnsw_global_index_sparkdf(sampledf,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
-   
+    sampledf_pandas = sampledf.toPandas()
+    print(sampledf_pandas.columns)
+    hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
    
     # 读取查询向量 并且全局索引查询预测的分区
     qd = fvecs_read_norm(querydatapath)
     qd = qd[0:30]
     # id features(arrary) partioncol(int)
-    queryvec = processQueryVec(hnsw_global_model,qd,sampledf,partitioncolname)
-
-    curschema = StructType([ StructField("id", IntegerType() ),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname,ArrayType(IntegerType()))])
+    queryvec = processQueryVec(hnsw_global_model,qd,sampledf_pandas,partitioncolname)
+    print("queryvec schema")
+    print(queryvec.columns)
+    curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
-    query_df=query_df.withColumnRenamed('features','normalized_features')
     query_df.printSchema()
     
     result=model.transform(query_df)
@@ -198,101 +201,6 @@ def test_normalizer(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-
     #pipeline = Pipeline(stages=[vector_assembler,vector_assembler2,normalizer,hnsw])
     sc.stop()
     print("hellow world pyyspark\n")
-
-
-
-def test_normalizer_test(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
-    APP_NAME = "mytest" #setMaster("local[2]").
-    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
-    sc = SparkContext(conf=conf)
-    sc.setCheckpointDir(gettempdir())
-    sql_context = SQLContext(sc)
-    currows=1000
-    diamonds = pd.read_csv(path, nrows=currows,delimiter=' ',quotechar="\u0000")
-    diamonds.rename(columns={',': 'id'},inplace = True)
-    diamonds=func(diamonds,currows)
-    column = diamonds.columns[0:]
-    for i in range(303):
-        curname = "_c" + str(i+1)
-        diamonds.rename(columns={column[i+1]: curname},inplace = True)
-    #print(diamonds.dtypes)
-    words_df = sql_context.createDataFrame(diamonds,getStructType())
-    words_df.printSchema()
-# 把1行后面全部转化问向量
-    vector_assembler = VectorAssembler(inputCols=words_df.columns[1:301], outputCol='features_as_vector')
-    vector_assembler2 = VectorAssembler(inputCols=words_df.columns[301:304], outputCol='querypartitions')
-    #words_df = vector_assembler2.transform(words_df)
-    #print(words_df.head(2))
-    normalizer = Normalizer(inputCol="features_as_vector", outputCol="normalized_features", outputType="vector")
-# driver进行partition_col分区
-# driver 进行采样构建全局索引 hnsw
-# querypartition ,queryPartitionsCol='querypartitions'
-    brute_force = BruteForceSimilarity(identifierCol='id', queryIdentifierCol='id',
-                         featuresCol='normalized_features', distanceFunction='inner-product',
-                         k=10, numPartitions=4, excludeSelf=True, similarityThreshold=0.4,
-                         predictionCol='exact',outputFormat='minimal')
-    hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',queryPartitionsCol='querypartitions',featuresCol='normalized_features', 
-                        distanceFunction='inner-product', m=16, ef=5, k=10, efConstruction=200, numPartitions=8, 
-                        excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
-    hnsw.setPartitionCol('_c301')
-    
-    pipeline = Pipeline(stages=[vector_assembler,vector_assembler2,normalizer,hnsw])
-    words_df_sample = words_df.sample(0.01)
-    model = pipeline.fit(words_df)
-    words_df_sample.printSchema()
-    print(words_df_sample.head(1))
-    #output = model.transform(words_df_sample)
-    #evaluator = KnnSimilarityEvaluator(approximateNeighborsCol='approximate', exactNeighborsCol='exact')
-    #accuracy = evaluator.evaluate(output)
-    #print("accuracy:",accuracy)
-    sc.stop()
-    print("hellow world pyyspark\n")
-
-def test_normalizer1():
-    APP_NAME = "mytest" #setMaster("local[2]").
-    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
-    spark_context = SparkContext(conf=conf)
-    spark_context.setCheckpointDir(gettempdir())
-
-    sql_context = SQLContext(spark_context)
-
-    df = sql_context.createDataFrame([
-        [1, Vectors.dense([0.2, 0.9])],
-        [2, Vectors.dense([0.2, 1.0])],
-        [3, Vectors.dense([0.2, 0.1])],
-    ], ['row_id', 'features'])
-    df.groupBy('row_id')
-    df2 = sql_context.createDataFrame([
-        [1,0.2, 0.9],
-        [2,0.2, 1.0],
-        [3,0.2, 0.1],
-    ], ['row_id', 'a','b'])
-    df2.printSchema()
-    vector_assembler = VectorAssembler(inputCols=df2.columns[1:], outputCol='features_as_vector')
-    normalizer = Normalizer(inputCol="features_as_vector", outputCol="normalized_features")
-    hnsw = HnswSimilarity(identifierCol='row_id', featuresCol='normalized_features', distanceFunction='cosine', m=32, ef=5, k=5,
-                          efConstruction=200, numPartitions=100, excludeSelf=False, similarityThreshold=-1.0)
-    pipeline = Pipeline(stages=[vector_assembler,normalizer,hnsw])
-    model = pipeline.fit(df2)
-    result = model.transform(df2)
-    print("success")
-
-
-
-def test_func():
-    APP_NAME = "mytest" #setMaster("local[2]").
-    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
-    spark_context = SparkContext(conf=conf)
-    spark_context.setCheckpointDir(gettempdir())
-    sql_context = SQLContext(spark_context)     
-    schema = [StructField("name", StringType()),StructField("abc", IntegerType()),StructField("efg", IntegerType())]
-    for i in range(300):
-        cur = "_c" + str(i)
-        schema.append(StructField(cur, IntegerType()))
-    curs = StructType(schema)
-    df = sql_context.createDataFrame([["aa",5,1,5,3]],curs)
-    
-
 
 
 if __name__ == "__main__":
