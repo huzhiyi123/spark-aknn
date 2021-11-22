@@ -8,14 +8,23 @@ import sys
 import time
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import normalize
+
 def ivecs_read(fname):
     a = np.fromfile(fname, dtype='int32')
     d = a[0]
     return a.reshape(-1, d + 1)[:, 1:].copy()
 
-
 def fvecs_read(fname):
     return ivecs_read(fname).view('float32')
+
+def fvecs_read_norm(fname):
+    tmp = ivecs_read(fname).view('float32')
+    return normalize(tmp, axis=1, norm='max')
+
+def ivecs_read_norm(fname):
+    tmp = ivecs_read(fname)
+    return normalize(tmp, axis=1, norm='max')
 
 
 def load_sift1M():

@@ -15,6 +15,8 @@ df = sql_context.createDataFrame([tuple([1 + n]) for n in range(2000)], ['number
 print("df.rdd.getNumPartitions()",df.rdd.getNumPartitions())   # => 8
 print(df.count())
 # custom function to sample rows within partitions
+# df spark-df and return spark-df
+# fraction 采样比例
 def resample_in_partition(df, fraction, partition_col_name='partition_id', seed=42):
       # create dictionary of sampling fractions per `partition_col_name`
   #df = sql_context.createDataFrame([tuple([1 + n]) for n in range(200)], ['number'])
