@@ -151,3 +151,16 @@ def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=
     cur['features'] = queryVec.tolist()
     cur[partitionIdColName] = cols
     return cur
+
+
+def processSparkDfResult(result):
+    result_approximate = result.select('approximate')
+    tmp = result_approximate.select("approximate.neighbor")
+    l = tmp.toPandas().values.tolist()
+    res=[]
+    for i in range(len(l)):
+        res.append(l[i][0])
+    cur = np.array(res)
+    return cur
+
+
