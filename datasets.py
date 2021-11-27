@@ -34,7 +34,6 @@ def load_sift1M():
     xq = fvecs_read("sift1M/sift_query.fvecs")
     gt = ivecs_read("sift1M/sift_groundtruth.ivecs")
     print("done", file=sys.stderr)
-
     return xb, xq, xt, gt
 
 
@@ -52,22 +51,22 @@ def evaluate(index, xq, gt, k):
 
     return (t1 - t0) * 1000.0 / nq, recalls
 
+
 # predict groundtruth: np.arrary
 def evaluatePredict(predict,groundtruth,k):
     l = predict.shape[0]
     real = groundtruth[:l,:k]
-    res = []
     cnt = 0 
     for i in range(l):
-        t1 = predict[i]
-        t2 = groundtruth[i]
-        cur = 0
-        for a in range(k):
-            for b in range(k):
-               cur+=(t1[a]==t2[b])
-        res.append(cur)
-        cnt +=cur
+        cnt+=len(set(predict[i])&set(real[i]))
     recall = cnt/float(l*k)
-    return res,cnt,recall
+    print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
+    return recall
 
 
+# predict groundtruth: np.arrary
+def evaluatePredictV2(predict,groundtruth,k):
+    l = predict.shape[0]
+    real = groundtruth[:l,:k]
+    recall = np.mean(predict.reshape(-1)==groundtruth.reshape(-1))
+    return recall

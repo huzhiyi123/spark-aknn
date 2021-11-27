@@ -35,23 +35,41 @@ from datasets import *
 path="/home/yaoheng/test/download/data.gz"
 
 findspark.init() 
+def readDataSparkDf(sql_context,traindatapath):
+        # 读取查询向量 并且全局索引查询预测的分区
+    qd = fvecs_read_norm(traindatapath)
+    qd = qd[:maxelement]
+    # id features(arrary) partioncol(int)
+    vec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
+    vec['normalized_features'] = qd.tolist()
+    curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
+    df = sql_context.createDataFrame(vec,curschema)
+    return df
 
-def testmain(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
+querydatapath="/home/yaoheng/test/data/siftsmall/siftsmall_query.fvecs"
+querygroundtruthpath="/home/yaoheng/test/data/siftsmall/siftsmall_groundtruth.ivecs"
+"""
+traindatapath="/home/yaoheng/test/data/sift/sift_base.fvecs"
+querydatapath="/home/yaoheng/test/data/sift/sift_query.fvecs"
+querygroundtruthpath="/home/yaoheng/test/data/sift/sift_groundtruth.ivecs"
+"""
+maxelement = 100000000
+k=10
+partitionnum=4
+ef = 30
+sc = 1
+def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
     conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
     sc = SparkContext(conf=conf)
     sc.setCheckpointDir(gettempdir())
     sql_context = SQLContext(sc)
-    traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
-    querydatapath="/home/yaoheng/test/data/siftsmall/siftsmall_query.fvecs"
-    querygroundtruthpath="/home/yaoheng/test/data/siftsmall/siftsmall_groundtruth.ivecs"
     partitioncolname="partitionCol"
     queryPartitionsCol='querypartitions'
-    partitionnum=8
     nfcolname="normalized_features"
-    k=10
     # 分区并且 训练分布式hnsw 这里没有归一化
-    words_df = kmeansPartition(sc,sql_context,traindatapath,partitionnum,partitioncolname)
+    words_df = kmeansPartition(sc,sql_context,traindatapath,partitionnum,partitioncolname,maxelement)
     words_df.printSchema()
 
     normalizer = Normalizer(inputCol="features", outputCol=nfcolname)
@@ -60,13 +78,13 @@ def testmain(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2
     words_df.printSchema()
     words_df=words_df.withColumnRenamed('_id1','id')
     hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',queryPartitionsCol=queryPartitionsCol,featuresCol='normalized_features', 
-                        distanceFunction='inner-product', m=16, ef=5, k=k, efConstruction=200, numPartitions=8, 
+                        distanceFunction='euclidean', m=16, ef=ef, k=k, efConstruction=ef, numPartitions=partitionnum, 
                         excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
     hnsw.setPartitionCol(partitioncolname)
     model=hnsw.fit(words_df)
 
     # 采样全部分区 训练全局索引
-    sampledf = resample_in_partition(words_df,0.2)
+    sampledf = resample_in_partition(words_df,0.05)
 
     sampledf_pandas = sampledf.toPandas()
     hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
@@ -74,7 +92,7 @@ def testmain(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2
     # 读取查询向量 并且全局索引查询预测的分区
     qd = fvecs_read_norm(querydatapath)
     # id features(arrary) partioncol(int)
-    queryvec = processQueryVec(hnsw_global_model,qd,sampledf_pandas,partitioncolname)
+    queryvec = processQueryVec(hnsw_global_model,qd,sampledf_pandas,partitioncolname,partitionnum=partitionnum)
 
     curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
@@ -85,21 +103,42 @@ def testmain(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2
 
     print("predict",predict)
     groundtruth = ivecs_read(querygroundtruthpath)
-    print("groundtruth[0:5]:",groundtruth[0:5,0:10])
-    res,cnt,recall = evaluatePredict(predict,groundtruth,k)
-    print("recall:",recall)
-    print("res\n",res)
-    print("cnt:",cnt)
-    sc.stop()
-    print("hello world pyspark\n")
+    print("groundtruth[0:5]:",groundtruth[:,0:k])
+    recall1 = evaluatePredict(predict,groundtruth,k)
+    print("recall:",recall1)
 
-def readtraindata(sc,sql_context,traindatapath,k,partitionColname):
-    traindata = fvecs_read(traindatapath).tolist()
-    traindata_rdd = sc.parallelize(traindata)
-    traindata_rddi=traindata_rdd.zipWithIndex()
-    curschema = StructType([StructField("features",ArrayType(DoubleType())),StructField("id", IntegerType() )])
-    traindata_df = sql_context.createDataFrame(traindata_rddi,curschema)
-    return traindata_df
+    sc.stop()
+    print("hello world SparkHnsw\n")
+
+
+def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+    APP_NAME = "mytest" #setMaster("local[2]").
+    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    sc = SparkContext(conf=conf)
+    sc.setCheckpointDir(gettempdir())
+    sql_context = SQLContext(sc)
+    partitioncolname="partitionCol"
+    queryPartitionsCol='querypartitions'
+    nfcolname="normalized_features"
+    # 分区并且 训练分布式hnsw 这里没有归一化
+    traindf = readDataSparkDf(sql_context,traindatapath)
+    querydf = readDataSparkDf(sql_context,querydatapath)
+    bruteforce = BruteForceSimilarity(identifierCol='id', queryIdentifierCol='id', featuresCol='normalized_features',
+                                    distanceFunction='euclidean', numPartitions=partitionnum, excludeSelf=False,
+                                    predictionCol='approximate', outputFormat='minimal',k=k)
+    model = bruteforce.fit(traindf)
+    predict = model.transform(querydf).orderBy("id")
+    groundtruth = ivecs_read(querygroundtruthpath)[:,:k]
+    predict.printSchema()
+    predict = processSparkDfResult(predict)
+    recall = evaluatePredict(predict,groundtruth,k)
+    print("recall",recall)
+    print(predict)
+    print(groundtruth)
+    sc.stop()
+    print("hello world bruteForce\n")
+
+
 
 
 def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
@@ -108,61 +147,52 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     sc = SparkContext(conf=conf)
     sc.setCheckpointDir(gettempdir())
     sql_context = SQLContext(sc)
-    traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
-    querydatapath="/home/yaoheng/test/data/siftsmall/siftsmall_query.fvecs"
-    querygroundtruthpath="/home/yaoheng/test/data/siftsmall/siftsmall_groundtruth.ivecs"
-    partitioncolname="partitionCol"
-    queryPartitionsCol='querypartitions'
-    partitionnum=8
-    nfcolname="normalized_features"
-    k=10
     # 分区并且 训练分布式hnsw 这里没有归一化
-    words_df = readtraindata(sc,sql_context,traindatapath,partitionnum,partitioncolname)
+    words_df = readDataSparkDf(sc,sql_context,traindatapath)
+    print("words_df.printSchema()")
     words_df.printSchema()
-
-    normalizer = Normalizer(inputCol="features", outputCol=nfcolname)
-    #归一化后
-    words_df=normalizer.transform(words_df)
+    print("words_df.printSchema()")
     words_df.printSchema()
-    hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',queryPartitionsCol=None,featuresCol='normalized_features', 
-                        distanceFunction='inner-product', m=16, ef=5, k=k, efConstruction=200, numPartitions=8, 
-                        excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
-    #hnsw.setPartitionCol(partitioncolname)
+    hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',featuresCol='normalized_features',
+                         distanceFunction='inner-product',m=16, ef=ef, k=k,efConstruction=200,
+                         numPartitions=partitionnum,  predictionCol='approximate',excludeSelf=True)
     model=hnsw.fit(words_df)
 
-    # 采样全部分区 训练全局索引
-    sampledf = resample_in_partition(words_df,0.2)
-
-    sampledf_pandas = sampledf.toPandas()
-    hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
-   
     # 读取查询向量 并且全局索引查询预测的分区
+    """
     qd = fvecs_read_norm(querydatapath)
     # id features(arrary) partioncol(int)
     queryvec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
-    queryvec['features'] = qd.tolist()
+    queryvec['normalized_features'] = qd.tolist()
     curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
+    """
+    query_df = readDataSparkDf(sql_context,querydatapath)
+    print("query_df.printSchema()")
     query_df.printSchema()
+    query_df.show()
     # todo with index
-    result=model.transform(query_df).orderBy("id")
+    result=model.transform(query_df)
+    print("result.printSchema()")
+    result.printSchema()
+    result = result.orderBy("id")
+    result.show()
     predict = processSparkDfResult(result)
 
     print("predict",predict)
     groundtruth = ivecs_read(querygroundtruthpath)
-    print("groundtruth[0:5]:",groundtruth[0:5,0:10])
-    res,cnt,recall = evaluatePredict(predict,groundtruth,k)
-    print("recall:",recall)
-    print("res\n",res)
-    print("cnt:",cnt)
+    print("groundtruth[0:5]:",groundtruth[:,0:k])
+    recall1 = evaluatePredict(predict,groundtruth,k)
+    recall2 = evaluatePredictV2(predict,groundtruth,k)
+    print("recall:",recall1)
+    print("recall",recall2)
     sc.stop()
     print("hello world pyspark\n")
 
 
-
-
-
-
 if __name__ == "__main__":
     #testmain()
-    testmain_naiveSparkHnsw()
+    SparkHnsw()
+    #testmain_naiveSparkHnsw()
+    bruteForce()
+   # text = input("Please enter a text:")

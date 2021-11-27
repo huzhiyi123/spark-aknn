@@ -60,7 +60,7 @@ def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_featur
     p.add_items(data)
     return p,pddf
 
-# 从queryVecList里面
+# 从queryVecList里面 heres
 # queryVecList pd.dataframe labels:ndarrary
 def getMapCols(queryVecList,labels,partitionColName):
     res = []
@@ -91,8 +91,11 @@ def resample_in_partition(df, fraction, partition_col_name='partition_id', seed=
 
 
 # 数据训练Kmeans 分区 分区的数据并没有归一化
-def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname):
-    traindata = fvecs_read(traindatapath).tolist()
+def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement):
+    traindata = fvecs_read(traindatapath)
+    if(traindata.shape[0]>maxelement):
+        traindata = traindata[:maxelement]
+    traindata = traindata.tolist()
     traindata_rdd = sc.parallelize(traindata)
     KMeans_fit = KMeans.train(traindata_rdd,k)
     #print("Final centers: " +str(i)+"____"+ str(KMeans_fit.clusterCenters))
