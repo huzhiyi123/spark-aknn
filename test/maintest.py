@@ -70,6 +70,23 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     nfcolname="normalized_features"
     # 分区并且 训练分布式hnsw 这里没有归一化
     words_df = kmeansPartition(sc,sql_context,traindatapath,partitionnum,partitioncolname,maxelement)
+    """
+    kkk = words_df.select(partitioncolname).groupBy(partitioncolname).count()
+    kkk.collect()
+    print("print(kkk.collect())",kkk.collect())
+    [Row(partitionCol=1, count=2613), 
+    Row(partitionCol=3, count=2488),
+    Row(partitionCol=2, count=2486), 
+    Row(partitionCol=0, count=2413)]
+
+    2021-11-29 19:54:49 INFO  HnswSimilarity:54 - partition 0002: started indexing 2486 items on host LAPTOP-K1RS47MN
+    2021-11-29 19:54:49 INFO  HnswSimilarity:54 - partition 0000: started indexing 2413 items on host LAPTOP-K1RS47MN
+    2021-11-29 19:54:49 INFO  HnswSimilarity:54 - partition 0001: started indexing 2613 items on host LAPTOP-K1RS47MN
+    2021-11-29 19:54:49 INFO  HnswSimilarity:54 - partition 0003: started indexing 2488 items on host LAPTOP-K1RS47MN
+    """
+    # 这里上dataframe kmeans
+    # RDD按照col分区
+    # 
     words_df.printSchema()
 
     normalizer = Normalizer(inputCol="features", outputCol=nfcolname)
@@ -84,11 +101,22 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     model=hnsw.fit(words_df)
 
     # 采样全部分区 训练全局索引
-    sampledf = resample_in_partition(words_df,0.05)
-
+    #kkk = words_df.select(partitioncolname).groupBy(partitioncolname).count()
+    #kkk.collect()
+    #print("print(kkk.collect())",kkk.collect())
+    sampledf = resample_in_partition(words_df,0.05,partitioncolname)
+    #jjj=sampledf.select(partitioncolname).groupBy(partitioncolname).count()
+    #print("print(kkk.collect())",jjj.collect())
+    """
+    # partition_id partitioncolname
+    print("testdf=sampledf.select("",partitioncolname)")
+    testdf=sampledf.select("partition_id",partitioncolname)
+    #testdf.show(n=100)
+    pddd=testdf.toPandas()
+    print(pddd)
+    """
     sampledf_pandas = sampledf.toPandas()
     hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
-   
     # 读取查询向量 并且全局索引查询预测的分区
     qd = fvecs_read_norm(querydatapath)
     # id features(arrary) partioncol(int)
@@ -109,6 +137,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
 
     sc.stop()
     print("hello world SparkHnsw\n")
+    return recall1
 
 
 def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
@@ -137,8 +166,7 @@ def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark
     print(groundtruth)
     sc.stop()
     print("hello world bruteForce\n")
-
-
+    return recall
 
 
 def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
@@ -190,9 +218,31 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     print("hello world pyspark\n")
 
 
+def test():
+    APP_NAME = "mytest" #setMaster("local[2]").
+    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    sc = SparkContext(conf=conf)
+    sc.setCheckpointDir(gettempdir())
+    sql_context = SQLContext(sc)
+    partitioncolname="partitionCol"
+    queryPartitionsCol='querypartitions'
+    nfcolname="normalized_features"
+    traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
+    traindata = fvecs_read(traindatapath)
+    idx = np.arange(traindata.shape[0])
+    df = pd.DataFrame(idx)
+    df['feature'] = traindata.tolist()
+    curschema = StructType([StructField("id", IntegerType() ),StructField("features",ArrayType(DoubleType()))])
+    traindata_df = sql_context.createDataFrame(df,curschema).partitionBy()
+    traindata_df.printSchema()
+    traindata_df.show()
+
+
 if __name__ == "__main__":
     #testmain()
-    SparkHnsw()
+    a=SparkHnsw()
     #testmain_naiveSparkHnsw()
-    bruteForce()
-   # text = input("Please enter a text:")
+    b=bruteForce()
+    print(a,b)
+    #text = input("Please enter a text:")
+    #test()

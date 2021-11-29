@@ -76,20 +76,21 @@ def getMapCols(queryVecList,labels,partitionColName):
 # df spark-df and return spark-df
 # fraction 采样比例
 # 从spark各个分区采样dataframe
-def resample_in_partition(df, fraction, partition_col_name='partition_id', seed=42):
+def resample_in_partition(df, fraction, partition_col_name, seed=42):
       # create dictionary of sampling fractions per `partition_col_name`
   #df = sql_context.createDataFrame([tuple([1 + n]) for n in range(200)], ['number'])
-  df = df.withColumn('partition_id', F.spark_partition_id())
+  #https://coderedirect.com/questions/212771/stratified-sampling-with-pyspark
   fractions = df\
     .select(partition_col_name)\
     .distinct()\
     .withColumn('fraction', F.lit(fraction))\
     .rdd.collectAsMap()
   # stratified sampling
+  print("fractions = df",fractions)
   sampled_df = df.stat.sampleBy(partition_col_name, fractions, seed)
   return sampled_df
 
-
+#  spark-shell --master local-cluster[4,2] spark.default.parallelism = x * y
 # 数据训练Kmeans 分区 分区的数据并没有归一化
 def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement):
     traindata = fvecs_read(traindatapath)
@@ -108,6 +109,19 @@ def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement):
     outputi_df=sql_context.createDataFrame(outputi,curschema)
     res=traindata_df.join(outputi_df,traindata_df._id1==outputi_df._id2,"inner").drop("_id2")
     return res
+
+def kmeansPandasDf(traindatapath,querydatapath,k=8):
+    data = fvecs_read(traindatapath)
+    traindata = data
+    querydata = fvecs_read(querydatapath)
+    l = len(querydata)
+    df=pd.DataFrame(np.arange(l),columns=['id'])
+    df['features']=querydata.tolist()
+    kmeans = KMeans(n_clusters=k, random_state=0).fit(traindata)
+    res = kmeans.predict(querydata).reshape(l,1)
+    df["partition"] = res.tolist()
+    return df
+
 
 """
 把返回的最近领向量所在的区号的colist去重后再填充不同的区号到k
