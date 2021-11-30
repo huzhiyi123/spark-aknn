@@ -181,3 +181,12 @@ def processSparkDfResult(result):
     return cur
 
 
+def readDataSparkDf(sql_context,traindatapath):
+        # 读取查询向量 并且全局索引查询预测的分区
+    qd = fvecs_read_norm(traindatapath)
+    # id features(arrary) partioncol(int)
+    vec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
+    vec['normalized_features'] = qd.tolist()
+    curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
+    df = sql_context.createDataFrame(vec,curschema)
+    return df

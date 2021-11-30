@@ -26,3 +26,19 @@ memory模拟集群的各个Slave节点上的内存大小
 1、启动 Spark 伪分布式模式
 
 spark-shell --master local-cluster[4,1,2048]
+
+
+
+# recall
+0.973
+0.339
+
+# log文件里 
+这一条查找执行时间 map at KnnAlgorithm.scala:507) finished in
+
+2021-11-30 10:11:57 INFO  DAGScheduler:54 - ShuffleMapStage 2 (map at KnnAlgorithm.scala:507) finished in 0.122 s
+
+
+用法：bash run.sh logfilename &
+run.sh : 测试主要函数 test/maintest.py
+runtest.sh : 测试hnsw 与 bruteforce的搜索速度 test/test.py
