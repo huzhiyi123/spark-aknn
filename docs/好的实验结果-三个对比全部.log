@@ -25603,10 +25603,44 @@ sc = 1
 m = int(30)
 distanceFunction='euclidean'
 
+# 
 40W条实验数据
 bruteForce timeUsed
  330.949068069458
 testmain_naiveSparkHnsw timeUsed 139.93191719055176
 SparkHnsw timeUsed:  121.39582633972168 globalindextime 636.0459327697754
+partitionnum=4
+
+# 40W条数据
+bruteForce timeUsed
+ 714.5590782165527
+testmain_naiveSparkHnsw timeUsed
+ 378.5209655761719
+SparkHnsw timeUsed:  343.1570529937744
+partitionnum=8
+
+# 20W
+8个分区
+bruteForce timeUsed
+ 663.191556930542
+ testmain_naiveSparkHnsw timeUsed
+ 318.6187744140625
+
+
+# 40w
+partitionnum=8
+ef = int(1.5*k)
+sc = 1
+
+bruteForce timeUsed
+ 700.7031440734863
+testmain_naiveSparkHnsw timeUsed
+ 365.9822940826416
+SparkHnsw timeUsed:  387.4239921569824 
+
+# 8分区 10W数据
+bruteForce timeUsed
+ 685.9264373779297
+SparkHnsw timeUsed:  292.00220108032227 
 
 
