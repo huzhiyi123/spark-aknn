@@ -26,6 +26,10 @@ from pyspark_hnsw.evaluation import KnnSimilarityEvaluator
 from pyspark.ml.linalg import Vectors
 from pyspark.sql import SQLContext,DataFrame
 from pyspark.sql.types import *
+from sklearn.cluster import KMeans as km
+from tkinter import _flatten
+
+
 
 def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
     print("hnsw_global_index test")
@@ -92,10 +96,11 @@ def resample_in_partition(df, fraction, partition_col_name, seed=42):
 
 #  spark-shell --master local-cluster[4,2] spark.default.parallelism = x * y
 # 数据训练Kmeans 分区 分区的数据并没有归一化
-def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement):
+
+## 加samplerate
+def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement,traindatanum):
     traindata = fvecs_read(traindatapath)
-    if(traindata.shape[0]>maxelement):
-        traindata = traindata[:maxelement]
+    traindata1 = traindata[0:traindatanum]
     traindata = traindata.tolist()
     traindata_rdd = sc.parallelize(traindata)
     KMeans_fit = KMeans.train(traindata_rdd,k)
@@ -110,18 +115,30 @@ def kmeansPartition(sc,sql_context,traindatapath,k,partitionColname,maxelement):
     res=traindata_df.join(outputi_df,traindata_df._id1==outputi_df._id2,"inner").drop("_id2")
     return res
 
-def kmeansPandasDf(traindatapath,querydatapath,k=8):
+"""
+def kmeansPandasDf(traindatapath,querydatapath,k=8,traindatanum=2000):
     data = fvecs_read(traindatapath)
-    traindata = data
+    traindata = data[0:traindatanum]
     querydata = fvecs_read(querydatapath)
     l = len(querydata)
     df=pd.DataFrame(np.arange(l),columns=['id'])
     df['features']=querydata.tolist()
-    kmeans = KMeans(n_clusters=k, random_state=0).fit(traindata)
+    kmeans = sklearn.cluster.KMeans(n_clusters=k, random_state=0).fit(traindata)
     res = kmeans.predict(querydata).reshape(l,1)
     df["partition"] = res.tolist()
     return df
-
+"""
+def kmeansPandasDf(traindatapath,k=8,traindatanum=2000):
+    data = fvecs_read(traindatapath)
+    traindata = data[0:traindatanum]
+    l = len(data)
+    df=pd.DataFrame(np.arange(l),columns=['id'])
+    df['features']=data.tolist()
+    kmeans = km(n_clusters=k, random_state=0).fit(traindata)
+    res = kmeans.predict(data).reshape(l,1).tolist()
+    res=list(_flatten(res))
+    df["partition"] = res
+    return df
 
 """
 把返回的最近领向量所在的区号的colist去重后再填充不同的区号到k
@@ -152,6 +169,7 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
                     idx+=1
         res.append(cur)
     return res
+
 
 # queryVec是np arrary 返回含有query partition的df
 # knnQueryNum knn选取最近的knnQueryNum向量 然后找到最近向量所在的分区（topkPartitionNum个）

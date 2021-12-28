@@ -56,6 +56,27 @@ m = int(20)
 distanceFunction='euclidean'
 openSparkUI=True
 """
+def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+    APP_NAME = "mytest" #setMaster("local[2]").
+    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    sc = SparkContext(conf=conf)
+    sc.setCheckpointDir(gettempdir())
+    sql_context = SQLContext(sc)
+    partitioncolname="partitionCol"
+    queryPartitionsCol='querypartitions'
+    nfcolname="normalized_features"
+    # 分区并且 训练分布式hnsw 这里没有归一化
+    df = kmeansPandasDf(traindatapath,k=8,traindatanum=2000)
+    # id features partition
+    curschema = StructType([StructField("id", IntegerType()),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname, IntegerType() )])
+    traindata_df = sql_context.createDataFrame(df,curschema)
+    traindata_df.printSchema()
+    sc.stop()
+    print("hello world SparkHnsw\n")
+
+
+
+
 def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
     conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
@@ -66,7 +87,11 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     queryPartitionsCol='querypartitions'
     nfcolname="normalized_features"
     # 分区并且 训练分布式hnsw 这里没有归一化
-    words_df = kmeansPartition(sc,sql_context,traindatapath,partitionnum,partitioncolname,maxelement)
+    df = kmeansPandasDf(traindatapath,k=partitionnum,traindatanum=2000)
+    # id features partition
+    curschema = StructType([StructField("id", IntegerType()),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname, IntegerType() )])
+    words_df = sql_context.createDataFrame(df,curschema)
+
     # 这里上dataframe kmeans
     # RDD按照col分区
     # 
@@ -86,22 +111,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     hnsw.setPartitionCol(partitioncolname)
     model=hnsw.fit(words_df)
     sampledf = resample_in_partition(words_df,0.05,partitioncolname)
-    """
-    # 采样全部分区 训练全局索引
-    #kkk = words_df.select(partitioncolname).groupBy(partitioncolname).count()
-    #kkk.collect()
-    #print("print(kkk.collect())",kkk.collect())
-    sampledf = resample_in_partition(words_df,0.05,partitioncolname)
-    #jjj=sampledf.select(partitioncolname).groupBy(partitioncolname).count()
-    #print("print(kkk.collect())",jjj.collect())
 
-    # partition_id partitioncolname
-    print("testdf=sampledf.select("",partitioncolname)")
-    testdf=sampledf.select("partition_id",partitioncolname)
-    #testdf.show(n=100)
-    pddd=testdf.toPandas()
-    print(pddd)
-    """
     sampledf_pandas = sampledf.toPandas()
     #def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
     hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,nf_col=nfcolname,partitionid_col=partitioncolname)
@@ -125,9 +135,8 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     print("timeUsed: ",timeUsed,"globalindextime",(T4-T3)*1000)
     print("predict",predict)
     
-    
     groundtruth = ivecs_read(querygroundtruthpath)
-    print("groundtruth[0:5]:",groundtruth[:,0:k])
+    #print("groundtruth[0:5]:",groundtruth[:,0:k])
     recall1 = evaluatePredict(predict,groundtruth,k)
     print("recall:",recall1)
     #if not openSparkUI:
@@ -217,9 +226,13 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
 
 if __name__ == "__main__":
     #testmain()
+    """
     a=SparkHnsw()
     testmain_naiveSparkHnsw()
     b=bruteForce()
+    """
+    recall1=SparkHnsw()
+    print(recall1)
     #print(a,b)
     #testmain_naiveSparkHnsw()
     #bruteForce()
