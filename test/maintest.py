@@ -36,7 +36,7 @@ import time
 path="/home/yaoheng/test/download/data.gz"
 
 findspark.init() 
-
+"""
 traindatapath="/home/yaoheng/test/data/siftsmall/siftsmall_base.fvecs"
 querydatapath="/home/yaoheng/test/data/siftsmall/siftsmall_query.fvecs"
 querygroundtruthpath="/home/yaoheng/test/data/siftsmall/siftsmall_groundtruth.ivecs"
@@ -44,7 +44,7 @@ querygroundtruthpath="/home/yaoheng/test/data/siftsmall/siftsmall_groundtruth.iv
 traindatapath="/home/yaoheng/test/data/sift/sift_base.fvecs"
 querydatapath="/home/yaoheng/test/data/sift/sift_query.fvecs"
 querygroundtruthpath="/home/yaoheng/test/data/sift/sift_groundtruth.ivecs"
-"""
+
 # map at KnnAlgorithm.scala:507) finished in
 """
 maxelement = 100000000
