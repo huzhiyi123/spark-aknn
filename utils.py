@@ -1,20 +1,4 @@
 import pandas as pd
-# coding=utf-8
-from pyspark_hnsw.linalg import Normalizer
-from pyspark_hnsw.knn import HnswSimilarity
-from pyspark.ml.linalg import Vectors
-from pyspark.sql import SQLContext, column
-# $example on$
-from pyspark.ml import Pipeline
-from pyspark.ml.classification import LogisticRegression
-from pyspark.ml.feature import HashingTF, Tokenizer
-# $example off$
-from pyspark.sql import SparkSession
-from pyspark import SparkContext, SparkConf
-from pyspark.ml.feature import VectorAssembler
-from pyspark_hnsw.conversion import VectorConverter
-import findspark
-from tempfile import gettempdir
 import pandas as pd
 import numpy as np
 import hnswlib
@@ -31,9 +15,9 @@ from tkinter import _flatten
 
 
 
-def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
+def hnsw_global_index_pddf(pddf,max_elements,dim,featurecol="features",partitionid_col="partition_id"):
     print("hnsw_global_index test")
-    data = np.array(pddf[nf_col].values.tolist())
+    data = np.array(pddf[featurecol].values.tolist())
     p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
     p.init_index(max_elements=max_elements, ef_construction=100, M=16)
 
@@ -41,7 +25,6 @@ def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",pa
     # higher ef leads to better accuracy, but slower search
     p.set_ef(10)
     p.set_num_threads(4)  # by default using all available cores
-    print("Adding first batch of %d elements" % (len(data)))
     p.add_items(data)
     return p
 
@@ -64,14 +47,14 @@ def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_featur
     p.add_items(data)
     return p,pddf
 
-# 从queryVecList里面 heres
+# 从queryVecList里面 heres  sampledf_pandas采样的数据 插入到hnsw中
 # queryVecList pd.dataframe labels:ndarrary
-def getMapCols(queryVecList,labels,partitionColName):
+def getMapCols(globaIndexDf,labels,partitionColName):
     res = []
     length = labels.shape[0]
     for  i in range(length):
         currows = labels[i]
-        curlist = (queryVecList.iloc[currows])[partitionColName].values.tolist()
+        curlist = (globaIndexDf.iloc[currows])[partitionColName].values.tolist()
         res.append(curlist)
     return res
 
@@ -128,8 +111,8 @@ def kmeansPandasDf(traindatapath,querydatapath,k=8,traindatanum=2000):
     df["partition"] = res.tolist()
     return df
 """
-def kmeansPandasDf(traindatapath,k=8,traindatanum=2000):
-    data = fvecs_read(traindatapath)
+def kmeansPandasDf(data,k=8,traindatanum=2000):
+    
     traindata = data[0:traindatanum]
     l = len(data)
     df=pd.DataFrame(np.arange(l),columns=['id'])
@@ -175,23 +158,23 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # knnQueryNum knn选取最近的knnQueryNum向量 然后找到最近向量所在的分区（topkPartitionNum个）
 # 默认的分区总部概述是partitionnum
 # df: id features partitionIdColName
-# globaIndexDf:pd df
-def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
+# globaIndexDf:pd df sampledf_pandas
+def processQueryVec(model,queryVec,globaIndexDf,queryPartitionsCol,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
-    cols = getMapCols(globaIndexDf,labels,partitionIdColName)
+    cols = getMapCols(globaIndexDf,labels,queryPartitionsCol)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
     length = queryVec.shape[0]
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
-    cur[partitionIdColName] = cols
+    cur[queryPartitionsCol] = cols
     return cur
 
-
 def processSparkDfResult(result):
-    result_approximate = result.select('approximate')
-    tmp = result_approximate.select("approximate.neighbor")
-    l = tmp.toPandas().values.tolist()
+    #result_approximate = result.select('approximate')
+    #tmp = result_approximate.select("approximate.neighbor")
+    result_approximate = result.select('approximate.neighbor')
+    l = result_approximate.toPandas().values.tolist()
     res=[]
     for i in range(len(l)):
         res.append(l[i][0])
@@ -201,7 +184,7 @@ def processSparkDfResult(result):
 
 def readDataSparkDf(sql_context,traindatapath):
         # 读取查询向量 并且全局索引查询预测的分区
-    qd = fvecs_read_norm(traindatapath)
+    qd = fvecs_read(traindatapath)
     # id features(arrary) partioncol(int)
     vec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
     vec['normalized_features'] = qd.tolist()

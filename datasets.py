@@ -59,6 +59,7 @@ def evaluatePredict(predict,groundtruth,k):
     cnt = 0 
     for i in range(l):
         cnt+=len(set(predict[i])&set(real[i]))
+    print("l",l,"k",k)
     recall = cnt/float(l*k)
     print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
     return recall
