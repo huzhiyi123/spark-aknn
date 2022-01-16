@@ -1,6 +1,5 @@
 from re import S
 import sys
-sys.path.append('/usr/local/lib/python3.5/dist-packages')
 import pandas as pd
 
 from tempfile import gettempdir
@@ -10,6 +9,7 @@ from tkinter import _flatten
 import pickle
 from sklearn.cluster import KMeans as km
 import sys
+import hnswlib
 sys.path.append("/home/xxsh/xuyaoheng/my/spark-aknn")
 from utils import *
 from datasets import *
@@ -24,10 +24,6 @@ datapath="/home/xxsh/xuyaoheng/my/siftsmall/"
 traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
-
-
-
-
 
 def evaluatePredict(predict,groundtruth,k):
     l = predict.shape[0]
@@ -74,20 +70,6 @@ def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000):
     centroids1 = kmeans1.cluster_centers_
     return df,centroids1,centroids2
 
-groundtruth = ivecs_read(querygroundtruthpath)
-numpyquerydata = fvecs_read(querydatapath)
-data = fvecs_read(traindatapath)
-
-datalen=len(data)
-
-
-
-
-k1=8
-k2=80
-
-df,centroids1,centroids2=kmeansPandasDfV2(data,k1=k1,k2=k2,traindatanum=int(datalen*0.1))
-
 def getsampledata(df,samplerate=0.05):
     sampledata=[]
     groups=df.groupby('partition')
@@ -96,7 +78,6 @@ def getsampledata(df,samplerate=0.05):
     return sampledata
  
 
-print("centroids1",centroids1)
 
 """
 # 分k个分区 得到k个质心
@@ -216,6 +197,15 @@ def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partionmap,
     cur[queryPartitionsCol] = cols
     return cur
 
+#df column id features partition
+def getsampledata(df,samplerate=0.05):
+    sampledf=pd.DataFrame(columns=['id','features','partition'])
+    groups=df.groupby('partition')
+    for name, group in groups:
+        tmp=group.sample(frac=0.05)
+        sampledf=pd.concat([sampledf,tmp],axis=0)
+    return sampledf
+
 
 """
     for i in range(k1):
@@ -238,10 +228,18 @@ def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partionmap,
     return repartitionres,repartitionnum
 
 """
+# 步骤1
+groundtruth = ivecs_read(querygroundtruthpath)
+numpyquerydata = fvecs_read(querydatapath)
+data = fvecs_read(traindatapath)
 
+datalen=len(data)
+k1=8
+k2=80
 
+df,centroids1,centroids2=kmeansPandasDfV2(data,k1=k1,k2=k2,traindatanum=int(datalen*0.1))
 
-
+# 步骤2
 allpartitionrank=cal(centroids1,centroids2,k1,k2)
 
 print("allpartitionrank\n",allpartitionrank)
@@ -255,30 +253,6 @@ print(cur)
 
 
 
-
-import hnswlib
-
-
-# queryVec是np arrary 返回含有query partition的df
-# knnQueryNum knn选取最近的knnQueryNum向量 然后找到最近向量所在的分区（topkPartitionNum个）
-# 默认的分区总部概述是partitionnum
-# df: id features partitionIdColName
-# globaIndexDf:pd df sampledf_pandas
-# id features partition
-def getsampledatapre(df,samplerate=0.05):
-    sampledata=[]
-    groups=df.groupby('partition')
-    for name, group in groups:
-        sampledata.append(list(group["features"].sample(frac=0.05)))
-    return sampledata
-
-def getsampledata(df,samplerate=0.05):
-    sampledf=pd.DataFrame(columns=['id','features','partition'])
-    groups=df.groupby('partition')
-    for name, group in groups:
-        tmp=group.sample(frac=0.05)
-        sampledf=pd.concat([sampledf,tmp],axis=0)
-    return sampledf
 
 
 
@@ -313,6 +287,26 @@ queryvec = processQueryVecv2(model,numpyquerydata,\
     sampledata_df,queryPartitionsCol,partionmap,partitionnum=partitionnum,\
         topkPartitionNum=3,knnQueryNum=10)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 dict_of_df = {k: v for k, v in df.groupby('partition')}
 res=[]
 ratio=[]
@@ -329,6 +323,8 @@ for i in range(k2):
 print(res)
 print(ratio)
 print(max(ratio),min(ratio))
+
+## 分区后各个分区占比
 def func(k,querynum,partitionnum,traindatanum=2000):
     print("k,querynum,partitionnum",k,querynum,partitionnum)
     df=kmeansPandasDf(data,k=partitionnum,traindatanum=2000)
@@ -374,8 +370,6 @@ for i in range(4):
 # 0.1
 [73461, 96063, 116966, 122689, 127867, 135290, 146821, 180843]
 [0.073461, 0.096063, 0.116966, 0.122689, 0.127867, 0.13529, 0.146821, 0.180843]
-
-
 
 
 # 100分区
