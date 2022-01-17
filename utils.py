@@ -28,7 +28,7 @@ from pyspark.sql import SQLContext,DataFrame
 from pyspark.sql.types import *
 from sklearn.cluster import KMeans as km
 from tkinter import _flatten
-
+import time
 
 
 def hnsw_global_index_pddf(pddf,max_elements,dim,featurecol="features",partitionid_col="partition_id"):
@@ -178,7 +178,11 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # df: id features partitionIdColName
 # globaIndexDf:pd df
 def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
+    T6 = time.time()
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
+    T7 = time.time()
+    globalserchtime=(T7-T6)*1000
+    print("model.knn_query(queryVec, k=knnQueryNum) global index search time",globalserchtime)
     cols = getMapCols(globaIndexDf,labels,partitionIdColName)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
@@ -186,7 +190,7 @@ def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
     cur[partitionIdColName] = cols
-    return cur
+    return cur,globalserchtime
 
 
 def processSparkDfResult(result):

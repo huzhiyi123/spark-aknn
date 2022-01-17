@@ -24,7 +24,6 @@ def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000,partitioncolname="partiti
     res = kmeans2.predict(data).reshape(l,1).tolist()
     res=list(_flatten(res))
     df[partitioncolname] = res
-
     kmeans1 = km(n_clusters=k1, random_state=0).fit(traindata)
     centroids2 = kmeans2.cluster_centers_
     centroids1 = kmeans1.cluster_centers_
@@ -151,11 +150,13 @@ def hnsw_global_index_wrapper(sampledata_df,max_elements,dim,featurecol='feature
     return p
 
 
-
-
-def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partitionCol,partionmap,partitionnum=8,topkPartitionNum=3,knnQueryNum=30):
+def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,\
+    partitionCol,partionmap,partitionnum=8,topkPartitionNum=3,knnQueryNum=30):
     # 找到最近的几个向量的位置
+    T6 = time.time()
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
+    T7 = time.time()
+    globalindexconstructtime=(T7-T6)*1000
     cols = getMapCols(globaIndexDf,labels,partitionCol)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     for i in range(len(cols)):
@@ -168,7 +169,7 @@ def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partitionCo
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
     cur[queryPartitionsCol] = cols
-    return cur
+    return cur,globalindexconstructtime
 
 #df column id features partition
 def getsampledata(df,samplerate=0.05):

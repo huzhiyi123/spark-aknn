@@ -35,15 +35,7 @@ from datasets import *
 import time 
 from time import sleep
 findspark.init() 
-datapath="/my/siftsmall/"
-traindatapath=datapath+"siftsmall_base.fvecs"
-querydatapath=datapath+"siftsmall_query.fvecs"
-querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
-"""
-traindatapath="/home/yaoheng/test/data/sift/sift_base.fvecs"
-querydatapath="/home/yaoheng/test/data/sift/sift_query.fvecs"
-querygroundtruthpath="/home/yaoheng/test/data/sift/sift_groundtruth.ivecs"
-"""
+
 # map at KnnAlgorithm.scala:507) finished in
 """
 maxelement = 100000000
@@ -75,19 +67,22 @@ def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
 
 
 def setconf(conf):
+    """
     conf.set("spark.executor.memory", "1g")
-    conf.set("spark.driver.memory","10g")
-    conf.set("spark.executor.cores","2")
+    conf.set("spark.driver.memory","6g")
+    conf.set("spark.executor.cores","1")
     conf.set("spark.driver.maxResultSize","2g")
-    conf.set("spark.dynamicAllocation.enabled","true")
+    conf.set("spark.dynamicAllocation.enabled","false")
     conf.set("spark.shuffle.service.enabled", "true")
-    conf.set("spark.dynamicAllocation.maxExecutors","8")
+    conf.set("spark.dynamicAllocation.maxExecutors","16")
     conf.set("executor.instances","8")
     conf.set("spark.task.maxFailures","1")
     conf.set("spark.default.parallelism","8")
+    """
     return conf
 
 def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+    print("SparkHnsw():")
     APP_NAME = "mytest" #setMaster("local[2]").
     conf = (SparkConf().setAppName(APP_NAME))#.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
     conf = setconf(conf)
@@ -102,71 +97,82 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     traindata = fvecs_read(traindatapath)   #.reshape(-1,128)  #[0,base*num:-1]
     print(type(traindata),traindata.shape)
     # 2 4 6 8
-    T10 = time.time()
-    df = kmeansPandasDf(traindata,k=partitionnum,traindatanum=3000)
-    T11 = time.time()
+    T1 = time.time()
+    datalen=len(traindata)
+    df = kmeansPandasDf(traindata,k=partitionnum,traindatanum=int(datalen*0.1))
+    T2 = time.time()
+    kmeanstime=(T2-T1)*1000
+    print("kmeanstimepartitiontime",kmeanstime)
     # id features partition
     curschema = StructType([StructField("id", IntegerType()),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname, IntegerType() )])
     words_df = sql_context.createDataFrame(df,curschema)
-
+    #words_df.show()
     #,queryPartitionsCol=queryPartitionsCol
-    hnsw = HnswSimilarity(identifierCol='id',queryPartitionsCol=queryPartitionsCol,queryIdentifierCol='id',featuresCol=featuresCol, 
+    hnsw = HnswSimilarity(identifierCol='id',queryIdentifierCol='id',featuresCol=featuresCol, 
                         distanceFunction=distanceFunction, m=m, ef=ef, k=k, efConstruction=ef, numPartitions=partitionnum, 
                         excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
     hnsw.setPartitionCol(partitioncolname)
-
-    T5 = time.time()
-    print("word_df.count()",words_df.count())
-    model=hnsw.fit(words_df)
     
-    T12 = time.time()
-    sampledf = resample_in_partition(words_df,0.05,partitioncolname)
+    T3 = time.time()
+    #print("word_df.count()",words_df.count())
+    model=hnsw.fit(words_df)
+    T4 = time.time()
+    localindexconstructtime=(T4-T3)*1000
+    print("localindexconstruct=(T4-T3)*1000",localindexconstructtime)
+
+    sampledf = resample_in_partition(words_df,kmeanstrainrate,partitioncolname)
     sampledf_pandas = sampledf.toPandas()
     #def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
     hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,featurecol=featuresCol,partitionid_col=partitioncolname)
-    T13 = time.time()
-    T6 = time.time()
+    T5 = time.time()
+    globalindeconstructtime=(T5-T4)*1000
+    print("globalindeconstructtime=(T5-T4)*1000",globalindeconstructtime)
+
     # 读取查询向量 并且全局索引查询预测的分区
     numpyquerydata = fvecs_read(querydatapath)
-    numpyquerydata = numpyquerydata
     # id features(arrary) partioncol(int)
-    T3 = time.time()
-    # 这里处理
-    queryvec = processQueryVec(hnsw_global_model,numpyquerydata,sampledf_pandas,queryPartitionsCol,partitionnum=partitionnum,topkPartitionNum=topkPartitionNum,knnQueryNum=10)
 
-    print("numpyquerydata.shape",numpyquerydata.shape,"queryvec.shape",queryvec.shape)
-    T4 = time.time()
+    # 这里处理
+    queryvec,globalserchtime = processQueryVec(hnsw_global_model,numpyquerydata,sampledf_pandas,partitioncolname,partitionnum=partitionnum,topkPartitionNum=topkPartitionNum,knnQueryNum=10)    
     curschema = StructType([ StructField("id", IntegerType() ),StructField(featuresCol,ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
     #query_df.printSchema()
     # todo with index
-    T1 = time.time()
+    T6 = time.time()
     print("start query")
     result=model.transform(query_df).orderBy("id")
-    print("result.count()",result.count())
-    result.show()
+    #print("result.count()",result.count())
+    result.count()
     print("end query")
-    T2 = time.time()
-    predict = processSparkDfResult(result)
-    print("predict = processSparkDfResult(result)",predict)
-    print("result.count()",result.count())
-    result.show()
-    timeUsed = (T2-T1)*1000
-    print("timeUsed: ",timeUsed,"globalindextime",(T4-T3)*1000,"construct time",(T6-T5)*1000)
+    T7 = time.time()
     
-    print("kmeans-time",(T11-T10)*1000)
-    print("globalindex-construct-time",(T13-T12)*1000)
+    localsearchtime=(T7-T6)*1000
+    print("localsearchtime",localsearchtime)
+    predict = processSparkDfResult(result)
+    #print("result.count()",result.count())
+    
+
     groundtruth = ivecs_read(querygroundtruthpath)
     #print("groundtruth[0:5]:",groundtruth[:,0:k])
     if(len(predict) != 0):
         recall1 = evaluatePredict(predict,groundtruth,k)
         print("recall:",recall1)
     #if not openSparkUI:
-    sleep(40)
+    #sleep(150)
     sc.stop()
     #input("ffew")
     print("hello world SparkHnsw\n")
+    totalsearchtime=localsearchtime+globalserchtime
+    print("searchtimeUsed: ",totalsearchtime,"globalindextime",globalserchtime,"localsearchtime",localsearchtime)
+    totalconstructtime=kmeanstime+localindexconstructtime+globalindeconstructtime
+    print("totalconstructtime",totalconstructtime,\
+        "kmeanstime",kmeanstime,"localindexconstructtime",localindexconstructtime,\
+        "globalindeconstructtime",globalindeconstructtime)
     #return recall1
+
+
+
+
 
 def readDataSparkDfquery(sql_context,traindatapath,num):
         # 读取查询向量 并且全局索引查询预测的分区
@@ -239,12 +245,6 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     sql_context = SQLContext(sc)
     # 分区并且 训练分布式hnsw 这里没有归一化
     words_df = readDataSparkDf(sql_context,traindatapath)
-    """
-    print("words_df.printSchema()")
-    words_df.printSchema()
-    print("words_df.printSchema()")
-    words_df.printSchema()
-    """
     hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',featuresCol='normalized_features',
                          distanceFunction=distanceFunction,m=m, ef=ef, k=k,efConstruction=ef,
                          numPartitions=partitionnum,  predictionCol='approximate',excludeSelf=True)
