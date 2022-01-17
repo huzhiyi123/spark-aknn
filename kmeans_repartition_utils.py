@@ -14,16 +14,16 @@ sys.path.append("..")
 from utils import *
 from datasets import *
 
-def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000):
+def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000,partitioncolname="partition"):
     traindata=data[0:traindatanum]
     l = len(data)
-    df=pd.DataFrame(columns=['id','features','partition'])#(np.arange(l),columns=['id'])
+    df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
     df['id']=np.arange(l)
     df['features']=data.tolist()
     kmeans2 = km(n_clusters=k2, random_state=0).fit(traindata)
     res = kmeans2.predict(data).reshape(l,1).tolist()
     res=list(_flatten(res))
-    df["partition"] = res
+    df[partitioncolname] = res
 
     kmeans1 = km(n_clusters=k1, random_state=0).fit(traindata)
     centroids2 = kmeans2.cluster_centers_
@@ -140,7 +140,7 @@ def hnsw_global_index(data,max_elements,dim):
     p.add_items(data)
     return p
 
-def hnsw_global_index_wrapper(sampledata_df,max_elements,dim):
+def hnsw_global_index_wrapper(sampledata_df,max_elements,dim,featurecol='features'):
     globaldata=sampledata_df["features"].to_numpy().tolist()
     data=np.array(globaldata,dtype=int)
     p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
@@ -151,9 +151,12 @@ def hnsw_global_index_wrapper(sampledata_df,max_elements,dim):
     return p
 
 
-def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partionmap,partitionnum=8,topkPartitionNum=3,knnQueryNum=30):
+
+
+def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,partitionCol,partionmap,partitionnum=8,topkPartitionNum=3,knnQueryNum=30):
+    # 找到最近的几个向量的位置
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
-    cols = getMapCols(globaIndexDf,labels,queryPartitionsCol)
+    cols = getMapCols(globaIndexDf,labels,partitionCol)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     for i in range(len(cols)):
         for j in range(knnQueryNum):

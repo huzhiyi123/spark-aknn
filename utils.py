@@ -1,4 +1,20 @@
 import pandas as pd
+# coding=utf-8
+from pyspark_hnsw.linalg import Normalizer
+from pyspark_hnsw.knn import HnswSimilarity
+from pyspark.ml.linalg import Vectors
+from pyspark.sql import SQLContext, column
+# $example on$
+from pyspark.ml import Pipeline
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.feature import HashingTF, Tokenizer
+# $example off$
+from pyspark.sql import SparkSession
+from pyspark import SparkContext, SparkConf
+from pyspark.ml.feature import VectorAssembler
+from pyspark_hnsw.conversion import VectorConverter
+import findspark
+from tempfile import gettempdir
 import pandas as pd
 import numpy as np
 import hnswlib
@@ -25,6 +41,7 @@ def hnsw_global_index_pddf(pddf,max_elements,dim,featurecol="features",partition
     # higher ef leads to better accuracy, but slower search
     p.set_ef(10)
     p.set_num_threads(4)  # by default using all available cores
+    print("Adding first batch of %d elements" % (len(data)))
     p.add_items(data)
     return p
 
@@ -47,8 +64,9 @@ def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_featur
     p.add_items(data)
     return p,pddf
 
-# 从queryVecList里面 heres  sampledf_pandas采样的数据 插入到hnsw中
+# 从queryVecList里面 heres
 # queryVecList pd.dataframe labels:ndarrary
+# 这里label 是找到的k近领向量的
 def getMapCols(globaIndexDf,labels,partitionColName):
     res = []
     length = labels.shape[0]
@@ -158,17 +176,18 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # knnQueryNum knn选取最近的knnQueryNum向量 然后找到最近向量所在的分区（topkPartitionNum个）
 # 默认的分区总部概述是partitionnum
 # df: id features partitionIdColName
-# globaIndexDf:pd df sampledf_pandas
-def processQueryVec(model,queryVec,globaIndexDf,queryPartitionsCol,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
+# globaIndexDf:pd df
+def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
-    cols = getMapCols(globaIndexDf,labels,queryPartitionsCol)
+    cols = getMapCols(globaIndexDf,labels,partitionIdColName)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
     length = queryVec.shape[0]
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
-    cur[queryPartitionsCol] = cols
+    cur[partitionIdColName] = cols
     return cur
+
 
 def processSparkDfResult(result):
     #result_approximate = result.select('approximate')
@@ -191,3 +210,39 @@ def readDataSparkDf(sql_context,traindatapath):
     curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
     df = sql_context.createDataFrame(vec,curschema)
     return df
+
+
+
+def evaluate(index, xq, gt, k):
+    nq = xq.shape[0]
+    t0 = time.time()
+    D, I = index.search(xq, k)  # noqa: E741
+    t1 = time.time()
+
+    recalls = {}
+    i = 1
+    while i <= k:
+        recalls[i] = (I[:, :i] == gt[:, :1]).sum() / float(nq)
+        i *= 10
+
+    return (t1 - t0) * 1000.0 / nq, recalls
+
+
+# predict groundtruth: np.arrary
+def evaluatePredict(predict,groundtruth,k):
+    l = predict.shape[0]
+    real = groundtruth[:l,:k]
+    cnt = 0 
+    for i in range(l):
+        cnt+=len(set(predict[i])&set(real[i]))
+    print("l",l,"k",k)
+    recall = cnt/float(l*k)
+    print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
+    return recall
+
+# predict groundtruth: np.arrary
+def evaluatePredictV2(predict,groundtruth,k):
+    l = predict.shape[0]
+    real = groundtruth[:l,:k]
+    recall = np.mean(predict.reshape(-1)==groundtruth.reshape(-1))
+    return recall

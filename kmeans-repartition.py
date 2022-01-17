@@ -48,8 +48,6 @@ print("repartitionres",repartitionres)
 print("repartitionnum",repartitionnum,"repartitionnumsum",np.sum(repartitionnum))
 print(cur)
 
-
-
 sampledata_df=getsampledata(df)
 """
 allldd = pd.DataFrame(sampledata)
