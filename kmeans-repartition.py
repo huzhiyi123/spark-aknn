@@ -25,35 +25,6 @@ traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
 
-def evaluatePredict(predict,groundtruth,k):
-    l = predict.shape[0]
-    real = groundtruth[:l,:k]
-    cnt = 0 
-    a = 0
-    for i in range(l):
-        len1=len(set(predict[i])&set(real[i]))
-        cnt+=len1
-        if len1 != k and a!=5:
-            print("predict[i]\n",predict[i],"\n","real[i]\n",real[i],"\n")
-            a+=1
-    recall = float(cnt/(l*k))
-    print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
-    return recall
-
-def kmeansPandasDf(data,k=8,traindatanum=2000):
-    traindata=data[0:traindatanum]
-    l = len(data)
-    df=pd.DataFrame(data) #(np.arange(l),columns=['id'])
-    df['id']=np.arange(l)
-    df['features']=data.tolist()
-    kmeans = km(n_clusters=k, random_state=0).fit(traindata)
-    res = kmeans.predict(data).reshape(l,1).tolist()
-    res=list(_flatten(res))
-    df["partition"] = res
-
-    centroids = kmeans.cluster_centers_
-    return df,centroids
-
 def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000):
     traindata=data[0:traindatanum]
     l = len(data)
@@ -110,7 +81,7 @@ def get_cos_dist(v1: list, v2: list):
     dist=1-num/denom
     return dist
 # 计算各个质心最近分区 按距离排序
-def cal(centroids1,centroids2,k1,k2):
+def getallpartitionrank(centroids1,centroids2,k1,k2):
     res=np.zeros((k1,k2))
     for i in range(k1):
         vec1 = centroids1[i]
@@ -127,7 +98,7 @@ def cal(centroids1,centroids2,k1,k2):
     return allpartitionrank
 
 # 计算各个分区数量
-def cal1(df):
+def geteachpartitonnum(df):
     dict_of_df = {k: v for k, v in df.groupby('partition')}
     eachpartitonnum=[]
     for i in range(len(dict_of_df)):
@@ -137,7 +108,7 @@ def cal1(df):
 
 
 #k1 8 k2 30
-def cal2(allpartitionrank,eachpartitonnum,k1,k2,datacnt):
+def repartition(allpartitionrank,eachpartitonnum,k1,k2,datacnt):
     thresold=int((datacnt/k1))
     ceil = thresold
     repartitionres=[]
@@ -162,6 +133,7 @@ def cal2(allpartitionrank,eachpartitonnum,k1,k2,datacnt):
                 break
     return repartitionres,repartitionnum
 
+
 def getrepartitionmap(repartitionres,k1,k2):
     res = np.zeros(k2,int)
     for i in range(k1):
@@ -169,8 +141,6 @@ def getrepartitionmap(repartitionres,k1,k2):
         for j in cur:
             res[j]=i
     return res
-
-
 
 
 def hnsw_global_index(data,max_elements,dim):
@@ -240,20 +210,16 @@ k2=80
 df,centroids1,centroids2=kmeansPandasDfV2(data,k1=k1,k2=k2,traindatanum=int(datalen*0.1))
 
 # 步骤2
-allpartitionrank=cal(centroids1,centroids2,k1,k2)
+allpartitionrank=getallpartitionrank(centroids1,centroids2,k1,k2)
 
 print("allpartitionrank\n",allpartitionrank)
-eachpartitonnum=cal1(df)
+eachpartitonnum=geteachpartitonnum(df)
 print("df.shape[0]",df.shape[0])
-repartitionres,repartitionnum=cal2(allpartitionrank,eachpartitonnum,k1,k2,df.shape[0])
+repartitionres,repartitionnum=repartition(allpartitionrank,eachpartitonnum,k1,k2,df.shape[0])
 cur = np.array(repartitionnum)/df.shape[0]
 print("repartitionres",repartitionres)
 print("repartitionnum",repartitionnum,"repartitionnumsum",np.sum(repartitionnum))
 print(cur)
-
-
-
-
 
 
 
@@ -291,22 +257,7 @@ queryvec = processQueryVecv2(model,numpyquerydata,\
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""
 dict_of_df = {k: v for k, v in df.groupby('partition')}
 res=[]
 ratio=[]
@@ -316,13 +267,15 @@ for i in range(k2):
 print("res num",len(res))
 print(res)
 
-
 res.sort()
 for i in range(k2):
     ratio.append(res[i]/datalen)
 print(res)
 print(ratio)
 print(max(ratio),min(ratio))
+
+
+
 
 ## 分区后各个分区占比
 def func(k,querynum,partitionnum,traindatanum=2000):
@@ -353,6 +306,9 @@ def func(k,querynum,partitionnum,traindatanum=2000):
     print(kg)
     print("c=np.sum(my,axis=0)/(querynum*k)\n")
     print(c)
+"""
+
+
 
 """
 k = 100
