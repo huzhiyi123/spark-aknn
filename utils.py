@@ -28,12 +28,12 @@ from pyspark.sql import SQLContext,DataFrame
 from pyspark.sql.types import *
 from sklearn.cluster import KMeans as km
 from tkinter import _flatten
+import time
 
 
-
-def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
+def hnsw_global_index_pddf(pddf,max_elements,dim,featurecol="features",partitionid_col="partition_id"):
     print("hnsw_global_index test")
-    data = np.array(pddf[nf_col].values.tolist())
+    data = np.array(pddf[featurecol].values.tolist())
     p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
     p.init_index(max_elements=max_elements, ef_construction=100, M=16)
 
@@ -66,12 +66,13 @@ def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_featur
 
 # 从queryVecList里面 heres
 # queryVecList pd.dataframe labels:ndarrary
-def getMapCols(queryVecList,labels,partitionColName):
+# 这里label 是找到的k近领向量的
+def getMapCols(globaIndexDf,labels,partitionColName):
     res = []
     length = labels.shape[0]
     for  i in range(length):
         currows = labels[i]
-        curlist = (queryVecList.iloc[currows])[partitionColName].values.tolist()
+        curlist = (globaIndexDf.iloc[currows])[partitionColName].values.tolist()
         res.append(curlist)
     return res
 
@@ -128,8 +129,8 @@ def kmeansPandasDf(traindatapath,querydatapath,k=8,traindatanum=2000):
     df["partition"] = res.tolist()
     return df
 """
-def kmeansPandasDf(traindatapath,k=8,traindatanum=2000):
-    data = fvecs_read(traindatapath)
+def kmeansPandasDf(data,k=8,traindatanum=2000):
+    
     traindata = data[0:traindatanum]
     l = len(data)
     df=pd.DataFrame(np.arange(l),columns=['id'])
@@ -177,7 +178,11 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # df: id features partitionIdColName
 # globaIndexDf:pd df
 def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
+    T6 = time.time()
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
+    T7 = time.time()
+    globalserchtime=(T7-T6)*1000
+    print("model.knn_query(queryVec, k=knnQueryNum) global index search time",globalserchtime)
     cols = getMapCols(globaIndexDf,labels,partitionIdColName)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
@@ -185,13 +190,14 @@ def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
     cur[partitionIdColName] = cols
-    return cur
+    return cur,globalserchtime
 
 
 def processSparkDfResult(result):
-    result_approximate = result.select('approximate')
-    tmp = result_approximate.select("approximate.neighbor")
-    l = tmp.toPandas().values.tolist()
+    #result_approximate = result.select('approximate')
+    #tmp = result_approximate.select("approximate.neighbor")
+    result_approximate = result.select('approximate.neighbor')
+    l = result_approximate.toPandas().values.tolist()
     res=[]
     for i in range(len(l)):
         res.append(l[i][0])
@@ -201,10 +207,46 @@ def processSparkDfResult(result):
 
 def readDataSparkDf(sql_context,traindatapath):
         # 读取查询向量 并且全局索引查询预测的分区
-    qd = fvecs_read_norm(traindatapath)
+    qd = fvecs_read(traindatapath)
     # id features(arrary) partioncol(int)
     vec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
     vec['normalized_features'] = qd.tolist()
     curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
     df = sql_context.createDataFrame(vec,curschema)
     return df
+
+
+
+def evaluate(index, xq, gt, k):
+    nq = xq.shape[0]
+    t0 = time.time()
+    D, I = index.search(xq, k)  # noqa: E741
+    t1 = time.time()
+
+    recalls = {}
+    i = 1
+    while i <= k:
+        recalls[i] = (I[:, :i] == gt[:, :1]).sum() / float(nq)
+        i *= 10
+
+    return (t1 - t0) * 1000.0 / nq, recalls
+
+
+# predict groundtruth: np.arrary
+def evaluatePredict(predict,groundtruth,k):
+    l = predict.shape[0]
+    real = groundtruth[:l,:k]
+    cnt = 0 
+    for i in range(l):
+        cnt+=len(set(predict[i])&set(real[i]))
+    print("l",l,"k",k)
+    recall = cnt/float(l*k)
+    print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
+    return recall
+
+# predict groundtruth: np.arrary
+def evaluatePredictV2(predict,groundtruth,k):
+    l = predict.shape[0]
+    real = groundtruth[:l,:k]
+    recall = np.mean(predict.reshape(-1)==groundtruth.reshape(-1))
+    return recall

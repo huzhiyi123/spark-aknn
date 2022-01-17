@@ -36,37 +36,3 @@ def load_sift1M():
     print("done", file=sys.stderr)
     return xb, xq, xt, gt
 
-
-def evaluate(index, xq, gt, k):
-    nq = xq.shape[0]
-    t0 = time.time()
-    D, I = index.search(xq, k)  # noqa: E741
-    t1 = time.time()
-
-    recalls = {}
-    i = 1
-    while i <= k:
-        recalls[i] = (I[:, :i] == gt[:, :1]).sum() / float(nq)
-        i *= 10
-
-    return (t1 - t0) * 1000.0 / nq, recalls
-
-
-# predict groundtruth: np.arrary
-def evaluatePredict(predict,groundtruth,k):
-    l = predict.shape[0]
-    real = groundtruth[:l,:k]
-    cnt = 0 
-    for i in range(l):
-        cnt+=len(set(predict[i])&set(real[i]))
-    recall = cnt/float(l*k)
-    print("recall = cnt/float(l*k)",cnt," ","l",l,"k",k)
-    return recall
-
-
-# predict groundtruth: np.arrary
-def evaluatePredictV2(predict,groundtruth,k):
-    l = predict.shape[0]
-    real = groundtruth[:l,:k]
-    recall = np.mean(predict.reshape(-1)==groundtruth.reshape(-1))
-    return recall
