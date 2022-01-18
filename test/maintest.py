@@ -95,14 +95,14 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     featuresCol="features"
     # 分区并且 训练分布式hnsw 这里没有归一化
     traindata = fvecs_read(traindatapath)   #.reshape(-1,128)  #[0,base*num:-1]
-    print(type(traindata),traindata.shape)
+    #print(type(traindata),traindata.shape)
     # 2 4 6 8
     T1 = time.time()
     datalen=len(traindata)
     df = kmeansPandasDf(traindata,k=partitionnum,traindatanum=int(datalen*0.1))
     T2 = time.time()
     kmeanstime=(T2-T1)*1000
-    print("kmeanstimepartitiontime",kmeanstime)
+    #print("kmeanstimepartitiontime",kmeanstime)
     # id features partition
     curschema = StructType([StructField("id", IntegerType()),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname, IntegerType() )])
     words_df = sql_context.createDataFrame(df,curschema)
@@ -118,7 +118,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     model=hnsw.fit(words_df)
     T4 = time.time()
     localindexconstructtime=(T4-T3)*1000
-    print("localindexconstruct=(T4-T3)*1000",localindexconstructtime)
+    #print("localindexconstruct=(T4-T3)*1000",localindexconstructtime)
 
     sampledf = resample_in_partition(words_df,kmeanstrainrate,partitioncolname)
     sampledf_pandas = sampledf.toPandas()
@@ -126,7 +126,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     hnsw_global_model = hnsw_global_index_pddf(sampledf_pandas,1000000,128,featurecol=featuresCol,partitionid_col=partitioncolname)
     T5 = time.time()
     globalindeconstructtime=(T5-T4)*1000
-    print("globalindeconstructtime=(T5-T4)*1000",globalindeconstructtime)
+    #print("globalindeconstructtime=(T5-T4)*1000",globalindeconstructtime)
 
     # 读取查询向量 并且全局索引查询预测的分区
     numpyquerydata = fvecs_read(querydatapath)
@@ -147,7 +147,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     T7 = time.time()
     
     localsearchtime=(T7-T6)*1000
-    print("localsearchtime",localsearchtime)
+    #print("localsearchtime",localsearchtime)
     predict = processSparkDfResult(result)
     #print("result.count()",result.count())
     
@@ -169,10 +169,6 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
         "kmeanstime",kmeanstime,"localindexconstructtime",localindexconstructtime,\
         "globalindeconstructtime",globalindeconstructtime)
     #return recall1
-
-
-
-
 
 def readDataSparkDfquery(sql_context,traindatapath,num):
         # 读取查询向量 并且全局索引查询预测的分区
@@ -252,7 +248,7 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
 
     # 读取查询向量 并且全局索引查询预测的分区
     query_df = readDataSparkDf(sql_context,querydatapath)
-    print("query_df.printSchema()")
+    #print("query_df.printSchema()")
     query_df.printSchema()
     query_df.show()
     # todo with index
@@ -261,35 +257,56 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     T2 = time.time()
     timeUsed = (T2-T1)*1000
     print("timeUsed: ",timeUsed)
-    print("result.printSchema()")
-    result.printSchema()
+    #print("result.printSchema()")
+    #result.printSchema()
     result = result.orderBy("id")
-    result.show()
+    result.count()
     predict = processSparkDfResult(result)
     sc.stop()
 
+
+
+
+
+
 if __name__ == "__main__":
-    #testmain()
-    """
-    a=SparkHnsw()
-    testmain_naiveSparkHnsw()
-    b=bruteForce()
-    """
-    #recall1=SparkHnsw()
-    #print(recall1)
     
-    #num = [2,4,6,8]
-    #for i in num:
-    SparkHnsw()
+    klist = [5,10,20,30,40,50]
+    efmullist = [1.5,3,4,5,8,10,12,15]
+    mlist = [10,25,30,40,50]
+    efConstructionlist = [20,50,100,200,300,400]
 
-    #recall=bruteForce() #SparkHnsw() #
-    #print(recall)
-    
-    
-    #print(a,b)
-    #testmain_naiveSparkHnsw()
-    #bruteForce()
-    #text = input("Please enter a text:")
-    #test()
+    initparams()
+    print("for ki in klist:")
+    for i in klist:
+        print("k cmp",i)
+        k=i
+        SparkHnsw()
+    print("end klist\n",klist)
 
-# cat /home/yaoheng/test/log/54.log | grep "map at KnnAlgorithm.scala:507) finished in" | cut -d " " -f 14
+    initparams()
+    print("for i in efmul:")
+    for i in efmullist:
+        ef = int(i*k)
+        print("ef cmp",ef)
+        SparkHnsw()
+    print("end efmullist\n",efmullist)
+
+
+    initparams()
+    print("for i in mlist:")
+    for i in mlist:
+        print("m cmp",i)
+        m=i
+        SparkHnsw()
+    print("end mlist\n",mlist)
+
+
+    initparams()
+    print("for i in efConstructionlist:")
+    for i in efConstructionlist:
+        efConstruction = i
+        print("efConstruction cmp",efConstruction)
+        SparkHnsw()
+    print("end efConstructionlist\n",efConstructionlist)
+# k 的对比 ef

@@ -2,11 +2,12 @@ maxelement = 100000000
 k=10
 partitionnum=8
 topkPartitionNum=3
-ef = int(3*k)
+ef = int(4*22)
 sc = 1
 m = int(25)
 distanceFunction='cosine'
 kmeanstrainrate=0.05
+efConstruction=200
 
 """
 datapath="/my/siftsmall/"
@@ -21,5 +22,15 @@ querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
 # ef=10, efConstruction=200
 
 
-
-
+def initparams():
+    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction
+    maxelement = 100000000
+    k=10
+    partitionnum=8
+    topkPartitionNum=3
+    ef = int(4*22)
+    sc = 1
+    m = int(25)
+    distanceFunction='cosine'
+    kmeanstrainrate=0.05
+    efConstruction=200
