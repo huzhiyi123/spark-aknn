@@ -14,6 +14,19 @@ sys.path.append("..")
 from utils import *
 from datasets import *
 
+def kmeansPandasDfV1(data,k1=8,traindatanum=2000,partitioncolname="partition"):
+    traindata=data[0:traindatanum]
+    l = len(data)
+    df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
+    df['id']=np.arange(l)
+    df['features']=data.tolist()
+    kmeans2 = km(n_clusters=k1, random_state=0).fit(traindata)
+    res = kmeans2.predict(data).reshape(l,1).tolist()
+    res=list(_flatten(res))
+    df[partitioncolname] = res
+    return df
+
+
 def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000,partitioncolname="partition"):
     traindata=data[0:traindatanum]
     l = len(data)

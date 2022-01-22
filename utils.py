@@ -70,12 +70,23 @@ def hnsw_global_index_sparkdf(sparkdf,max_elements,dim,nf_col="normalized_featur
 def getMapCols(globaIndexDf,labels,partitionColName):
     res = []
     length = labels.shape[0]
+    curdf=globaIndexDf[partitionColName]
+    print(" print(curdf[0])",curdf[0])
+    for  i in range(length):
+        currows = labels[i]
+        curlist = (curdf.iloc[currows]).values.tolist()
+        res.append(curlist)
+    return res
+"""
+def getMapCols(globaIndexDf,labels,partitionColName):
+    res = []
+    length = labels.shape[0]
     for  i in range(length):
         currows = labels[i]
         curlist = (globaIndexDf.iloc[currows])[partitionColName].values.tolist()
         res.append(curlist)
     return res
-
+"""
 
 # custom function to sample rows within partitions
 # df spark-df and return spark-df
@@ -177,19 +188,20 @@ def uniqueAndRefill(ar,k=3,partitionnum=8):
 # 默认的分区总部概述是partitionnum
 # df: id features partitionIdColName
 # globaIndexDf:pd df
-def processQueryVec(model,queryVec,globaIndexDf,partitionIdColName,partitionnum=8,topkPartitionNum=3,knnQueryNum=10):
+def processQueryVec(model,queryVec,globaIndexDf,queryPartitionsCol,\
+    partitionCol="partitionCol",partitionnum=8,topkPartitionNum=4,knnQueryNum=10):
     T6 = time.time()
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
     T7 = time.time()
     globalserchtime=(T7-T6)*1000
     print("model.knn_query(queryVec, k=knnQueryNum) global index search time",globalserchtime)
-    cols = getMapCols(globaIndexDf,labels,partitionIdColName)
+    cols = getMapCols(globaIndexDf,labels,partitionCol)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     cols = uniqueAndRefill(np.array(cols),topkPartitionNum,partitionnum)
     length = queryVec.shape[0]
     cur = pd.DataFrame(np.arange(length),columns=["id"])
     cur['features'] = queryVec.tolist()
-    cur[partitionIdColName] = cols
+    cur[queryPartitionsCol] = cols
     return cur,globalserchtime
 
 

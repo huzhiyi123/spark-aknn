@@ -2,13 +2,14 @@ maxelement = 100000000
 k=10
 partitionnum=8
 topkPartitionNum=3
-ef = int(4*22)
+
 sc = 1
-m = int(25)
+m = int(50)
 distanceFunction='cosine'
 kmeanstrainrate=0.05
-efConstruction=200
 
+efConstruction=35
+ef = int(4*22)
 """
 datapath="/my/siftsmall/"
 traindatapath=datapath+"siftsmall_base.fvecs"
@@ -19,6 +20,9 @@ datapath="/my/sift/"
 traindatapath=datapath+"sift_base.fvecs"
 querydatapath=datapath+"sift_query.fvecs"
 querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+
+hdf5file="/workspace/gist/gist.hdf5"
 # ef=10, efConstruction=200
 
 
@@ -27,10 +31,11 @@ def initparams():
     maxelement = 100000000
     k=10
     partitionnum=8
-    topkPartitionNum=3
-    ef = int(4*22)
+    topkPartitionNum=5
+    
     sc = 1
-    m = int(25)
+    m = int(50)
     distanceFunction='cosine'
     kmeanstrainrate=0.05
-    efConstruction=200
+    efConstruction=85
+    ef = efConstruction

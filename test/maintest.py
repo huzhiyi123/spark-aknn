@@ -94,7 +94,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     nfcolname="normalized_features"
     featuresCol="features"
     # 分区并且 训练分布式hnsw 这里没有归一化
-    traindata = fvecs_read(traindatapath)   #.reshape(-1,128)  #[0,base*num:-1]
+    traindata = fvecs_read(traindatapath)[0:300]   #.reshape(-1,128)  #[0,base*num:-1]
     #print(type(traindata),traindata.shape)
     # 2 4 6 8
     T1 = time.time()
@@ -133,7 +133,11 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     # id features(arrary) partioncol(int)
 
     # 这里处理
-    queryvec,globalserchtime = processQueryVec(hnsw_global_model,numpyquerydata,sampledf_pandas,partitioncolname,partitionnum=partitionnum,topkPartitionNum=topkPartitionNum,knnQueryNum=10)    
+    queryvec,globalserchtime = processQueryVec(hnsw_global_model,numpyquerydata,sampledf_pandas,queryPartitionsCol,\
+                                partitionCol=partitioncolname,partitionnum=partitionnum,\
+                                topkPartitionNum=topkPartitionNum,knnQueryNum=30)    
+
+
     curschema = StructType([ StructField("id", IntegerType() ),StructField(featuresCol,ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
     #query_df.printSchema()
@@ -264,11 +268,19 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     predict = processSparkDfResult(result)
     sc.stop()
 
+if __name__ == "__main__":
+    efConstructionlist = [20,40,80,200]
+    initparams()
+    print("for i in efConstructionlist:")
+    for i in efConstructionlist:
+        initparams()
+        efConstruction = i
+        print("efConstruction cmp",efConstruction)
+        SparkHnsw()
+    print("end efConstructionlist\n",efConstructionlist)
 
-
-
-
-
+SparkHnsw()
+"""
 if __name__ == "__main__":
     
     klist = [5,10,20,30,40,50]
@@ -310,3 +322,4 @@ if __name__ == "__main__":
         SparkHnsw()
     print("end efConstructionlist\n",efConstructionlist)
 # k 的对比 ef
+"""

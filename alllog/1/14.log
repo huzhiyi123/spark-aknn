@@ -1,0 +1,84 @@
+for i in efConstructionlist:
+efConstruction cmp 15
+/my/spark-aknn/test/testdoublekmeans.py
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 80064   l 10000 k 10
+recall: 0.80064
+totalconstructtime 305775.0635147095 kmeanspartitiontime 141245.8255290985 localindexconstructtime 161721.4982509613 globalindexconstructtime 2807.739734649658
+totalsearchtime 23828.805685043335 localsearchtime 23668.42555999756 globalsearchtime 160.38012504577637
+hello world testdoublekmeansHnsw
+
+efConstruction cmp 60
+/my/spark-aknn/test/testdoublekmeans.py
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 94298   l 10000 k 10
+recall: 0.94298
+totalconstructtime 333903.78499031067 kmeanspartitiontime 139775.554895401 localindexconstructtime 191307.2910308838 globalindexconstructtime 2820.939064025879
+totalsearchtime 25328.336477279663 localsearchtime 25165.42100906372 globalsearchtime 162.91546821594238
+hello world testdoublekmeansHnsw
+
+efConstruction cmp 150
+/my/spark-aknn/test/testdoublekmeans.py
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 96877   l 10000 k 10
+recall: 0.96877
+totalconstructtime 573172.5685596466 kmeanspartitiontime 138889.68539237976 localindexconstructtime 431479.2790412903 globalindexconstructtime 2803.6041259765625
+totalsearchtime 35790.97270965576 localsearchtime 35633.816719055176 globalsearchtime 157.15599060058594
+hello world testdoublekmeansHnsw
+
+end efConstructionlist
+ [15, 60, 150]
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+sc = 1
+m = int(50)
+distanceFunction='cosine'
+kmeanstrainrate=0.05
+
+efConstruction=35
+ef = int(4*22)
+"""
+datapath="/my/siftsmall/"
+traindatapath=datapath+"siftsmall_base.fvecs"
+querydatapath=datapath+"siftsmall_query.fvecs"
+querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
+"""
+datapath="/my/sift/"
+traindatapath=datapath+"sift_base.fvecs"
+querydatapath=datapath+"sift_query.fvecs"
+querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+# ef=10, efConstruction=200
+
+
+def initparams():
+    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction
+    maxelement = 100000000
+    k=10
+    partitionnum=8
+    topkPartitionNum=5
+    
+    sc = 1
+    m = int(50)
+    distanceFunction='cosine'
+    kmeanstrainrate=0.05
+    efConstruction=50
+    ef = efConstruction
+recall = cnt/float(l*k) 80064   l 10000 k 10
+recall: 0.80064
+recall = cnt/float(l*k) 94298   l 10000 k 10
+recall: 0.94298
+recall = cnt/float(l*k) 96877   l 10000 k 10
+recall: 0.96877
