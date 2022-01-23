@@ -66,19 +66,7 @@ def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
     print("hello world SparkHnsw\n")
 
 
-def setconf(conf):
-    """
-    conf.set("spark.executor.memory", "1g")
-    conf.set("spark.driver.memory","6g")
-    conf.set("spark.executor.cores","1")
-    conf.set("spark.driver.maxResultSize","2g")
-    conf.set("spark.dynamicAllocation.enabled","false")
-    conf.set("spark.shuffle.service.enabled", "true")
-    conf.set("spark.dynamicAllocation.maxExecutors","16")
-    conf.set("executor.instances","8")
-    conf.set("spark.task.maxFailures","1")
-    conf.set("spark.default.parallelism","8")
-    """
+
     return conf
 
 def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
@@ -200,7 +188,7 @@ def readDataSparkDfquery2(sql_context,traindatapath):
 
 def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
-    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    conf = (SparkConf().setAppName(APP_NAME)) #.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
     sc = SparkContext(conf=conf)
     sc.setCheckpointDir(gettempdir())
     sql_context = SQLContext(sc)
@@ -220,20 +208,11 @@ def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark
     T1 = time.time()
     predict = model.transform(querydf).orderBy("id")
     print("predict.count()",predict.count())
-    predict.printSchema()
     T2 = time.time()
     timeUsed = (T2-T1)*1000
     print("timeUsed: ",timeUsed,"fit time",(T1-T3)*1000)
-    """
-    groundtruth = ivecs_read(querygroundtruthpath)[:,:k]
-    predict = processSparkDfResult(predict)
-    recall = evaluatePredict(predict,groundtruth,k)
-    print("recall",recall)
-    print(predict)
-    print(groundtruth)
-    """
     sc.stop()
-    print("hello world bruteForce\n")
+    print("done bruteForce\n")
     return 0
 
 
@@ -267,7 +246,7 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     result.count()
     predict = processSparkDfResult(result)
     sc.stop()
-
+"""
 if __name__ == "__main__":
     efConstructionlist = [20,40,80,200]
     initparams()
@@ -279,7 +258,7 @@ if __name__ == "__main__":
         SparkHnsw()
     print("end efConstructionlist\n",efConstructionlist)
 
-SparkHnsw()
+"""
 """
 if __name__ == "__main__":
     

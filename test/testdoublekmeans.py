@@ -33,6 +33,8 @@ sys.path.append(aknnfold+"spark-aknn")
 from utils import *
 from datasets import *
 from kmeans_repartition_utils import *
+from maintest import *
+
 import time 
 from time import sleep
 
@@ -42,9 +44,33 @@ import numpy as np
 
 findspark.init() 
 
+traindata = 0
+numpyquerydata = 0
+groundtruth = 0
+
+
+def gethdf5data():
+    f = h5py.File(gistpath,'r+')
+    keys=['distances', 'neighbors', 'test', 'train']
+    print(type(f))
+    print(f.keys())
+    numpyquerydata =(f['test'][:])
+    groundtruth = (f['neighbors'][:])
+    traindata = (f['train'][:])
+    #numpyquerydata =(f[2][:])
+    #groundtruth = (f[1][:])
+    #traindata = (f[3][:])
+    return traindata,numpyquerydata,groundtruth
+
+def getsiftdata():
+    traindata = fvecs_read(traindatapath)   #.reshape(-1,128)  #[0,base*num:-1]
+    numpyquerydata = fvecs_read(querydatapath)
+    groundtruth = ivecs_read(querygroundtruthpath)
+    return traindata,numpyquerydata,groundtruth
+
+
 
 def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
-    print("/my/spark-aknn/test/testdoublekmeans.py")
     APP_NAME = "mytest" #setMaster("local[2]").
     conf = (SparkConf().setAppName(APP_NAME))#.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
     sc = SparkContext(conf=conf)
@@ -56,19 +82,29 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     featuresCol="features"
     partitionreal = "mappartition"
     # 分区并且 训练分布式hnsw 这里没有归一化
+    """
     traindata = fvecs_read(traindatapath)   #.reshape(-1,128)  #[0,base*num:-1]
     numpyquerydata = fvecs_read(querydatapath)
     groundtruth = ivecs_read(querygroundtruthpath)
     #print(type(traindata),traindata.shape)
+    """
+    traindata = 0
+    numpyquerydata = 0
+    groundtruth = 0
+    if usesift == True:
+        traindata,numpyquerydata,groundtruth = getsiftdata()
+    else:
+        traindata,numpyquerydata,groundtruth = gethdf5data()
+
     # 2 4 6 8
 
-    
+    """
     f = h5py.File(hdf5file,'r+')
     keys=['distances', 'neighbors', 'test', 'train']
     numpyquerydata =(f[2][:])
     groundtruth = (f[1][:])
     traindata = (f[3][:])
-
+    """
     datalen=len(traindata)
 
     partitionnumreal=partitionnum
@@ -177,6 +213,43 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
 
+def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+    APP_NAME = "mytest" #setMaster("local[2]").
+    conf = (SparkConf().setAppName(APP_NAME))
+    sc = SparkContext(conf=conf)
+    sc.setCheckpointDir(gettempdir())
+    sql_context = SQLContext(sc)
+    partitioncolname="partitionCol"
+    queryPartitionsCol='querypartitions'
+    nfcolname="normalized_features"
+    # 分区并且 训练分布式hnsw 这里没有归一化
+    traindf = readDataSparkDf(sql_context,traindatapath)
+    # 总共1w条
+    querydf = readDataSparkDfquery(sql_context,querydatapath,500)
+    #querydf = readDataSparkDfquery(sql_context,querydatapath,1000) # 8分区 vs 4分区
+    bruteforce = BruteForceSimilarity(identifierCol='id', queryIdentifierCol='id', featuresCol='normalized_features',
+                                    distanceFunction=distanceFunction, numPartitions=partitionnum, excludeSelf=False,
+                                    predictionCol='approximate', outputFormat='minimal',k=k)
+    T3 = time.time()
+    model = bruteforce.fit(traindf)
+    T1 = time.time()
+    predict = model.transform(querydf).orderBy("id")
+    print("predict.count()",predict.count())
+    predict.printSchema()
+    T2 = time.time()
+    timeUsed = (T2-T1)*1000
+    print("timeUsed: ",timeUsed,"fit time",(T1-T3)*1000)
+    """
+    groundtruth = ivecs_read(querygroundtruthpath)[:,:k]
+    predict = processSparkDfResult(predict)
+    recall = evaluatePredict(predict,groundtruth,k)
+    print("recall",recall)
+    print(predict)
+    print(groundtruth)
+    """
+    sc.stop()
+    print("hello world bruteForce\n")
+    return 0
 """
 maxelement = 100000000
 k=10
@@ -304,5 +377,29 @@ if __name__ == "__main__":
 """
 
 if __name__ == "__main__":
+    initparams()
+    print("start bruteForce\n")
+    efConstruction=50
+    ef = efConstruction
+    #testdoublekmeansHnsw()
+    bruteForce()
+    print("end bruteForce\n")
+    
+    print("start efConstruction=250 \n")
+    initparams()
+    efConstruction=250
+    ef = efConstruction
+    print("start efConstruction=300 \n")
+    initparams()
+    efConstruction=300
+    ef = efConstruction
+
+    print("gist efConstruction \n")
+    initparams()
+    usesift = false
+    efConstructionlist = [50,80,100,120,130,160,200,250,300]
+    for i in efConstructionlist:
+        efConstruction=300
+        ef = efConstruction
+        print("gist efConstruction cmp",efConstruction)
         testdoublekmeansHnsw()
-    print("end topkPartitionNumlist cmp\n",topkPartitionNum)
