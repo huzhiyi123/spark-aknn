@@ -1,3 +1,18 @@
+start bruteForce
+
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  608410.0062847137 fit time 10747.991561889648
+hello world bruteForce
+
+end bruteForce
+
 maxelement = 100000000
 k=10
 partitionnum=8

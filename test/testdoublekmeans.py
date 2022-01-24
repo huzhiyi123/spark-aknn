@@ -225,7 +225,7 @@ def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark
     # 分区并且 训练分布式hnsw 这里没有归一化
     traindf = readDataSparkDf(sql_context,traindatapath)
     # 总共1w条
-    querydf = readDataSparkDfquery(sql_context,querydatapath,500)
+    querydf = readDataSparkDfquery(sql_context,querydatapath,10000)
     #querydf = readDataSparkDfquery(sql_context,querydatapath,1000) # 8分区 vs 4分区
     bruteforce = BruteForceSimilarity(identifierCol='id', queryIdentifierCol='id', featuresCol='normalized_features',
                                     distanceFunction=distanceFunction, numPartitions=partitionnum, excludeSelf=False,
@@ -377,6 +377,7 @@ if __name__ == "__main__":
 """
 
 if __name__ == "__main__":
+    """
     initparams()
     print("start bruteForce\n")
     efConstruction=50
@@ -384,7 +385,7 @@ if __name__ == "__main__":
     #testdoublekmeansHnsw()
     bruteForce()
     print("end bruteForce\n")
-    
+    """
     print("start efConstruction=250 \n")
     initparams()
     efConstruction=250
@@ -396,10 +397,10 @@ if __name__ == "__main__":
 
     print("gist efConstruction \n")
     initparams()
-    usesift = false
-    efConstructionlist = [50,80,100,120,130,160,200,250,300]
+    usesift = False
+    efConstructionlist = [50,100,150,200,250]
     for i in efConstructionlist:
-        efConstruction=300
+        efConstruction=i
         ef = efConstruction
         print("gist efConstruction cmp",efConstruction)
         testdoublekmeansHnsw()

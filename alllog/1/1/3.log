@@ -1,0 +1,9 @@
+start efConstruction=250 
+
+start efConstruction=300 
+
+gist efConstruction 
+
+gist efConstruction cmp 50
+<class 'h5py._hl.files.File'>
+<KeysViewHDF5 ['distances', 'neighbors', 'test', 'train']>
