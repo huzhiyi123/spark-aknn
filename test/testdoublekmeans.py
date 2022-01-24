@@ -332,8 +332,75 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     StructField(partitionreal, IntegerType() )
     ])
     words_df = sql_context.createDataFrame(df,curschema)
-    print("words_df cnt",words_df.count())
+    hnsw = HnswSimilarity(identifierCol='id',queryIdentifierCol='id',featuresCol=featuresCol,queryPartitionsCol=queryPartitionsCol,
+                        distanceFunction=distanceFunction, m=m, ef=ef, k=k, efConstruction=efConstruction, numPartitions=partitionnum, 
+                        excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
+    hnsw.setPartitionCol(partitionreal)
+    T3 = time.time()
+    #print("word_df.count()",words_df.count())
+    model=hnsw.fit(words_df)
+    T4 = time.time()
+    localindexconstructtime=(T4-T3)*1000
+    #print("localindexconstructtime",localindexconstructtime)
+    #print("model=hnsw.fit(words_df) done")
+    T5 = time.time()
+    #def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
+    hnsw_global_model=hnsw_global_index_wrapper(sampledf_pandas,1000000,128,featurecol='features')
+    T6 = time.time()
+    globalindexconstructtime=(T6-T5)*1000
+    #print("globalindexconstructtime",globalindexconstructtime)
+
+    # 读取查询向量 并且全局索引查询预测的分区
+    
+    # id features(arrary) partioncol(int)
+
+    # 这里处理
+    # sampledf_pandas: 'id','features','partition'
+    knnQueryNum=30
+    queryvec,globalsearchtime = processQueryVecv2(hnsw_global_model,numpyquerydata,\
+    sampledf_pandas,queryPartitionsCol,partitioncolname,partitionmap,\
+    partitionnum=partitionnum,topkPartitionNum=topkPartitionNum,knnQueryNum=knnQueryNum)
+    #print("globalsearchtime",globalsearchtime)
+
+
+    curschema = StructType([ StructField("id", IntegerType() ),\
+        StructField(featuresCol,ArrayType(DoubleType())),
+        StructField(queryPartitionsCol,ArrayType(IntegerType()))])
+    query_df = sql_context.createDataFrame(queryvec,curschema)
+    #query_df.printSchema()
+    # todo with index
+    T7 = time.time()
+    print("start query")
+    result=model.transform(query_df).orderBy("id")
+    print("result.count()",result.count())
+    print("end query")
+    T8 = time.time()
+    localsearchtime=(T8-T7)*1000
+    #print("localsearchtime",localsearchtime)
+
+    predict = processSparkDfResult(result)
+    #print("predict = processSparkDfResult(result)",predict)
+
+    
+    #print("groundtruth[0:5]:",groundtruth[:,0:k])
+    if(len(predict) != 0):
+        recall1 = evaluatePredict(predict,groundtruth,k)
+        print("recall:",recall1)
+    #if not openSparkUI:
+    #sleep(150)
     sc.stop()
+    #input("ffew")
+    totalsearchtime = localsearchtime + globalsearchtime
+    totalconstructtime=kmeanspartitiontime+localindexconstructtime+globalindexconstructtime
+    
+    print("totalconstructtime",totalconstructtime,\
+        "kmeanspartitiontime",kmeanspartitiontime,"localindexconstructtime",\
+            localindexconstructtime,"globalindexconstructtime",globalindexconstructtime)
+
+    print("totalsearchtime",totalsearchtime,"localsearchtime",localsearchtime,"globalsearchtime",globalsearchtime)
+    print("hello world testdoublekmeansHnsw\n")
+    #return recall1
+
 
 
 if __name__ == "__main__":
@@ -341,9 +408,33 @@ if __name__ == "__main__":
     initparams()
     usesift = False
     testdoublekmeansHnswV2()
+    efConstructionlist = [30,80,120,180,200,250]
+    initparams()
+    print("for i in efConstructionlist:")
+    for i in efConstructionlist:
+        initparams()
+        efConstruction = i
+        ef = efConstruction
+        usesift = False
+        print("efConstruction cmp gist",efConstruction)
+        testdoublekmeansHnswV2()
+    print("end efConstructionlist\n",efConstructionlist)
 
 
-
+    topkPartitionNumlist = 8
+    for i in range(1,9):
+        initparams()
+        topkPartitionNum=i
+        efConstruction = 150
+        ef = efConstruction
+        usesift = False
+        print("topkPartitionNumlist cmp",topkPartitionNum)
+        testdoublekmeansHnsw()
+        print("end topkPartitionNumlist cmp\n",topkPartitionNum)
+    
+    initparams()
+    usesift = False
+    bruteForce()
 
 
 """
