@@ -1,6 +1,26 @@
 start efConstruction=250 
 
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 96959   l 10000 k 10
+recall: 0.96959
+totalconstructtime 631164.8938655853 kmeanspartitiontime 101793.7204837799 localindexconstructtime 527306.1153888702 globalindexconstructtime 2065.0579929351807
+totalsearchtime 32980.03005981445 localsearchtime 32857.820987701416 globalsearchtime 122.20907211303711
+hello world testdoublekmeansHnsw
+
 start efConstruction=300 
+
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 97063   l 10000 k 10
+recall: 0.97063
+totalconstructtime 697588.0122184753 kmeanspartitiontime 102291.36347770691 localindexconstructtime 593275.6571769714 globalindexconstructtime 2020.991563796997
+totalsearchtime 40443.907022476196 localsearchtime 40319.851875305176 globalsearchtime 124.05514717102051
+hello world testdoublekmeansHnsw
 
 gist efConstruction 
 
@@ -8,7 +28,7 @@ gist efConstruction cmp 50
 <class 'h5py._hl.files.File'>
 <KeysViewHDF5 ['distances', 'neighbors', 'test', 'train']>
 Traceback (most recent call last):
-  File "/tmp/data/newaknn/test/testdoublekmeans.py", line 406, in <module>
+  File "/tmp/data/newaknn/test/testdoublekmeans.py", line 411, in <module>
     testdoublekmeansHnsw()
   File "/tmp/data/newaknn/test/testdoublekmeans.py", line 144, in testdoublekmeansHnsw
     words_df = sql_context.createDataFrame(df,curschema)
@@ -83,4 +103,7 @@ def initparams():
     kmeanstrainrate=0.05
     efConstruction=85
     ef = efConstruction
-    usesift=True
+    usesift=Truerecall = cnt/float(l*k) 96959   l 10000 k 10
+recall: 0.96959
+recall = cnt/float(l*k) 97063   l 10000 k 10
+recall: 0.97063

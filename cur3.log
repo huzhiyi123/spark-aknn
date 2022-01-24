@@ -155,3 +155,20 @@ com.github.jelmerk#hnswlib-spark_2.4_2.11 added as a dependency
 2022-01-24 03:44:00,212 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4fdc7673{/SQL/execution/json,null,AVAILABLE,@Spark}
 2022-01-24 03:44:00,213 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@79296869{/static/sql,null,AVAILABLE,@Spark}
 2022-01-24 03:44:00,518 INFO state.StateStoreCoordinatorRef: Registered StateStoreCoordinator endpoint
+2022-01-24 03:59:47,299 INFO spark.SparkContext: Invoking stop() from shutdown hook
+2022-01-24 03:59:47,310 INFO server.AbstractConnector: Stopped Spark@4721aac1{HTTP/1.1,[http/1.1]}{0.0.0.0:4040}
+2022-01-24 03:59:47,313 INFO ui.SparkUI: Stopped Spark web UI at http://localhost:4040
+2022-01-24 03:59:47,319 INFO cluster.StandaloneSchedulerBackend: Shutting down all executors
+2022-01-24 03:59:47,319 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asking each executor to shut down
+2022-01-24 03:59:47,338 INFO spark.MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+2022-01-24 03:59:47,356 INFO memory.MemoryStore: MemoryStore cleared
+2022-01-24 03:59:47,357 INFO storage.BlockManager: BlockManager stopped
+2022-01-24 03:59:47,358 INFO storage.BlockManagerMaster: BlockManagerMaster stopped
+2022-01-24 03:59:47,361 INFO scheduler.OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+2022-01-24 03:59:47,398 INFO spark.SparkContext: Successfully stopped SparkContext
+2022-01-24 03:59:47,398 INFO util.ShutdownHookManager: Shutdown hook called
+2022-01-24 03:59:47,400 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-e7453f39-88e2-43dd-b150-9fc138c8dc1d
+2022-01-24 03:59:47,404 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-699b1596-d8e1-4cba-9645-61d10932f3da/pyspark-cc73b8d4-8bd8-468e-9ee4-067b499a55ca
+2022-01-24 03:59:47,407 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-699b1596-d8e1-4cba-9645-61d10932f3da
+/aknn
+com.github.jelmerk:hnswlib-spark_2.4_2.11:1.0.0

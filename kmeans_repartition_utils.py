@@ -42,6 +42,20 @@ def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000,partitioncolname="partiti
     centroids1 = kmeans1.cluster_centers_
     return df,centroids1,centroids2
 
+
+
+def kmeansPandasDfV3(data,partitioncsvpath,centroids1path,centroids2path,partitioncolname="partition"):
+    l = len(data)
+    df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
+    df['id']=np.arange(l)
+    df['features']=data.tolist()
+    df[partitioncolname]=pd.read_csv(partitioncsvpath)
+    centroids1 = pd.read_csv(centroids1path).values
+    centroids2 = pd.read_csv(centroids2path).values
+    return df,centroids1,centroids2
+
+
+
 def getsampledata(df,samplerate=0.05):
     sampledata=[]
     groups=df.groupby('partition')

@@ -12,6 +12,10 @@ efConstruction=35
 ef = int(4*22)
 usesift=True
 
+kmeanspath="/aknn/kmeans/"
+
+gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
 
 """
 datapath="/my/siftsmall/"

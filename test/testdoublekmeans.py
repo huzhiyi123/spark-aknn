@@ -68,6 +68,15 @@ def getsiftdata():
     groundtruth = ivecs_read(querygroundtruthpath)
     return traindata,numpyquerydata,groundtruth
 
+def kmeansPandasDfV3(data,partitioncsvpath,centroids1path,centroids2path,partitioncolname="partition"):
+    l = len(data)
+    df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
+    df['id']=np.arange(l)
+    df['features']=data.tolist()
+    df[partitioncolname]=pd.read_csv(partitioncsvpath)
+    centroids1 = pd.read_csv(centroids1path).values
+    centroids2 = pd.read_csv(centroids2path).values
+    return df,centroids1,centroids2
 
 
 def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
@@ -250,6 +259,90 @@ def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark
     sc.stop()
     print("hello world bruteForce\n")
     return 0
+
+
+
+def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+    APP_NAME = "mytest" #setMaster("local[2]").
+    conf = (SparkConf().setAppName(APP_NAME))#.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    sc = SparkContext(conf=conf)
+    sc.setCheckpointDir(gettempdir())
+    sql_context = SQLContext(sc)
+    partitioncolname="partition"
+    queryPartitionsCol='querypartitions'
+    nfcolname="normalized_features"
+    featuresCol="features"
+    partitionreal = "mappartition"
+
+
+    traindata = 0
+    numpyquerydata = 0
+    groundtruth = 0
+    partitionpath=""
+    centroids1path=""
+    centroids2path=""
+
+    kmeanspath="/aknn/kmeans/"
+    gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+    siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+
+
+
+    if usesift == True:
+        traindata,numpyquerydata,groundtruth = getsiftdata()
+        partitionpath = kmeanspath+siftlist[0]
+        centroids1path = kmeanspath+siftlist[1]
+        centroids2path = kmeanspath+siftlist[2]
+    else:
+        traindata,numpyquerydata,groundtruth = gethdf5data()
+        partitionpath = kmeanspath+gistlist[0]
+        centroids1path = kmeanspath+gistlist[1]
+        centroids2path = kmeanspath+gistlist[2]
+
+    datalen=len(traindata)
+
+    partitionnumreal=partitionnum
+    partitionnummap=int(partitionnum*10)
+
+    T1 = time.time()
+    df,centroids1,centroids2 = kmeansPandasDfV3(traindata,partitionpath,centroids1path,centroids2path,"partition")
+
+    # df 的 partition col映射到真是的cols
+    # df=pd.DataFrame(columns=['id','features','partition'])#(np.arange(l),columns=['id'])
+    T2 = time.time()
+    kmeanspartitiontime=(T2-T1)*1000
+    #print("kmeanspartitiontime",kmeanspartitiontime)
+
+    allpartitionrank=getallpartitionrank(centroids1,centroids2,partitionnumreal,partitionnummap)
+    eachpartitonnum=geteachpartitonnum(df)
+    repartitionres,repartitionnum=repartition(allpartitionrank,eachpartitonnum,partitionnumreal,partitionnummap,df.shape[0])
+    sampledf_pandas=getsampledata(df,samplerate=0.05)
+    partitionmap = getrepartitionmap(repartitionres,partitionnumreal,partitionnummap)
+    #print("partitionmap",partitionmap)
+
+
+
+    # id features partition
+    curschema = StructType([StructField("id", IntegerType()),
+    StructField("features",ArrayType(DoubleType())),
+    StructField(partitioncolname, IntegerType() ),
+    StructField(partitionreal, IntegerType() )
+    ])
+    words_df = sql_context.createDataFrame(df,curschema)
+    
+    sc.stop()
+
+
+if __name__ == "__main__":
+    print("gist efConstruction \n")
+    initparams()
+    usesift = False
+    testdoublekmeansHnswV2()
+
+
+
+
+
 """
 maxelement = 100000000
 k=10
@@ -375,32 +468,3 @@ if __name__ == "__main__":
         testdoublekmeansHnsw()
     print("end topkPartitionNumlist cmp\n",topkPartitionNum)
 """
-
-if __name__ == "__main__":
-    """
-    initparams()
-    print("start bruteForce\n")
-    efConstruction=50
-    ef = efConstruction
-    #testdoublekmeansHnsw()
-    bruteForce()
-    print("end bruteForce\n")
-    """
-    print("start efConstruction=250 \n")
-    initparams()
-    efConstruction=250
-    ef = efConstruction
-    print("start efConstruction=300 \n")
-    initparams()
-    efConstruction=300
-    ef = efConstruction
-
-    print("gist efConstruction \n")
-    initparams()
-    usesift = False
-    efConstructionlist = [50,100,150,200,250]
-    for i in efConstructionlist:
-        efConstruction=i
-        ef = efConstruction
-        print("gist efConstruction cmp",efConstruction)
-        testdoublekmeansHnsw()
