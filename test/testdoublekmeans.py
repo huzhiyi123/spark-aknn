@@ -312,16 +312,19 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     T2 = time.time()
     kmeanspartitiontime=(T2-T1)*1000
     #print("kmeanspartitiontime",kmeanspartitiontime)
-
+    print("centroids1",centroids1.shape)
+    print("centroids2",centroids2.shape)
     allpartitionrank=getallpartitionrank(centroids1,centroids2,partitionnumreal,partitionnummap)
     eachpartitonnum=geteachpartitonnum(df)
     repartitionres,repartitionnum=repartition(allpartitionrank,eachpartitonnum,partitionnumreal,partitionnummap,df.shape[0])
     sampledf_pandas=getsampledata(df,samplerate=0.05)
     partitionmap = getrepartitionmap(repartitionres,partitionnumreal,partitionnummap)
     #print("partitionmap",partitionmap)
-
-
-
+    def mapx(x):
+        x = partitionmap[x]
+        return x
+    df[partitionreal]=df[partitioncolname].apply(lambda x:mapx(x))
+    #print(df[0:20])
     # id features partition
     curschema = StructType([StructField("id", IntegerType()),
     StructField("features",ArrayType(DoubleType())),
@@ -329,7 +332,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     StructField(partitionreal, IntegerType() )
     ])
     words_df = sql_context.createDataFrame(df,curschema)
-    
+    print("words_df cnt",words_df.count())
     sc.stop()
 
 
