@@ -28,8 +28,9 @@ import pyspark.sql.functions as F
 import hnswlib
 from sklearn.preprocessing import normalize
 import sys
-aknnfold="/my/"
-sys.path.append(aknnfold+"spark-aknn")
+aknnfold="/aknn/"
+sys.path.append(aknnfold)
+sys.path.append(aknnfold+"test")
 from utils import *
 from datasets import *
 from kmeans_repartition_utils import *
@@ -48,8 +49,8 @@ traindata = 0
 numpyquerydata = 0
 groundtruth = 0
 
-
-def gethdf5data():
+gistpath="/sift/gist-960-euclidean.hdf5"
+def gethdf5data(gistpath):
     f = h5py.File(gistpath,'r+')
     keys=['distances', 'neighbors', 'test', 'train']
     print(type(f))
@@ -103,7 +104,7 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     if usesift == True:
         traindata,numpyquerydata,groundtruth = getsiftdata()
     else:
-        traindata,numpyquerydata,groundtruth = gethdf5data()
+        traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
 
     # 2 4 6 8
 
@@ -285,7 +286,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     kmeanspath="/aknn/kmeans/"
     gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
     siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
-
+    mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
 
 
     if usesift == True:
@@ -294,10 +295,12 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
         centroids1path = kmeanspath+siftlist[1]
         centroids2path = kmeanspath+siftlist[2]
     else:
-        traindata,numpyquerydata,groundtruth = gethdf5data()
-        partitionpath = kmeanspath+gistlist[0]
-        centroids1path = kmeanspath+gistlist[1]
-        centroids2path = kmeanspath+gistlist[2]
+        traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
+        partitionpath = kmeanspath+mnistlist[0]
+        centroids1path = kmeanspath+mnistlist[1]
+        centroids2path = kmeanspath+mnistlist[2]
+
+
 
     datalen=len(traindata)
 
@@ -419,8 +422,8 @@ if __name__ == "__main__":
         print("efConstruction cmp gist",efConstruction)
         testdoublekmeansHnswV2()
     print("end efConstructionlist\n",efConstructionlist)
-
-
+    
+    
     topkPartitionNumlist = 8
     for i in range(1,9):
         initparams()

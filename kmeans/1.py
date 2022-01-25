@@ -12,8 +12,9 @@ import numpy as np
 import pickle
 from sklearn.cluster import KMeans as km
 import sys
-sys.path.append("/home/xxsh/xuyaoheng/newaknn")
-sys.path.append("/home/xxsh/xuyaoheng/newaknn/test")
+aknnfold="/aknn/"
+sys.path.append(aknnfold)
+sys.path.append(aknnfold+"test")
 
 from sklearn.metrics import euclidean_distances
 from tempfile import gettempdir
@@ -31,25 +32,25 @@ from kmeans_repartition_utils import *
 from utils import *
 from datasets import *
 from params import *
-datapath="/home/xxsh/xuyaoheng/docker-spark/data/sift/"
+datapath="/sift/"
 traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
 
-datapath="/home/xxsh/xuyaoheng/docker-spark/data/sift/"
+#datapath="/home/xxsh/xuyaoheng/docker-spark/data/sift/"
 
-
+#"/sift/"
 """
 traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
 """
-
+datapath="/sift/"
 traindatapath=datapath+"sift_base.fvecs"
 querydatapath=datapath+"sift_query.fvecs"
 querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
 
-gistpath=datapath+"gist-960-euclidean.hdf5"
+gistpath=datapath+"mnist.hdf5" #"gist-960-euclidean.hdf5"
 
 def gethdf5data():
     f = h5py.File(gistpath,'r+')
@@ -86,18 +87,20 @@ def ktest(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
         centroids2name="sift"+centroids2name
     else:
         traindata,numpyquerydata,groundtruth = gethdf5data()
-        partiname="gist"+partitioncolname
-        centroids1name="gist"+centroids1name
-        centroids2name="gist"+centroids2name
+        partiname="mnist"+partitioncolname
+        centroids1name="mnist"+centroids1name
+        centroids2name="mnist"+centroids2name
 
     datalen=len(traindata)
     partitionnum = 8
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*10)
     partitioncolname='partition'
+    T1=time.time()
     df,centroids1,centroids2=kmeansPandasDfV2(traindata,k1=partitionnumreal,k2=partitionnummap,\
             traindatanum=int(datalen*kmeanstrainrate),partitioncolname=partitioncolname)
-
+    T2=time.time()
+    print("print((T2-T1)*1000)",(T2-T1)*1000)
     df[partitioncolname].to_csv(partiname+".csv", index=False)
     centroids1df=pd.DataFrame(centroids1)
     centroids1df.to_csv(centroids1name+".csv", index=False)
