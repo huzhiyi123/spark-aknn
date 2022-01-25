@@ -1,0 +1,36 @@
+gist efConstruction 
+
+for i in efConstructionlist:
+efConstruction cmp gist 30
+<class 'h5py._hl.files.File'>
+<KeysViewHDF5 ['distances', 'neighbors', 'test', 'train']>
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[31]
+ [43]
+ [28]
+ [33]
+ [44]] (60000, 1) (60000, 3)
+centroids1 (8, 784)
+centroids2 (80, 784)
+print(curdf[0]),curdf.shape (2999,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 39040   l 10000 k 10
+recall: 0.3904
+totalconstructtime 26510.764598846436 kmeanspartitiontime 3288.2606983184814 localindexconstructtime 22939.42379951477 globalindexconstructtime 283.0801010131836
+totalsearchtime 17182.77859687805 localsearchtime 17029.463529586792 globalsearchtime 153.31506729125977
+hello world testdoublekmeansHnsw
+
+efConstruction cmp gist 80
+<class 'h5py._hl.files.File'>
+<KeysViewHDF5 ['distances', 'neighbors', 'test', 'train']>
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[31]
+ [43]
+ [28]
+ [33]
+ [44]] (60000, 1) (60000, 3)
+centroids1 (8, 784)
+centroids2 (80, 784)
+print(curdf[0]),curdf.shape (2999,) <class 'pandas.core.series.Series'>
+start query

@@ -424,7 +424,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     print("totalsearchtime",totalsearchtime,"localsearchtime",localsearchtime,"globalsearchtime",globalsearchtime)
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
-
+"""
 if __name__ == "__main__":
     print("    usesift = False bruteForce()")
     usesift = False
@@ -442,7 +442,6 @@ if __name__ == "__main__":
     print("gist efConstruction \n")
     initparams()
     usesift = False
-    testdoublekmeansHnswV2()
     efConstructionlist = [30,80,120,180,200,250]
     initparams()
     print("for i in efConstructionlist:")
@@ -455,6 +454,7 @@ if __name__ == "__main__":
         testdoublekmeansHnswV2()
     print("end efConstructionlist\n",efConstructionlist)
     
+
     topkPartitionNumlist = 8
     for i in range(1,9):
         initparams()
@@ -473,17 +473,34 @@ if __name__ == "__main__":
         k=ki
         efConstruction = 150
         ef = efConstruction
-        print("klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
+        print("minist bruteForce klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
         bruteForce()
-    
+
     for ki in klist:
-        print("klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = True",ki)
         initparams()
         k=ki
         efConstruction = 150
         ef = efConstruction
+        print("gist bruteForce klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
+        bruteForce()
+
+    for ki in klist:
+        print("sift klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = True",ki)
+        initparams()
+        k=ki
+        efConstruction = 200
+        ef = efConstruction
         testdoublekmeansHnswV2()
-"""
+
+    for ki in klist:
+        print("minist klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
+        initparams()
+        usesift = False
+        k=ki
+        efConstruction = 200
+        ef = efConstruction
+        testdoublekmeansHnswV2()
+    
 
 
 
