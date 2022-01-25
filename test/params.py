@@ -23,13 +23,13 @@ traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
 """
-datapath="/my/sift/"
+datapath="/data/"
 traindatapath=datapath+"sift_base.fvecs"
 querydatapath=datapath+"sift_query.fvecs"
 querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
 
 
-gistpath="/sift/gist-960-euclidean.hdf5"
+gistpath="/data/mnist.hdf5"
 # ef=10, efConstruction=200
 
 

@@ -71,7 +71,7 @@ def getMapCols(globaIndexDf,labels,partitionColName):
     res = []
     length = labels.shape[0]
     curdf=globaIndexDf[partitionColName]
-    print(" print(curdf[0])",curdf[0])
+    print("print(curdf[0]),curdf.shape",curdf.shape,type(curdf))
     for  i in range(length):
         currows = labels[i]
         curlist = (curdf.iloc[currows]).values.tolist()

@@ -26,7 +26,6 @@ def kmeansPandasDfV1(data,k1=8,traindatanum=2000,partitioncolname="partition"):
     df[partitioncolname] = res
     return df
 
-
 def kmeansPandasDfV2(data,k1=8,k2=30,traindatanum=2000,partitioncolname="partition"):
     traindata=data[0:traindatanum]
     l = len(data)
@@ -49,7 +48,9 @@ def kmeansPandasDfV3(data,partitioncsvpath,centroids1path,centroids2path,partiti
     df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
     df['id']=np.arange(l)
     df['features']=data.tolist()
-    df[partitioncolname]=pd.read_csv(partitioncsvpath)
+    partitioncoldata=pd.read_csv(partitioncsvpath).values.astype(np.int) 
+    #print("partitioncoldata[0:10]",partitioncoldata[0:10])
+    df[partitioncolname]= partitioncoldata
     centroids1 = pd.read_csv(centroids1path).values
     centroids2 = pd.read_csv(centroids2path).values
     return df,centroids1,centroids2
@@ -184,6 +185,8 @@ def processQueryVecv2(model,queryVec,globaIndexDf,queryPartitionsCol,\
     labels, distances = model.knn_query(queryVec, k=knnQueryNum)
     T7 = time.time()
     globalindexconstructtime=(T7-T6)*1000
+
+    #print("processQueryVecv2 globaIndexDf.shape ",globaIndexDf.shape)
     cols = getMapCols(globaIndexDf,labels,partitionCol)
     # unique 这些分区号 不足的填充其他分区 返回的是list
     for i in range(len(cols)):

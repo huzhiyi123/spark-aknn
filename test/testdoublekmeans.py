@@ -49,7 +49,7 @@ traindata = 0
 numpyquerydata = 0
 groundtruth = 0
 
-gistpath="/sift/gist-960-euclidean.hdf5"
+gistpath="/data/mnist.hdf5"
 def gethdf5data(gistpath):
     f = h5py.File(gistpath,'r+')
     keys=['distances', 'neighbors', 'test', 'train']
@@ -74,7 +74,13 @@ def kmeansPandasDfV3(data,partitioncsvpath,centroids1path,centroids2path,partiti
     df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
     df['id']=np.arange(l)
     df['features']=data.tolist()
-    df[partitioncolname]=pd.read_csv(partitioncsvpath)
+    tmp=pd.read_csv(partitioncsvpath).values
+    if(len(tmp) < l):
+        lenghth = l-len(tmp)
+        zeros = np.zeros(lenghth).reshape(lenghth,1).astype(np.int)
+        tmp = np.concatenate((tmp,zeros),axis=0)
+    print("type(tmp),tmp[0:100],tmp.shape",type(tmp),tmp[0:5],tmp.shape,df.shape) 
+    df[partitioncolname]=tmp.astype(np.int)
     centroids1 = pd.read_csv(centroids1path).values
     centroids2 = pd.read_csv(centroids2path).values
     return df,centroids1,centroids2
@@ -223,6 +229,13 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
 
+def readDataSparkDfv3(sql_context,qd):
+    vec = pd.DataFrame(np.arange(qd.shape[0]),columns=["id"])
+    vec['normalized_features'] = qd.tolist()
+    curschema = StructType([ StructField("id", IntegerType() ),StructField("normalized_features",ArrayType(DoubleType()))])
+    df = sql_context.createDataFrame(vec,curschema)
+    return df
+
 def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
     conf = (SparkConf().setAppName(APP_NAME))
@@ -233,10 +246,17 @@ def bruteForce(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark
     queryPartitionsCol='querypartitions'
     nfcolname="normalized_features"
     # 分区并且 训练分布式hnsw 这里没有归一化
-    traindf = readDataSparkDf(sql_context,traindatapath)
-    # 总共1w条
-    querydf = readDataSparkDfquery(sql_context,querydatapath,10000)
-    #querydf = readDataSparkDfquery(sql_context,querydatapath,1000) # 8分区 vs 4分区
+    traindata = 0
+    numpyquerydata = 0
+    groundtruth = 0
+    if usesift == True:
+        traindata,numpyquerydata,groundtruth = getsiftdata()
+    else:
+        traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
+    
+    traindf = readDataSparkDfv3(sql_context,traindata)
+    querydf = readDataSparkDfv3(sql_context,numpyquerydata)
+
     bruteforce = BruteForceSimilarity(identifierCol='id', queryIdentifierCol='id', featuresCol='normalized_features',
                                     distanceFunction=distanceFunction, numPartitions=partitionnum, excludeSelf=False,
                                     predictionCol='approximate', outputFormat='minimal',k=k)
@@ -288,19 +308,19 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
     mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
 
-
+    dimensionality=0
     if usesift == True:
         traindata,numpyquerydata,groundtruth = getsiftdata()
         partitionpath = kmeanspath+siftlist[0]
         centroids1path = kmeanspath+siftlist[1]
         centroids2path = kmeanspath+siftlist[2]
+        dimensionality=128
     else:
         traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
         partitionpath = kmeanspath+mnistlist[0]
         centroids1path = kmeanspath+mnistlist[1]
         centroids2path = kmeanspath+mnistlist[2]
-
-
+        dimensionality=784
 
     datalen=len(traindata)
 
@@ -324,11 +344,12 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     partitionmap = getrepartitionmap(repartitionres,partitionnumreal,partitionnummap)
     #print("partitionmap",partitionmap)
     def mapx(x):
+        #print("def mapx(x):")
+        #print(type(x),x)
         x = partitionmap[x]
         return x
+
     df[partitionreal]=df[partitioncolname].apply(lambda x:mapx(x))
-    #print(df[0:20])
-    # id features partition
     curschema = StructType([StructField("id", IntegerType()),
     StructField("features",ArrayType(DoubleType())),
     StructField(partitioncolname, IntegerType() ),
@@ -348,7 +369,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     #print("model=hnsw.fit(words_df) done")
     T5 = time.time()
     #def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
-    hnsw_global_model=hnsw_global_index_wrapper(sampledf_pandas,1000000,128,featurecol='features')
+    hnsw_global_model=hnsw_global_index_wrapper(sampledf_pandas,1000000,dimensionality,featurecol='features')
     T6 = time.time()
     globalindexconstructtime=(T6-T5)*1000
     #print("globalindexconstructtime",globalindexconstructtime)
@@ -404,8 +425,19 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
 
-
-
+if __name__ == "__main__":
+    print("    usesift = False bruteForce()")
+    usesift = False
+    #bruteForce()
+    
+    print("testdoublekmeansHnswV2()")
+    initparams()
+    testdoublekmeansHnswV2()
+    print("testdoublekmeansHnswV2() usesift = False")
+    initparams()
+    usesift = False
+    testdoublekmeansHnswV2()
+"""
 if __name__ == "__main__":
     print("gist efConstruction \n")
     initparams()
@@ -423,7 +455,6 @@ if __name__ == "__main__":
         testdoublekmeansHnswV2()
     print("end efConstructionlist\n",efConstructionlist)
     
-    
     topkPartitionNumlist = 8
     for i in range(1,9):
         initparams()
@@ -431,13 +462,31 @@ if __name__ == "__main__":
         efConstruction = 150
         ef = efConstruction
         usesift = False
-        print("topkPartitionNumlist cmp",topkPartitionNum)
+        print("mnist topkPartitionNumlist cmp",topkPartitionNum)
         testdoublekmeansHnsw()
         print("end topkPartitionNumlist cmp\n",topkPartitionNum)
     
-    initparams()
-    usesift = False
-    bruteForce()
+    klist = [5,10,15,20,30,40] 
+    for ki in klist:
+        initparams()
+        usesift = False
+        k=ki
+        efConstruction = 150
+        ef = efConstruction
+        print("klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
+        bruteForce()
+    
+    for ki in klist:
+        print("klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = True",ki)
+        initparams()
+        k=ki
+        efConstruction = 150
+        ef = efConstruction
+        testdoublekmeansHnswV2()
+"""
+
+
+
 
 
 """
