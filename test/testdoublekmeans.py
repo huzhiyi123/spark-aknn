@@ -74,15 +74,15 @@ def kmeansPandasDfV3(data,partitioncsvpath,centroids1path,centroids2path,partiti
     df=pd.DataFrame(columns=['id','features',partitioncolname])#(np.arange(l),columns=['id'])
     df['id']=np.arange(l)
     df['features']=data.tolist()
-    tmp=pd.read_csv(partitioncsvpath).values
+    tmp=pd.read_csv(partitioncsvpath,header=None,index_col=None).values
     if(len(tmp) < l):
         lenghth = l-len(tmp)
         zeros = np.zeros(lenghth).reshape(lenghth,1).astype(np.int)
         tmp = np.concatenate((tmp,zeros),axis=0)
     print("type(tmp),tmp[0:100],tmp.shape",type(tmp),tmp[0:5],tmp.shape,df.shape) 
     df[partitioncolname]=tmp.astype(np.int)
-    centroids1 = pd.read_csv(centroids1path).values
-    centroids2 = pd.read_csv(centroids2path).values
+    centroids1 = pd.read_csv(centroids1path,header=None,index_col=None).values
+    centroids2 = pd.read_csv(centroids2path,header=None,index_col=None).values
     return df,centroids1,centroids2
 
 
@@ -114,13 +114,6 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
 
     # 2 4 6 8
 
-    """
-    f = h5py.File(hdf5file,'r+')
-    keys=['distances', 'neighbors', 'test', 'train']
-    numpyquerydata =(f[2][:])
-    groundtruth = (f[1][:])
-    traindata = (f[3][:])
-    """
     datalen=len(traindata)
 
     partitionnumreal=partitionnum
@@ -305,12 +298,12 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
 
     kmeanspath="/aknn/kmeans/"
     gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
-    siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+    siftlist=["siftpartition-4.csv","siftcentroids1-4.csv","siftcentroids2-4.csv"]
     mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
     mnistlistv1=["mnistpartitionv1.csv","mnistcentroids1v1.csv","mnistcentroids2v1.csv"]
-
     
-    partitionnum=8
+    
+    partitionnum=4
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*10)
 
@@ -428,7 +421,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     print("totalconstructtime",totalconstructtime,\
         "kmeanspartitiontime",kmeanspartitiontime,"localindexconstructtime",\
             localindexconstructtime,"globalindexconstructtime",globalindexconstructtime)
-
+    
     print("totalsearchtime",totalsearchtime,"localsearchtime",localsearchtime,"globalsearchtime",globalsearchtime)
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
@@ -438,14 +431,21 @@ if __name__ == "__main__":
     initparams()
     #usesift = False
     klist = [10,20,30,40,50]
-    for ki in klist:
+    efConstructionlist = [50,80,150,300]#[20,100,200]
+    
+    for i in efConstructionlist:
+        print("for i in efConstructionlist: cmp",i)
         initparams()
-        k=ki
-        efConstruction = 150
+        efConstruction = i
         ef = efConstruction
-        print("gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False",ki)
-        bruteForce()
-
+        testdoublekmeansHnswV2()
+    """
+    for i in klist:
+        print("for i in klist: cmp",i)
+        initparams()
+        k=i
+        testdoublekmeansHnswV2()
+    """
 
 """
 

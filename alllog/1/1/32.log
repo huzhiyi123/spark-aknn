@@ -1,3 +1,16 @@
+gist efConstruction 
+
+print(curdf[0]),curdf.shape (49998,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 94999   l 10000 k 10
+recall: 0.94999
+totalconstructtime 375061.86962127686 kmeanspartitiontime 218858.811378479 localindexconstructtime 154189.91994857788 globalindexconstructtime 2013.1382942199707
+totalsearchtime 23232.350826263428 localsearchtime 23119.621753692627 globalsearchtime 112.72907257080078
+hello world testdoublekmeansHnsw
+
 maxelement = 100000000
 k=10
 partitionnum=8
@@ -45,4 +58,5 @@ def initparams():
     kmeanstrainrate=0.05
     efConstruction=85
     ef = efConstruction
-    usesift=True
+    usesift=Truerecall = cnt/float(l*k) 94999   l 10000 k 10
+recall: 0.94999
