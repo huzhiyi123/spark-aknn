@@ -46,3 +46,22 @@ type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
  [28]] (1000000, 1) (1000000, 3)
 centroids1 (5, 128)
 centroids2 (41, 128)
+print(curdf[0]),curdf.shape (50000,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 93068   l 10000 k 10
+recall: 0.93068
+totalconstructtime 674243.6661720276 kmeanspartitiontime 14626.647472381592 localindexconstructtime 658218.2683944702 globalindexconstructtime 1398.7503051757812
+totalsearchtime 30673.568964004517 localsearchtime 30567.291498184204 globalsearchtime 106.2774658203125
+hello world testdoublekmeansHnsw
+
+for i in efConstructionlist: cmp 300
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
+ [13]
+ [13]
+ [13]
+ [28]] (1000000, 1) (1000000, 3)
+centroids1 (5, 128)
+centroids2 (41, 128)
