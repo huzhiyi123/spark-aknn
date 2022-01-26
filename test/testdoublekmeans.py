@@ -307,6 +307,12 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
     siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
     mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
+    mnistlistv1=["mnistpartitionv1.csv","mnistcentroids1v1.csv","mnistcentroids2v1.csv"]
+
+    
+    partitionnum=8
+    partitionnumreal=partitionnum
+    partitionnummap=int(partitionnum*10)
 
     dimensionality=0
     if usesift == True:
@@ -317,15 +323,17 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
         dimensionality=128
     else:
         traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
-        partitionpath = kmeanspath+mnistlist[0]
-        centroids1path = kmeanspath+mnistlist[1]
-        centroids2path = kmeanspath+mnistlist[2]
+        partitionpath = kmeanspath+mnistlistv1[0]
+        centroids1path = kmeanspath+mnistlistv1[1]
+        centroids2path = kmeanspath+mnistlistv1[2]
         dimensionality=784
 
-    datalen=len(traindata)
+        partitionnumreal=partitionnum
+        partitionnummap=int(partitionnum*5)
 
-    partitionnumreal=partitionnum
-    partitionnummap=int(partitionnum*10)
+    datalen=len(traindata)
+    
+
 
     T1 = time.time()
     df,centroids1,centroids2 = kmeansPandasDfV3(traindata,partitionpath,centroids1path,centroids2path,"partition")
@@ -424,36 +432,22 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     print("totalsearchtime",totalsearchtime,"localsearchtime",localsearchtime,"globalsearchtime",globalsearchtime)
     print("hello world testdoublekmeansHnsw\n")
     #return recall1
-"""
-if __name__ == "__main__":
-    print("    usesift = False bruteForce()")
-    usesift = False
-    #bruteForce()
-    
-    print("testdoublekmeansHnswV2()")
-    initparams()
-    testdoublekmeansHnswV2()
-    print("testdoublekmeansHnswV2() usesift = False")
-    initparams()
-    usesift = False
-    testdoublekmeansHnswV2()
-"""
+ 
 if __name__ == "__main__":
     print("gist efConstruction \n")
     initparams()
-    usesift = False
-    efConstructionlist = [30,80,120,180,200,250]
-    initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
+    #usesift = False
+    klist = [10,20,30,40,50]
+    for ki in klist:
         initparams()
-        efConstruction = i
+        k=ki
+        efConstruction = 150
         ef = efConstruction
-        usesift = False
-        print("efConstruction cmp gist",efConstruction)
-        testdoublekmeansHnswV2()
-    print("end efConstructionlist\n",efConstructionlist)
-    
+        print("gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False",ki)
+        bruteForce()
+
+
+"""
 
     topkPartitionNumlist = 8
     for i in range(1,9):
@@ -463,7 +457,7 @@ if __name__ == "__main__":
         ef = efConstruction
         usesift = False
         print("mnist topkPartitionNumlist cmp",topkPartitionNum)
-        testdoublekmeansHnsw()
+        testdoublekmeansHnswV2()
         print("end topkPartitionNumlist cmp\n",topkPartitionNum)
     
     klist = [5,10,15,20,30,40] 
@@ -500,7 +494,7 @@ if __name__ == "__main__":
         efConstruction = 200
         ef = efConstruction
         testdoublekmeansHnswV2()
-    
+"""
 
 
 

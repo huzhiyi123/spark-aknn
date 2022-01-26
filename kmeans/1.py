@@ -45,7 +45,7 @@ traindatapath=datapath+"siftsmall_base.fvecs"
 querydatapath=datapath+"siftsmall_query.fvecs"
 querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
 """
-datapath="/sift/"
+datapath="/data/"
 traindatapath=datapath+"sift_base.fvecs"
 querydatapath=datapath+"sift_query.fvecs"
 querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
@@ -73,13 +73,13 @@ def getsiftdata():
 
 
 
-def ktest(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
+def ktest(partitionnumcur): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     traindata = 0
     numpyquerydata = 0
     groundtruth = 0
-    partitioncolname="partition"
-    centroids1name="centroids1"
-    centroids2name="centroids2"
+    partitioncolname="partition" +"-" + str(partitionnumcur)
+    centroids1name="centroids1" +"-" +str(partitionnumcur) 
+    centroids2name="centroids2" +"-"+ str(partitionnumcur)
     if usesift == True:
         traindata,numpyquerydata,groundtruth = getsiftdata()
         partiname="sift"+partitioncolname
@@ -92,7 +92,7 @@ def ktest(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
         centroids2name="mnist"+centroids2name
 
     datalen=len(traindata)
-    partitionnum = 8
+    partitionnum = partitionnumcur
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*10)
     partitioncolname='partition'
@@ -100,12 +100,14 @@ def ktest(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
     df,centroids1,centroids2=kmeansPandasDfV2(traindata,k1=partitionnumreal,k2=partitionnummap,\
             traindatanum=int(datalen*kmeanstrainrate),partitioncolname=partitioncolname)
     T2=time.time()
-    print("print((T2-T1)*1000)",(T2-T1)*1000)
+    print("print((T2-T1)*1000)",(T2-T1)*1000,"partitionnumcur",partitionnumcur)
     df[partitioncolname].to_csv(partiname+".csv", index=False)
     centroids1df=pd.DataFrame(centroids1)
     centroids1df.to_csv(centroids1name+".csv", index=False)
     centroids2df=pd.DataFrame(centroids2)
     centroids2df.to_csv(centroids2name+".csv", index=False)
 
-usesift = False
-ktest()
+usesift = True
+partitionnumlist = [4,16]
+for i in partitionnumlist:
+    ktest(i)

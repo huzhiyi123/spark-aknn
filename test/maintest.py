@@ -28,28 +28,19 @@ import pyspark.sql.functions as F
 import hnswlib
 from sklearn.preprocessing import normalize
 import sys
-aknnfold="/my/"
-sys.path.append(aknnfold+"spark-aknn")
+aknnfold="/aknn/"
+sys.path.append(aknnfold)
+sys.path.append(aknnfold+"test")
 from utils import *
 from datasets import *
 import time 
 from time import sleep
 findspark.init() 
 
-# map at KnnAlgorithm.scala:507) finished in
-"""
-maxelement = 100000000
-k=10
-partitionnum=3
-ef = int(1.2*k)
-sc = 1
-m = int(20)
-distanceFunction='euclidean'
-openSparkUI=True
-"""
+
 def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
-    conf = (SparkConf().setAppName(APP_NAME)).setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
+    conf = (SparkConf().setAppName(APP_NAME))
     sc = SparkContext(conf=conf)
     sc.setCheckpointDir(gettempdir())
     sql_context = SQLContext(sc)
@@ -64,14 +55,11 @@ def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.
     traindata_df.printSchema()
     sc.stop()
     print("hello world SparkHnsw\n")
-
-
-
     return conf
 
 def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     print("SparkHnsw():")
-    APP_NAME = "mytest" #setMaster("local[2]").
+    APP_NAME = "mytest" 
     conf = (SparkConf().setAppName(APP_NAME))#.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
     conf = setconf(conf)
     sc = SparkContext(conf=conf)
@@ -87,7 +75,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     # 2 4 6 8
     T1 = time.time()
     datalen=len(traindata)
-    df = kmeansPandasDf(traindata,k=partitionnum,traindatanum=int(datalen*0.1))
+    df = kmeansPandasDf(traindata,k=partitionnum,traindatanum=int(datalen*kmeanstrainrate))
     T2 = time.time()
     kmeanstime=(T2-T1)*1000
     #print("kmeanstimepartitiontime",kmeanstime)
@@ -100,7 +88,6 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
                         distanceFunction=distanceFunction, m=m, ef=ef, k=k, efConstruction=ef, numPartitions=partitionnum, 
                         excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
     hnsw.setPartitionCol(partitioncolname)
-    
     T3 = time.time()
     #print("word_df.count()",words_df.count())
     model=hnsw.fit(words_df)
@@ -125,7 +112,6 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
                                 partitionCol=partitioncolname,partitionnum=partitionnum,\
                                 topkPartitionNum=topkPartitionNum,knnQueryNum=30)    
 
-
     curschema = StructType([ StructField("id", IntegerType() ),StructField(featuresCol,ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
     #query_df.printSchema()
@@ -143,7 +129,6 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     predict = processSparkDfResult(result)
     #print("result.count()",result.count())
     
-
     groundtruth = ivecs_read(querygroundtruthpath)
     #print("groundtruth[0:5]:",groundtruth[:,0:k])
     if(len(predict) != 0):
@@ -161,6 +146,9 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
         "kmeanstime",kmeanstime,"localindexconstructtime",localindexconstructtime,\
         "globalindeconstructtime",globalindeconstructtime)
     #return recall1
+
+
+
 
 def readDataSparkDfquery(sql_context,traindatapath,num):
         # 读取查询向量 并且全局索引查询预测的分区
@@ -246,59 +234,14 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     result.count()
     predict = processSparkDfResult(result)
     sc.stop()
-"""
+
 if __name__ == "__main__":
-    efConstructionlist = [20,40,80,200]
+    print("gist efConstruction \n")
     initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
+    #usesift = False
+    klist = [10,20,30,40,50]
+    for ki in klist:
         initparams()
-        efConstruction = i
-        print("efConstruction cmp",efConstruction)
+        k=ki
+        print("gist SparkHnsw klist = [10,20,30,40,50]  usesift = true",ki)
         SparkHnsw()
-    print("end efConstructionlist\n",efConstructionlist)
-
-"""
-"""
-if __name__ == "__main__":
-    
-    klist = [5,10,20,30,40,50]
-    efmullist = [1.5,3,4,5,8,10,12,15]
-    mlist = [10,25,30,40,50]
-    efConstructionlist = [20,50,100,200,300,400]
-
-    initparams()
-    print("for ki in klist:")
-    for i in klist:
-        print("k cmp",i)
-        k=i
-        SparkHnsw()
-    print("end klist\n",klist)
-
-    initparams()
-    print("for i in efmul:")
-    for i in efmullist:
-        ef = int(i*k)
-        print("ef cmp",ef)
-        SparkHnsw()
-    print("end efmullist\n",efmullist)
-
-
-    initparams()
-    print("for i in mlist:")
-    for i in mlist:
-        print("m cmp",i)
-        m=i
-        SparkHnsw()
-    print("end mlist\n",mlist)
-
-
-    initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
-        efConstruction = i
-        print("efConstruction cmp",efConstruction)
-        SparkHnsw()
-    print("end efConstructionlist\n",efConstructionlist)
-# k 的对比 ef
-"""

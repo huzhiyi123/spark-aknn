@@ -1,0 +1,51 @@
+gist efConstruction 
+
+gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False 10
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  1050297.7550029755 fit time 17205.20329475403
+hello world bruteForce
+
+gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False 20
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  902001.2121200562 fit time 10012.908458709717
+hello world bruteForce
+
+gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False 30
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  909549.5934486389 fit time 10022.817134857178
+hello world bruteForce
+
+gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False 40
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  951776.0305404663 fit time 9767.499685287476
+hello world bruteForce
+
+gist bruteForce klist = [5,10,20,30,40,50]   efConstruction = 150 usesift = False 50
