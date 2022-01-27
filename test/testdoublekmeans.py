@@ -50,6 +50,11 @@ numpyquerydata = 0
 groundtruth = 0
 
 gistpath="/data/mnist.hdf5"
+
+partitionnum = 4
+rate = 5
+
+
 def gethdf5data(gistpath):
     f = h5py.File(gistpath,'r+')
     keys=['distances', 'neighbors', 'test', 'train']
@@ -107,17 +112,20 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     traindata = 0
     numpyquerydata = 0
     groundtruth = 0
+    dimensionality = 0
     if usesift == True:
         traindata,numpyquerydata,groundtruth = getsiftdata()
+        dimensionality = 128
     else:
         traindata,numpyquerydata,groundtruth = gethdf5data(gistpath)
-
+        dimensionality = 784
+    print("(traindata.shape)",traindata.shape)
     # 2 4 6 8
 
     datalen=len(traindata)
 
     partitionnumreal=partitionnum
-    partitionnummap=int(partitionnum*10)
+    partitionnummap=int(partitionnum*rate)
     
     T1 = time.time()
     df,centroids1,centroids2=kmeansPandasDfV2(traindata,k1=partitionnumreal,k2=partitionnummap,\
@@ -166,7 +174,7 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     #print("model=hnsw.fit(words_df) done")
     T5 = time.time()
     #def hnsw_global_index_pddf(pddf,max_elements,dim,nf_col="normalized_features",partitionid_col="partition_id"):
-    hnsw_global_model=hnsw_global_index_wrapper(sampledf_pandas,1000000,128,featurecol='features')
+    hnsw_global_model=hnsw_global_index_wrapper(sampledf_pandas,1000000,dimensionality,featurecol='features')
     T6 = time.time()
     globalindexconstructtime=(T6-T5)*1000
     #print("globalindexconstructtime",globalindexconstructtime)
@@ -219,7 +227,7 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
             localindexconstructtime,"globalindexconstructtime",globalindexconstructtime)
 
     print("totalsearchtime",totalsearchtime,"localsearchtime",localsearchtime,"globalsearchtime",globalsearchtime)
-    print("hello world testdoublekmeansHnsw\n")
+
     #return recall1
 
 def readDataSparkDfv3(sql_context,qd):
@@ -305,7 +313,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     
     partitionnum=4
     partitionnumreal=partitionnum
-    partitionnummap=int(partitionnum*10)
+    partitionnummap=int(partitionnum*rate)
 
     dimensionality=0
     if usesift == True:
@@ -322,7 +330,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
         dimensionality=784
 
         partitionnumreal=partitionnum
-        partitionnummap=int(partitionnum*5)
+        partitionnummap=int(partitionnum*rate)
 
     datalen=len(traindata)
     
@@ -430,15 +438,19 @@ if __name__ == "__main__":
     print("gist efConstruction \n")
     initparams()
     #usesift = False
-    klist = [10,20,30,40,50]
-    efConstructionlist = [50,80,150,300]#[20,100,200]
-    
-    for i in efConstructionlist:
-        print("for i in efConstructionlist: cmp",i)
+    klist = [5,10,20,30,40,50]
+    for i in klist:
         initparams()
-        efConstruction = i
+        topkPartitionNum=3
+        efConstruction = 100
         ef = efConstruction
+        usesift = True
+        k=i
+        print("klist cmp",k)
         testdoublekmeansHnswV2()
+    print("end klist cmp\n",k)
+
+
     """
     for i in klist:
         print("for i in klist: cmp",i)

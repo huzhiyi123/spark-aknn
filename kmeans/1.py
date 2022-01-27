@@ -52,6 +52,7 @@ querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
 
 gistpath=datapath+"mnist.hdf5" #"gist-960-euclidean.hdf5"
 
+
 def gethdf5data():
     f = h5py.File(gistpath,'r+')
     keys=['distances', 'neighbors', 'test', 'train']
@@ -94,20 +95,21 @@ def ktest(partitionnumcur): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     datalen=len(traindata)
     partitionnum = partitionnumcur
     partitionnumreal=partitionnum
-    partitionnummap=int(partitionnum*10)
+    partitionnummap=int(partitionnum*5)
     partitioncolname='partition'
     T1=time.time()
     df,centroids1,centroids2=kmeansPandasDfV2(traindata,k1=partitionnumreal,k2=partitionnummap,\
             traindatanum=int(datalen*kmeanstrainrate),partitioncolname=partitioncolname)
     T2=time.time()
     print("print((T2-T1)*1000)",(T2-T1)*1000,"partitionnumcur",partitionnumcur)
-    df[partitioncolname].to_csv(partiname+".csv", index=False)
+    df[partitioncolname].to_csv(partiname+".csv", index=False,header=False)
     centroids1df=pd.DataFrame(centroids1)
-    centroids1df.to_csv(centroids1name+".csv", index=False)
+    centroids1df.to_csv(centroids1name+".csv", index=False,header=False)
     centroids2df=pd.DataFrame(centroids2)
-    centroids2df.to_csv(centroids2name+".csv", index=False)
+    centroids2df.to_csv(centroids2name+".csv", index=False,header=False)
 
 usesift = True
-partitionnumlist = [4,16]
+kmeanstrainrate=0.05
+partitionnumlist = [4,8,12,16]
 for i in partitionnumlist:
     ktest(i)
