@@ -51,7 +51,7 @@ groundtruth = 0
 
 gistpath="/data/mnist.hdf5"
 
-partitionnum = 4
+
 rate = 5
 
 
@@ -310,8 +310,8 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
     mnistlistv1=["mnistpartitionv1.csv","mnistcentroids1v1.csv","mnistcentroids2v1.csv"]
     
+    siftlist=["siftpartition-8.csv","siftcentroids1-8.csv","siftcentroids2-8.csv"]
     
-    partitionnum=4
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*rate)
 
@@ -351,6 +351,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     repartitionres,repartitionnum=repartition(allpartitionrank,eachpartitonnum,partitionnumreal,partitionnummap,df.shape[0])
     sampledf_pandas=getsampledata(df,samplerate=0.05)
     partitionmap = getrepartitionmap(repartitionres,partitionnumreal,partitionnummap)
+    print(len(partitionmap))
     #print("partitionmap",partitionmap)
     def mapx(x):
         #print("def mapx(x):")
@@ -359,6 +360,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
         return x
 
     df[partitionreal]=df[partitioncolname].apply(lambda x:mapx(x))
+
     curschema = StructType([StructField("id", IntegerType()),
     StructField("features",ArrayType(DoubleType())),
     StructField(partitioncolname, IntegerType() ),
@@ -435,9 +437,26 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     #return recall1
  
 if __name__ == "__main__":
-    print("gist efConstruction \n")
     initparams()
     #usesift = False
+    efConstructionlist = [15,20,50,100,150,200]
+    # efConstructionlist = [12,15,18,20,30,50,100,200]
+    for i in range(4,9):
+        initparams()
+        topkPartitionNum=i
+        efConstruction = 100
+        ef = efConstruction
+        usesift = True
+        print("topkPartitionNum cmp",i)
+        testdoublekmeansHnswV2()
+    print("end topkPartitionNum cmp\n")
+    initparams()
+    print("bruteForce cmp")
+    k=50
+    bruteForce()
+
+
+"""
     klist = [5,10,20,30,40,50]
     for i in klist:
         initparams()
@@ -449,15 +468,12 @@ if __name__ == "__main__":
         print("klist cmp",k)
         testdoublekmeansHnswV2()
     print("end klist cmp\n",k)
+"""
+# TODO 
+# topk partition
 
 
-    """
-    for i in klist:
-        print("for i in klist: cmp",i)
-        initparams()
-        k=i
-        testdoublekmeansHnswV2()
-    """
+
 
 """
 
