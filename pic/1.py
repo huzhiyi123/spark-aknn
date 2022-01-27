@@ -23,6 +23,8 @@ for i in range(int(len(a)/2)):
 
 for i in range(len(y1)):
     y1[i] = (0.1+y1[i])/0.1
+for i in range(len(y2)):
+    y2[i] = (1-y2[i])
 
 print(y1)
 print(y2)
@@ -35,19 +37,26 @@ print(y2)
 fig = plt.figure(figsize=(10,8),dpi=80)
 # 添加Axes坐标轴实例，创建1个画板
 ax = fig.add_subplot(111)  
+
+
+
+
+
 # 制作第一条折现
-lin1 = ax.plot(x, y2, label='xx', color='g')
-ax.set_xlabel('xxx')
+lin1 = ax.plot(x, y2, label='cost2', color='g')
+ax.set_xlabel('partition rate')
 # 设置Y轴1
-ax.set_ylabel('xx')
+ax.set_ylabel('cost2')
 
 
 labs = [label.get_label() for label in lin1]
 ax.legend(lin1,labs)
 # 增加网格线
 #ax.grid()
-plt.ylim(0.2,0.8)
-plt.savefig("3.png")
+
+
+plt.ylim(0.2,0.5)
+plt.savefig("4.png")
 
 
 """
