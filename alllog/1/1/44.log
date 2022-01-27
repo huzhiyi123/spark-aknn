@@ -1,0 +1,149 @@
+topkPartitionNum cmp 5
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
+ [13]
+ [13]
+ [13]
+ [28]] (1000000, 1) (1000000, 3)
+centroids1 (8, 128)
+centroids2 (40, 128)
+40
+print(curdf[0]),curdf.shape (50000,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98455   l 10000 k 10
+recall: 0.98455
+totalconstructtime 202697.2062587738 kmeanspartitiontime 9753.881931304932 localindexconstructtime 191619.18306350708 globalindexconstructtime 1324.141263961792
+totalsearchtime 20631.37435913086 localsearchtime 20554.171800613403 globalsearchtime 77.20255851745605
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 6
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
+ [13]
+ [13]
+ [13]
+ [28]] (1000000, 1) (1000000, 3)
+centroids1 (8, 128)
+centroids2 (40, 128)
+40
+print(curdf[0]),curdf.shape (50000,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98527   l 10000 k 10
+recall: 0.98527
+totalconstructtime 203647.54724502563 kmeanspartitiontime 8783.50567817688 localindexconstructtime 193531.90350532532 globalindexconstructtime 1332.1380615234375
+totalsearchtime 21262.713193893433 localsearchtime 21182.700395584106 globalsearchtime 80.01279830932617
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 7
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
+ [13]
+ [13]
+ [13]
+ [28]] (1000000, 1) (1000000, 3)
+centroids1 (8, 128)
+centroids2 (40, 128)
+40
+print(curdf[0]),curdf.shape (50000,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98556   l 10000 k 10
+recall: 0.98556
+totalconstructtime 201783.39385986328 kmeanspartitiontime 9663.980960845947 localindexconstructtime 190781.5887928009 globalindexconstructtime 1337.8241062164307
+totalsearchtime 21728.391885757446 localsearchtime 21643.439769744873 globalsearchtime 84.95211601257324
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 8
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
+ [13]
+ [13]
+ [13]
+ [28]] (1000000, 1) (1000000, 3)
+centroids1 (8, 128)
+centroids2 (40, 128)
+40
+print(curdf[0]),curdf.shape (50000,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98632   l 10000 k 10
+recall: 0.98632
+totalconstructtime 199134.14525985718 kmeanspartitiontime 8294.871091842651 localindexconstructtime 189496.50073051453 globalindexconstructtime 1342.7734375
+totalsearchtime 21937.6323223114 localsearchtime 21857.15675354004 globalsearchtime 80.4755687713623
+hello world testdoublekmeansHnsw
+
+end topkPartitionNum cmp
+
+bruteForce cmp
+predict.count() 10000
+root
+ |-- id: integer (nullable = false)
+ |-- approximate: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- neighbor: integer (nullable = false)
+ |    |    |-- distance: double (nullable = false)
+
+timeUsed:  492552.9336929321 fit time 10306.30373954773
+hello world bruteForce
+
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+sc = 1
+m = int(50)
+distanceFunction='cosine'
+kmeanstrainrate=0.05
+
+efConstruction=35
+ef = int(4*22)
+usesift=True
+
+kmeanspath="/aknn/kmeans/"
+
+gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+
+"""
+datapath="/my/siftsmall/"
+traindatapath=datapath+"siftsmall_base.fvecs"
+querydatapath=datapath+"siftsmall_query.fvecs"
+querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
+"""
+datapath="/data/"
+traindatapath=datapath+"sift_base.fvecs"
+querydatapath=datapath+"sift_query.fvecs"
+querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+
+gistpath="/data/mnist.hdf5"
+# ef=10, efConstruction=200
+
+
+def initparams():
+    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction,usesift
+    maxelement = 100000000
+    k=10
+    partitionnum=8
+    topkPartitionNum=3
+    sc = 1
+    m = int(50)
+    distanceFunction='cosine'
+    kmeanstrainrate=0.05
+    efConstruction=100
+    ef = efConstruction
+    usesift=Truerecall = cnt/float(l*k) 98455   l 10000 k 10
+recall: 0.98455
+recall = cnt/float(l*k) 98527   l 10000 k 10
+recall: 0.98527
+recall = cnt/float(l*k) 98556   l 10000 k 10
+recall: 0.98556
+recall = cnt/float(l*k) 98632   l 10000 k 10
+recall: 0.98632

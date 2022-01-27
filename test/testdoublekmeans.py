@@ -45,6 +45,21 @@ import numpy as np
 
 findspark.init() 
 
+def initparams():
+    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+    maxelement = 100000000
+    k=10
+    partitionnum=16
+    topkPartitionNum=8
+    sc = 1
+    m = int(50)
+    distanceFunction='cosine'
+    kmeanstrainrate=0.05
+    efConstruction=100
+    ef = efConstruction
+    usesift=True
+
+
 traindata = 0
 numpyquerydata = 0
 groundtruth = 0
@@ -127,6 +142,7 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*rate)
     
+
     T1 = time.time()
     df,centroids1,centroids2=kmeansPandasDfV2(traindata,k1=partitionnumreal,k2=partitionnummap,\
         traindatanum=int(datalen*kmeanstrainrate),partitioncolname=partitioncolname)
@@ -145,6 +161,7 @@ def testdoublekmeansHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hns
 
     #df=pd.DataFrame(columns=['id','features','partition'])#(np.arange(l),columns=['id'])
     # df的 partition转化成新的partition
+
     def mapx(x):
         x = partitionmap[x]
         return x
@@ -311,9 +328,12 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     mnistlistv1=["mnistpartitionv1.csv","mnistcentroids1v1.csv","mnistcentroids2v1.csv"]
     
     siftlist=["siftpartition-8.csv","siftcentroids1-8.csv","siftcentroids2-8.csv"]
+    siftlist=["siftpartition-16.csv","siftcentroids1-16.csv","siftcentroids2-16.csv"]
     
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*rate)
+
+    print("partitionnumreal,partitionnummap",partitionnumreal,partitionnummap)
 
     dimensionality=0
     if usesift == True:
@@ -339,6 +359,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     T1 = time.time()
     df,centroids1,centroids2 = kmeansPandasDfV3(traindata,partitionpath,centroids1path,centroids2path,"partition")
 
+    print("centroids1.shape,centroids2.shape",centroids1.shape,centroids2.shape)
     # df 的 partition col映射到真是的cols
     # df=pd.DataFrame(columns=['id','features','partition'])#(np.arange(l),columns=['id'])
     T2 = time.time()
@@ -353,6 +374,11 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     partitionmap = getrepartitionmap(repartitionres,partitionnumreal,partitionnummap)
     print(len(partitionmap))
     #print("partitionmap",partitionmap)
+    print("len(repartitionres)",len(repartitionres))
+    print("partitionnumreal,partitionnummap,len(partitionmap)",partitionnumreal,partitionnummap,len(partitionmap))
+
+
+
     def mapx(x):
         #print("def mapx(x):")
         #print(type(x),x)
@@ -437,23 +463,22 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     #return recall1
  
 if __name__ == "__main__":
+    rate = 5
     initparams()
+    print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift\n",
+    maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
     #usesift = False
-    efConstructionlist = [15,20,50,100,150,200]
+    efConstructionlist = [15,20,50,100,150]
     # efConstructionlist = [12,15,18,20,30,50,100,200]
-    for i in range(4,9):
+    for i in efConstructionlist:
         initparams()
-        topkPartitionNum=i
-        efConstruction = 100
+        efConstruction = i
         ef = efConstruction
         usesift = True
         print("topkPartitionNum cmp",i)
         testdoublekmeansHnswV2()
     print("end topkPartitionNum cmp\n")
-    initparams()
-    print("bruteForce cmp")
-    k=50
-    bruteForce()
+
 
 
 """
@@ -473,183 +498,3 @@ if __name__ == "__main__":
 # topk partition
 
 
-
-
-"""
-
-    topkPartitionNumlist = 8
-    for i in range(1,9):
-        initparams()
-        topkPartitionNum=i
-        efConstruction = 150
-        ef = efConstruction
-        usesift = False
-        print("mnist topkPartitionNumlist cmp",topkPartitionNum)
-        testdoublekmeansHnswV2()
-        print("end topkPartitionNumlist cmp\n",topkPartitionNum)
-    
-    klist = [5,10,15,20,30,40] 
-    for ki in klist:
-        initparams()
-        usesift = False
-        k=ki
-        efConstruction = 150
-        ef = efConstruction
-        print("minist bruteForce klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
-        bruteForce()
-
-    for ki in klist:
-        initparams()
-        k=ki
-        efConstruction = 150
-        ef = efConstruction
-        print("gist bruteForce klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
-        bruteForce()
-
-    for ki in klist:
-        print("sift klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = True",ki)
-        initparams()
-        k=ki
-        efConstruction = 200
-        ef = efConstruction
-        testdoublekmeansHnswV2()
-
-    for ki in klist:
-        print("minist klist = [5,10,15,20,30,50]   efConstruction = 150 usesift = False",ki)
-        initparams()
-        usesift = False
-        k=ki
-        efConstruction = 200
-        ef = efConstruction
-        testdoublekmeansHnswV2()
-"""
-
-
-
-
-
-"""
-maxelement = 100000000
-k=10
-partitionnum=8
-topkPartitionNum=3
-ef = int(3*k)
-sc = 1
-m = int(25)
-distanceFunction='cosine'
-kmeanstrainrate=0.05
-"""
-
-"""
-if __name__ == "__main__":
-    
-    klist = [5,10,20,30,40,50]
-    efmullist = [1.5,3,4,5,8,10,12,15]
-    mlist = [10,25,30,40,50]
-    efConstructionlist = [20,50,100,200,300,400]
-
-    initparams()
-    print("for ki in klist:")
-    for i in klist:
-        print("k cmp",i)
-        k=i
-        testdoublekmeansHnsw()
-    print("end klist\n",klist)
-
-    initparams()
-    print("for i in efmul:")
-    for i in efmullist:
-        ef = int(i*k)
-        print("ef cmp",ef)
-        testdoublekmeansHnsw()
-    print("end efmullist\n",efmullist)
-
-
-    initparams()
-    print("for i in mlist:")
-    for i in mlist:
-        print("m cmp",i)
-        m=i
-        testdoublekmeansHnsw()
-    print("end mlist\n",mlist)
-
-
-    initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
-        efConstruction = i
-        print("efConstruction cmp",efConstruction)
-        testdoublekmeansHnsw()
-    print("end efConstructionlist\n",efConstructionlist)
-# k 的对比 ef
-
-"""
-
-
-""" 13.log
-if __name__ == "__main__":
-    efConstructionlist = [5,10,15,30,60,80,100,150]
-    klist = [5,10,20,30,40,50]
-    efmullist = [1.5,3,4,5,8,10,12,15]
-    mlist = [10,25,30,40,50]
-    initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
-        initparams()
-        efConstruction = i
-        print("efConstruction cmp",efConstruction)
-        testdoublekmeansHnsw()
-    print("end efConstructionlist\n",efConstructionlist)
-
-    
-    print("for ki in klist:")
-    for i in klist:
-        initparams()
-        print("k cmp",i)
-        k=i
-        testdoublekmeansHnsw()
-    print("end klist\n",klist)
-
-    
-    print("for i in efmul:")
-    for i in efmullist:
-        initparams()
-        ef = int(i*k)
-        print("ef cmp",ef)
-        testdoublekmeansHnsw()
-    print("end efmullist\n",efmullist)
-
-
-    
-    print("for i in mlist:")
-    for i in mlist:
-        initparams()
-        print("m cmp",i)
-        m=i
-        testdoublekmeansHnsw()
-    print("end mlist\n",mlist)
-"""
-"""
-if __name__ == "__main__":
-    efConstructionlist = [12,30,80,120,180,200,250]
-    initparams()
-    print("for i in efConstructionlist:")
-    for i in efConstructionlist:
-        initparams()
-        efConstruction = i
-        ef = efConstruction
-        print("efConstruction cmp",efConstruction)
-        testdoublekmeansHnsw()
-    print("end efConstructionlist\n",efConstructionlist)
-"""
-
-"""
-if __name__ == "__main__":
-    topkPartitionNumlist = 8
-    for i in range(1,9):
-        initparams()
-        topkPartitionNum=i
-        print("topkPartitionNumlist cmp",topkPartitionNum)
-        testdoublekmeansHnsw()
-    print("end topkPartitionNumlist cmp\n",topkPartitionNum)
-"""

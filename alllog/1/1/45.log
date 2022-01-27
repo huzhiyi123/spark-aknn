@@ -1,0 +1,15 @@
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 16 8 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 16 80
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[69]
+ [45]
+ [69]
+ [45]
+ [42]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (16, 128) (80, 128)
+centroids1 (16, 128)
+centroids2 (80, 128)
+80
+len(repartitionres) 16
+partitionnumreal,partitionnummap,len(partitionmap) 16 80 80

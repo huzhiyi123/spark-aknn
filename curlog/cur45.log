@@ -1,0 +1,71 @@
+nohup: ignoring input
+/aknn/alllog/1/1/21.log
+Ivy Default Cache set to: /root/.ivy2/cache
+The jars for the packages stored in: /root/.ivy2/jars
+:: loading settings :: url = jar:file:/usr/spark-2.4.1/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml
+com.github.jelmerk#hnswlib-spark_2.4_2.11 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-193375a2-e03f-4c02-9ff4-a3af0f08c53c;1.0
+	confs: [default]
+	found com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-utils;1.0.0 in central
+	found com.github.jelmerk#hnswlib-scala_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-core;1.0.0 in central
+	found org.eclipse.collections#eclipse-collections;9.2.0 in central
+	found org.eclipse.collections#eclipse-collections-api;9.2.0 in central
+:: resolution report :: resolve 127ms :: artifacts dl 3ms
+	:: modules in use:
+	com.github.jelmerk#hnswlib-core;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-scala_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-utils;1.0.0 from central in [default]
+	org.eclipse.collections#eclipse-collections;9.2.0 from central in [default]
+	org.eclipse.collections#eclipse-collections-api;9.2.0 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   6   |   0   |   0   |   0   ||   6   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-193375a2-e03f-4c02-9ff4-a3af0f08c53c
+	confs: [default]
+	0 artifacts copied, 6 already retrieved (0kB/4ms)
+2022-01-27 12:22:32,720 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2022-01-27 12:22:33,954 INFO util.ShutdownHookManager: Shutdown hook called
+2022-01-27 12:22:33,954 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-3e79a2b7-54d9-48bd-b9a5-449d8afefe53
+/aknn
+com.github.jelmerk:hnswlib-spark_2.4_2.11:1.0.0
+/aknn/alllog/1/1/22.log
+Ivy Default Cache set to: /root/.ivy2/cache
+The jars for the packages stored in: /root/.ivy2/jars
+:: loading settings :: url = jar:file:/usr/spark-2.4.1/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml
+com.github.jelmerk#hnswlib-spark_2.4_2.11 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-fb99a0ec-eddb-47b6-9f6a-bac82dbd54f5;1.0
+	confs: [default]
+	found com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-utils;1.0.0 in central
+	found com.github.jelmerk#hnswlib-scala_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-core;1.0.0 in central
+	found org.eclipse.collections#eclipse-collections;9.2.0 in central
+	found org.eclipse.collections#eclipse-collections-api;9.2.0 in central
+:: resolution report :: resolve 140ms :: artifacts dl 4ms
+	:: modules in use:
+	com.github.jelmerk#hnswlib-core;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-scala_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-utils;1.0.0 from central in [default]
+	org.eclipse.collections#eclipse-collections;9.2.0 from central in [default]
+	org.eclipse.collections#eclipse-collections-api;9.2.0 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   6   |   0   |   0   |   0   ||   6   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-fb99a0ec-eddb-47b6-9f6a-bac82dbd54f5
+	confs: [default]
+	0 artifacts copied, 6 already retrieved (0kB/4ms)
+2022-01-27 12:22:34,832 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2022-01-27 12:22:35,182 INFO util.ShutdownHookManager: Shutdown hook called
+2022-01-27 12:22:35,183 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-8df7e289-4025-41bb-9bbc-b9fe60294d55
+/aknn
+com.github.jelmerk:hnswlib-spark_2.4_2.11:1.0.0

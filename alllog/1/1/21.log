@@ -1,3 +1,13 @@
+gist efConstruction 
+
+gist SparkHnsw klist = [10,20,30,40,50]  usesift = true 10
+SparkHnsw():
+Traceback (most recent call last):
+  File "/aknn/test/maintest.py", line 247, in <module>
+    SparkHnsw()
+  File "/aknn/test/maintest.py", line 64, in SparkHnsw
+    conf = setconf(conf)
+NameError: name 'setconf' is not defined
 maxelement = 100000000
 k=10
 partitionnum=8
@@ -37,13 +47,12 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=8
-    topkPartitionNum=5
-    
+    partitionnum=16
+    topkPartitionNum=8
     sc = 1
     m = int(50)
     distanceFunction='cosine'
     kmeanstrainrate=0.05
-    efConstruction=85
+    efConstruction=100
     ef = efConstruction
     usesift=True
