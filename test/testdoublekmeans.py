@@ -49,8 +49,8 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=8
-    topkPartitionNum=3
+    partitionnum=10
+    topkPartitionNum=6
     sc = 1
     m = int(50)
     distanceFunction='cosine'
@@ -332,7 +332,7 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
     siftlist8=["siftpartition-8.csv","siftcentroids1-8.csv","siftcentroids2-8.csv"]
     siftlist16=["siftpartition-16.csv","siftcentroids1-16.csv","siftcentroids2-16.csv"]
     siftlist6=["siftpartition-6.csv","siftcentroids1-6.csv","siftcentroids2-6.csv"]
-
+    siftlist10=["siftpartition-10.csv","siftcentroids1-10.csv","siftcentroids2-10.csv"]
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*rate)
     siftlist4=["siftpartition-4.csv","siftcentroids1-4.csv","siftcentroids2-4.csv"]
@@ -342,7 +342,8 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
         siftlist = siftlist8
     if partitionnum == 6:
         siftlist = siftlist6
-
+    if partitionnum == 10:
+        siftlist = siftlist10
 
     print("partitionnumreal,partitionnummap",partitionnumreal,partitionnummap)
 
@@ -479,7 +480,7 @@ if __name__ == "__main__":
     print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift\n",
     maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
     #usesift = False
-    efConstructionlist = [15,20,50,100,150]
+    efConstructionlist = [12,15,20,50,100,150]
     # efConstructionlist = [12,15,18,20,30,50,100,200]
     for i in efConstructionlist:
         initparams()
