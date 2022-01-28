@@ -1,13 +1,9 @@
 gist efConstruction 
 
-gist SparkHnsw klist = [10,20,30,40,50]  usesift = true 10
-SparkHnsw():
 Traceback (most recent call last):
-  File "/aknn/test/maintest.py", line 247, in <module>
-    SparkHnsw()
-  File "/aknn/test/maintest.py", line 64, in SparkHnsw
-    conf = setconf(conf)
-NameError: name 'setconf' is not defined
+  File "/aknn/test/maintest.py", line 240, in <module>
+    initparams()
+NameError: name 'initparams' is not defined
 maxelement = 100000000
 k=10
 partitionnum=8
@@ -43,16 +39,3 @@ gistpath="/data/mnist.hdf5"
 # ef=10, efConstruction=200
 
 
-def initparams():
-    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction,usesift
-    maxelement = 100000000
-    k=10
-    partitionnum=16
-    topkPartitionNum=8
-    sc = 1
-    m = int(50)
-    distanceFunction='cosine'
-    kmeanstrainrate=0.05
-    efConstruction=100
-    ef = efConstruction
-    usesift=True

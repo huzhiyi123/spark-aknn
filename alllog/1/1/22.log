@@ -1,7 +1,27 @@
-  File "/aknn/test/testdoublekmeans.py", line 445
-    for i inefConstructionlist:
-                             ^
-SyntaxError: invalid syntax
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 6 4 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 6 30
+Traceback (most recent call last):
+  File "/aknn/test/testdoublekmeans.py", line 490, in <module>
+    testdoublekmeansHnswV2()
+  File "/aknn/test/testdoublekmeans.py", line 371, in testdoublekmeansHnswV2
+    df,centroids1,centroids2 = kmeansPandasDfV3(traindata,partitionpath,centroids1path,centroids2path,"partition")
+  File "/aknn/test/testdoublekmeans.py", line 97, in kmeansPandasDfV3
+    tmp=pd.read_csv(partitioncsvpath,header=None,index_col=None).values
+  File "/usr/local/lib/python3.5/dist-packages/pandas/io/parsers.py", line 685, in parser_f
+    return _read(filepath_or_buffer, kwds)
+  File "/usr/local/lib/python3.5/dist-packages/pandas/io/parsers.py", line 457, in _read
+    parser = TextFileReader(fp_or_buf, **kwds)
+  File "/usr/local/lib/python3.5/dist-packages/pandas/io/parsers.py", line 895, in __init__
+    self._make_engine(self.engine)
+  File "/usr/local/lib/python3.5/dist-packages/pandas/io/parsers.py", line 1135, in _make_engine
+    self._engine = CParserWrapper(self.f, **self.options)
+  File "/usr/local/lib/python3.5/dist-packages/pandas/io/parsers.py", line 1917, in __init__
+    self._reader = parsers.TextReader(src, **kwds)
+  File "pandas/_libs/parsers.pyx", line 382, in pandas._libs.parsers.TextReader.__cinit__
+  File "pandas/_libs/parsers.pyx", line 689, in pandas._libs.parsers.TextReader._setup_parser_source
+FileNotFoundError: [Errno 2] File b'/aknn/kmeans/siftpartition-86.csv' does not exist: b'/aknn/kmeans/siftpartition-86.csv'
 maxelement = 100000000
 k=10
 partitionnum=8
@@ -37,16 +57,3 @@ gistpath="/data/mnist.hdf5"
 # ef=10, efConstruction=200
 
 
-def initparams():
-    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainraten,efConstruction,usesift
-    maxelement = 100000000
-    k=10
-    partitionnum=16
-    topkPartitionNum=8
-    sc = 1
-    m = int(50)
-    distanceFunction='cosine'
-    kmeanstrainrate=0.05
-    efConstruction=100
-    ef = efConstruction
-    usesift=True

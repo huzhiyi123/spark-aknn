@@ -110,6 +110,6 @@ def ktest(partitionnumcur): #.set('spark.jars.packages', 'com.github.jelmerk:hns
 
 usesift = True
 kmeanstrainrate=0.05
-partitionnumlist = [4,8,12,16]
+partitionnumlist = [6,10] #[4,8,12,16]
 for i in partitionnumlist:
     ktest(i)

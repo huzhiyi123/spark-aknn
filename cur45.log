@@ -5824,3 +5824,172 @@ java.io.IOException: Connection reset by peer
 2022-01-27 13:00:31,900 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 359
 2022-01-27 13:00:31,900 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/366 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
 2022-01-27 13:00:31,914 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/366 is now RUNNING
+2022-01-27 13:00:32,108 ERROR scheduler.TaskSchedulerImpl: Lost executor 360 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:32,109 WARN scheduler.TaskSetManager: Lost task 9.1 in stage 1.0 (TID 331, 172.18.0.3, executor 360): ExecutorLostFailure (executor 360 exited caused by one of the running tasks) Reason: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:32,109 INFO scheduler.DAGScheduler: Executor lost: 360 (epoch 352)
+2022-01-27 13:00:32,109 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 360 from BlockManagerMaster.
+2022-01-27 13:00:32,115 INFO storage.BlockManagerMaster: Removed 360 successfully in removeExecutor
+2022-01-27 13:00:32,115 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 360 (epoch 352)
+2022-01-27 13:00:32,275 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55704) with ID 361
+2022-01-27 13:00:32,276 INFO scheduler.TaskSetManager: Starting task 9.2 in stage 1.0 (TID 332, 172.18.0.3, executor 361, partition 9, PROCESS_LOCAL, 7666 bytes)
+2022-01-27 13:00:32,578 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/360 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:32,578 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/360 removed: Command exited with code 1
+2022-01-27 13:00:32,578 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/367 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:32,578 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/367 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:32,578 INFO storage.BlockManagerMaster: Removal of executor 360 requested
+2022-01-27 13:00:32,578 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 360
+2022-01-27 13:00:32,578 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 360 from BlockManagerMaster.
+2022-01-27 13:00:32,592 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/367 is now RUNNING
+2022-01-27 13:00:32,633 ERROR scheduler.TaskSchedulerImpl: Lost executor 361 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:32,633 WARN scheduler.TaskSetManager: Lost task 9.2 in stage 1.0 (TID 332, 172.18.0.3, executor 361): ExecutorLostFailure (executor 361 exited caused by one of the running tasks) Reason: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:32,633 INFO scheduler.DAGScheduler: Executor lost: 361 (epoch 353)
+2022-01-27 13:00:32,633 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 361 from BlockManagerMaster.
+2022-01-27 13:00:32,633 INFO storage.BlockManagerMaster: Removed 361 successfully in removeExecutor
+2022-01-27 13:00:32,634 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 361 (epoch 353)
+2022-01-27 13:00:32,897 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55714) with ID 362
+2022-01-27 13:00:32,897 INFO scheduler.TaskSetManager: Starting task 9.3 in stage 1.0 (TID 333, 172.18.0.3, executor 362, partition 9, PROCESS_LOCAL, 7666 bytes)
+2022-01-27 13:00:33,040 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55712) with ID 363
+2022-01-27 13:00:33,041 INFO scheduler.TaskSetManager: Starting task 10.0 in stage 1.0 (TID 334, 172.18.0.3, executor 363, partition 10, PROCESS_LOCAL, 7666 bytes)
+2022-01-27 13:00:33,079 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/361 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:33,079 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/361 removed: Command exited with code 1
+2022-01-27 13:00:33,079 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/368 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:33,079 INFO storage.BlockManagerMaster: Removal of executor 361 requested
+2022-01-27 13:00:33,079 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 361
+2022-01-27 13:00:33,079 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 361 from BlockManagerMaster.
+2022-01-27 13:00:33,079 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/368 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:33,089 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/368 is now RUNNING
+2022-01-27 13:00:33,183 ERROR scheduler.TaskSchedulerImpl: Lost executor 362 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:33,183 WARN scheduler.TaskSetManager: Lost task 9.3 in stage 1.0 (TID 333, 172.18.0.3, executor 362): ExecutorLostFailure (executor 362 exited caused by one of the running tasks) Reason: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:33,184 ERROR scheduler.TaskSetManager: Task 9 in stage 1.0 failed 4 times; aborting job
+2022-01-27 13:00:33,187 INFO scheduler.TaskSchedulerImpl: Cancelling stage 1
+2022-01-27 13:00:33,187 INFO scheduler.TaskSchedulerImpl: Killing all running tasks in stage 1: Stage cancelled
+2022-01-27 13:00:33,191 INFO scheduler.TaskSchedulerImpl: Stage 1 was cancelled
+2022-01-27 13:00:33,191 INFO scheduler.DAGScheduler: ResultStage 1 (foreachPartition at KnnAlgorithm.scala:854) failed in 5.159 s due to Job aborted due to stage failure: Task 9 in stage 1.0 failed 4 times, most recent failure: Lost task 9.3 in stage 1.0 (TID 333, 172.18.0.3, executor 362): ExecutorLostFailure (executor 362 exited caused by one of the running tasks) Reason: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+Driver stacktrace:
+2022-01-27 13:00:33,195 INFO scheduler.DAGScheduler: Job 0 failed: foreachPartition at KnnAlgorithm.scala:854, took 18.864888 s
+2022-01-27 13:00:33,197 INFO scheduler.DAGScheduler: Executor lost: 362 (epoch 354)
+2022-01-27 13:00:33,197 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 362 from BlockManagerMaster.
+2022-01-27 13:00:33,198 INFO storage.BlockManagerMaster: Removed 362 successfully in removeExecutor
+2022-01-27 13:00:33,198 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 362 (epoch 354)
+2022-01-27 13:00:33,357 ERROR scheduler.TaskSchedulerImpl: Lost executor 363 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:33,357 WARN scheduler.TaskSetManager: Lost task 10.0 in stage 1.0 (TID 334, 172.18.0.3, executor 363): ExecutorLostFailure (executor 363 exited caused by one of the running tasks) Reason: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:33,358 INFO scheduler.DAGScheduler: Executor lost: 363 (epoch 355)
+2022-01-27 13:00:33,358 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 363 from BlockManagerMaster.
+2022-01-27 13:00:33,358 INFO storage.BlockManagerMaster: Removed 363 successfully in removeExecutor
+2022-01-27 13:00:33,358 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 363 (epoch 355)
+2022-01-27 13:00:33,604 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55726) with ID 364
+2022-01-27 13:00:33,626 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/362 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:33,626 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/362 removed: Command exited with code 1
+2022-01-27 13:00:33,626 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/369 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:33,626 INFO storage.BlockManagerMaster: Removal of executor 362 requested
+2022-01-27 13:00:33,626 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 362
+2022-01-27 13:00:33,626 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 362 from BlockManagerMaster.
+2022-01-27 13:00:33,626 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/369 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:33,637 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/369 is now RUNNING
+2022-01-27 13:00:33,785 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/363 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:33,785 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/363 removed: Command exited with code 1
+2022-01-27 13:00:33,785 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/370 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:33,785 INFO storage.BlockManagerMaster: Removal of executor 363 requested
+2022-01-27 13:00:33,785 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 363
+2022-01-27 13:00:33,785 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/370 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:33,785 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 363 from BlockManagerMaster.
+2022-01-27 13:00:33,801 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/370 is now RUNNING
+2022-01-27 13:00:33,828 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55728) with ID 365
+2022-01-27 13:00:33,929 ERROR scheduler.TaskSchedulerImpl: Lost executor 364 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:33,929 INFO scheduler.DAGScheduler: Executor lost: 364 (epoch 356)
+2022-01-27 13:00:33,929 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 364 from BlockManagerMaster.
+2022-01-27 13:00:33,929 INFO storage.BlockManagerMaster: Removed 364 successfully in removeExecutor
+2022-01-27 13:00:33,929 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 364 (epoch 356)
+2022-01-27 13:00:34,097 ERROR scheduler.TaskSchedulerImpl: Lost executor 365 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:34,097 INFO scheduler.DAGScheduler: Executor lost: 365 (epoch 357)
+2022-01-27 13:00:34,097 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 365 from BlockManagerMaster.
+2022-01-27 13:00:34,097 INFO storage.BlockManagerMaster: Removed 365 successfully in removeExecutor
+2022-01-27 13:00:34,097 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 365 (epoch 357)
+2022-01-27 13:00:34,359 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/364 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:34,359 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/364 removed: Command exited with code 1
+2022-01-27 13:00:34,359 INFO storage.BlockManagerMaster: Removal of executor 364 requested
+2022-01-27 13:00:34,359 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 364
+2022-01-27 13:00:34,359 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 364 from BlockManagerMaster.
+2022-01-27 13:00:34,359 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/371 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:34,359 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/371 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:34,370 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/371 is now RUNNING
+2022-01-27 13:00:34,518 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/365 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:34,518 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/365 removed: Command exited with code 1
+2022-01-27 13:00:34,518 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/372 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:34,518 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/372 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:34,518 INFO storage.BlockManagerMaster: Removal of executor 365 requested
+2022-01-27 13:00:34,518 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 365
+2022-01-27 13:00:34,518 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 365 from BlockManagerMaster.
+2022-01-27 13:00:34,521 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/372 is now RUNNING
+2022-01-27 13:00:35,715 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55738) with ID 366
+2022-01-27 13:00:36,009 ERROR scheduler.TaskSchedulerImpl: Lost executor 366 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:36,010 INFO scheduler.DAGScheduler: Executor lost: 366 (epoch 358)
+2022-01-27 13:00:36,010 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 366 from BlockManagerMaster.
+2022-01-27 13:00:36,010 INFO storage.BlockManagerMaster: Removed 366 successfully in removeExecutor
+2022-01-27 13:00:36,010 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 366 (epoch 358)
+2022-01-27 13:00:36,196 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55742) with ID 367
+2022-01-27 13:00:36,436 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/366 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:36,436 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/366 removed: Command exited with code 1
+2022-01-27 13:00:36,437 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/373 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:36,437 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 366 from BlockManagerMaster.
+2022-01-27 13:00:36,437 INFO storage.BlockManagerMaster: Removal of executor 366 requested
+2022-01-27 13:00:36,437 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 366
+2022-01-27 13:00:36,437 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/373 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:36,453 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/373 is now RUNNING
+2022-01-27 13:00:36,454 ERROR scheduler.TaskSchedulerImpl: Lost executor 367 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:36,455 INFO scheduler.DAGScheduler: Executor lost: 367 (epoch 359)
+2022-01-27 13:00:36,455 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 367 from BlockManagerMaster.
+2022-01-27 13:00:36,455 INFO storage.BlockManagerMaster: Removed 367 successfully in removeExecutor
+2022-01-27 13:00:36,455 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 367 (epoch 359)
+2022-01-27 13:00:36,480 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55748) with ID 368
+2022-01-27 13:00:36,740 ERROR scheduler.TaskSchedulerImpl: Lost executor 368 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:36,740 INFO scheduler.DAGScheduler: Executor lost: 368 (epoch 360)
+2022-01-27 13:00:36,740 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 368 from BlockManagerMaster.
+2022-01-27 13:00:36,740 INFO storage.BlockManagerMaster: Removed 368 successfully in removeExecutor
+2022-01-27 13:00:36,740 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 368 (epoch 360)
+2022-01-27 13:00:36,877 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/367 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:36,877 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/367 removed: Command exited with code 1
+2022-01-27 13:00:36,877 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/374 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:36,877 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/374 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:36,877 INFO storage.BlockManagerMaster: Removal of executor 367 requested
+2022-01-27 13:00:36,877 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 367
+2022-01-27 13:00:36,877 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 367 from BlockManagerMaster.
+2022-01-27 13:00:36,902 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/374 is now RUNNING
+2022-01-27 13:00:37,016 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55758) with ID 369
+2022-01-27 13:00:37,158 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/368 is now EXITED (Command exited with code 1)
+2022-01-27 13:00:37,158 INFO cluster.StandaloneSchedulerBackend: Executor app-20220127125832-0006/368 removed: Command exited with code 1
+2022-01-27 13:00:37,158 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220127125832-0006/375 on worker-20220127122150-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-27 13:00:37,158 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220127125832-0006/375 on hostPort 172.18.0.3:18881 with 1 core(s), 1024.0 MB RAM
+2022-01-27 13:00:37,158 INFO storage.BlockManagerMaster: Removal of executor 368 requested
+2022-01-27 13:00:37,158 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asked to remove non-existent executor 368
+2022-01-27 13:00:37,158 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 368 from BlockManagerMaster.
+2022-01-27 13:00:37,177 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220127125832-0006/375 is now RUNNING
+2022-01-27 13:00:37,238 ERROR scheduler.TaskSchedulerImpl: Lost executor 369 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:37,238 INFO scheduler.DAGScheduler: Executor lost: 369 (epoch 361)
+2022-01-27 13:00:37,238 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 369 from BlockManagerMaster.
+2022-01-27 13:00:37,238 INFO storage.BlockManagerMaster: Removed 369 successfully in removeExecutor
+2022-01-27 13:00:37,238 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 369 (epoch 361)
+2022-01-27 13:00:37,297 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:55762) with ID 370
+2022-01-27 13:00:37,471 ERROR scheduler.TaskSchedulerImpl: Lost executor 370 on 172.18.0.3: Unable to create executor due to Address already in use: Service 'org.apache.spark.network.netty.NettyBlockTransferService' failed after 8 retries (starting from 7005)! Consider explicitly setting the appropriate port for the service 'org.apache.spark.network.netty.NettyBlockTransferService' (for example spark.ui.port for SparkUI) to an available port or increasing spark.port.maxRetries.
+2022-01-27 13:00:37,472 INFO scheduler.DAGScheduler: Executor lost: 370 (epoch 362)
+2022-01-27 13:00:37,472 INFO storage.BlockManagerMasterEndpoint: Trying to remove executor 370 from BlockManagerMaster.
+2022-01-27 13:00:37,472 INFO storage.BlockManagerMaster: Removed 370 successfully in removeExecutor
+2022-01-27 13:00:37,472 INFO scheduler.DAGScheduler: Shuffle files lost for executor: 370 (epoch 362)
+2022-01-27 13:00:37,525 INFO spark.SparkContext: Invoking stop() from shutdown hook
+2022-01-27 13:00:37,527 INFO knn.CleanupListener: Deleting files below /tmp/HnswSimilarity_11aa01744fe7_1643288413246
+2022-01-27 13:00:37,534 INFO server.AbstractConnector: Stopped Spark@223b70b2{HTTP/1.1,[http/1.1]}{0.0.0.0:4040}
+2022-01-27 13:00:37,544 INFO ui.SparkUI: Stopped Spark web UI at http://localhost:4040
+2022-01-27 13:00:37,552 INFO cluster.StandaloneSchedulerBackend: Shutting down all executors
+2022-01-27 13:00:37,556 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Asking each executor to shut down
+2022-01-27 13:00:37,576 INFO spark.MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+2022-01-27 13:00:37,603 INFO memory.MemoryStore: MemoryStore cleared
+2022-01-27 13:00:37,603 INFO storage.BlockManager: BlockManager stopped
+2022-01-27 13:00:37,603 INFO storage.BlockManagerMaster: BlockManagerMaster stopped
+2022-01-27 13:00:37,606 INFO scheduler.OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+2022-01-27 13:00:37,654 INFO spark.SparkContext: Successfully stopped SparkContext
+2022-01-27 13:00:37,655 INFO util.ShutdownHookManager: Shutdown hook called
+2022-01-27 13:00:37,655 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-9efd5f20-38d9-454c-a860-109372011bc6
+2022-01-27 13:00:37,669 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-d5681d1c-a94d-4fb6-873a-7b0e6b4495b9/pyspark-4463873f-dda2-41a0-a8c3-58b4fb33827f
+2022-01-27 13:00:37,686 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-d5681d1c-a94d-4fb6-873a-7b0e6b4495b9
+/aknn
+com.github.jelmerk:hnswlib-spark_2.4_2.11:1.0.0

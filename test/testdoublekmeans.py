@@ -49,8 +49,8 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=16
-    topkPartitionNum=8
+    partitionnum=6
+    topkPartitionNum=4
     sc = 1
     m = int(50)
     distanceFunction='cosine'
@@ -323,15 +323,26 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
 
     kmeanspath="/aknn/kmeans/"
     gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
-    siftlist=["siftpartition-4.csv","siftcentroids1-4.csv","siftcentroids2-4.csv"]
+    
     mnistlist=["mnistpartition.csv","mnistcentroids1.csv","mnistcentroids2.csv"]
     mnistlistv1=["mnistpartitionv1.csv","mnistcentroids1v1.csv","mnistcentroids2v1.csv"]
-    
-    siftlist=["siftpartition-8.csv","siftcentroids1-8.csv","siftcentroids2-8.csv"]
-    siftlist=["siftpartition-16.csv","siftcentroids1-16.csv","siftcentroids2-16.csv"]
-    
+    siftlist =[]
+
+
+    siftlist8=["siftpartition-8.csv","siftcentroids1-8.csv","siftcentroids2-8.csv"]
+    siftlist16=["siftpartition-16.csv","siftcentroids1-16.csv","siftcentroids2-16.csv"]
+    siftlist6=["siftpartition-6.csv","siftcentroids1-6.csv","siftcentroids2-6.csv"]
+
     partitionnumreal=partitionnum
     partitionnummap=int(partitionnum*rate)
+    siftlist4=["siftpartition-4.csv","siftcentroids1-4.csv","siftcentroids2-4.csv"]
+    if partitionnum == 4: 
+        siftlist = siftlist4
+    if partitionnum == 8: 
+        siftlist = siftlist8
+    if partitionnum == 6:
+        siftlist = siftlist6
+
 
     print("partitionnumreal,partitionnummap",partitionnumreal,partitionnummap)
 
