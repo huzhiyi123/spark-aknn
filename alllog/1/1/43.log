@@ -18,6 +18,10 @@ totalconstructtime 214157.57775306702 kmeanspartitiontime 9586.009979248047 loca
 totalsearchtime 19849.08390045166 localsearchtime 19772.18270301819 globalsearchtime 76.90119743347168
 hello world testdoublekmeansHnsw
 
+
+
+
+
 topkPartitionNum cmp 5
 type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[20]
  [13]

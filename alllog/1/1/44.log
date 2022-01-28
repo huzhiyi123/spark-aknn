@@ -147,3 +147,16 @@ recall = cnt/float(l*k) 98556   l 10000 k 10
 recall: 0.98556
 recall = cnt/float(l*k) 98632   l 10000 k 10
 recall: 0.98632
+
+
+
+totalsearchtime 19930.397272109985 
+totalsearchtime 20740.634441375732
+totalsearchtime 24630.70845603943
+totalsearchtime 19849.08390045166
+totalsearchtime 20631.37435913086
+totalsearchtime 21262.713193893433
+totalsearchtime 21728.391885757446
+totalsearchtime 21937.6323223114
+
+timeUsed:  492552.9336929321 fit time 10306.30373954773

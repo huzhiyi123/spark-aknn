@@ -1,0 +1,195 @@
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 10 6 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 12
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 78611   l 10000 k 10
+recall: 0.78611
+totalconstructtime 110620.97501754761 kmeanspartitiontime 9543.346881866455 localindexconstructtime 99755.58495521545 globalindexconstructtime 1322.0431804656982
+totalsearchtime 13629.450559616089 localsearchtime 13553.796768188477 globalsearchtime 75.6537914276123
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 82218   l 10000 k 10
+recall: 0.82218
+totalconstructtime 109856.8103313446 kmeanspartitiontime 8825.227737426758 localindexconstructtime 99700.65307617188 globalindexconstructtime 1330.9295177459717
+totalsearchtime 13326.650857925415 localsearchtime 13248.005628585815 globalsearchtime 78.64522933959961
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 20
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 86352   l 10000 k 10
+recall: 0.86352
+totalconstructtime 110349.64179992676 kmeanspartitiontime 9914.876461029053 localindexconstructtime 99097.70011901855 globalindexconstructtime 1337.0652198791504
+totalsearchtime 14419.819831848145 localsearchtime 14344.24638748169 globalsearchtime 75.57344436645508
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 50
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 94690   l 10000 k 10
+recall: 0.9469
+totalconstructtime 109847.85151481628 kmeanspartitiontime 9085.765838623047 localindexconstructtime 99438.1844997406 globalindexconstructtime 1323.9011764526367
+totalsearchtime 15925.32753944397 localsearchtime 15848.277807235718 globalsearchtime 77.04973220825195
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 100
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98383   l 10000 k 10
+recall: 0.98383
+totalconstructtime 201836.67707443237 kmeanspartitiontime 8807.838201522827 localindexconstructtime 191714.73598480225 globalindexconstructtime 1314.1028881072998
+totalsearchtime 22650.779247283936 localsearchtime 22574.58996772766 globalsearchtime 76.18927955627441
+hello world testdoublekmeansHnsw
+
+topkPartitionNum cmp 150
+partitionnumreal,partitionnummap 10 50
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[13]
+ [13]
+ [13]
+ [13]
+ [20]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (10, 128) (50, 128)
+centroids1 (10, 128)
+centroids2 (50, 128)
+50
+len(repartitionres) 10
+partitionnumreal,partitionnummap,len(partitionmap) 10 50 50
+print(curdf[0]),curdf.shape (50002,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98818   l 10000 k 10
+recall: 0.98818
+totalconstructtime 289253.1156539917 kmeanspartitiontime 9068.930625915527 localindexconstructtime 278877.9923915863 globalindexconstructtime 1306.1926364898682
+totalsearchtime 29547.039031982422 localsearchtime 29470.054388046265 globalsearchtime 76.98464393615723
+hello world testdoublekmeansHnsw
+
+end topkPartitionNum cmp
+
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+sc = 1
+m = int(50)
+distanceFunction='cosine'
+kmeanstrainrate=0.05
+
+efConstruction=35
+ef = int(4*22)
+usesift=True
+
+kmeanspath="/aknn/kmeans/"
+
+gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+
+"""
+datapath="/my/siftsmall/"
+traindatapath=datapath+"siftsmall_base.fvecs"
+querydatapath=datapath+"siftsmall_query.fvecs"
+querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
+"""
+datapath="/data/"
+traindatapath=datapath+"sift_base.fvecs"
+querydatapath=datapath+"sift_query.fvecs"
+querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+
+gistpath="/data/mnist.hdf5"
+# ef=10, efConstruction=200
+
+
+recall = cnt/float(l*k) 78611   l 10000 k 10
+recall: 0.78611
+recall = cnt/float(l*k) 82218   l 10000 k 10
+recall: 0.82218
+recall = cnt/float(l*k) 86352   l 10000 k 10
+recall: 0.86352
+recall = cnt/float(l*k) 94690   l 10000 k 10
+recall: 0.9469
+recall = cnt/float(l*k) 98383   l 10000 k 10
+recall: 0.98383
+recall = cnt/float(l*k) 98818   l 10000 k 10
+recall: 0.98818
