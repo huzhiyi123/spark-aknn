@@ -9,8 +9,8 @@ function function_name {
     echo $abpath
     nohup spark-submit \
     --master spark://master:7077 \
-    --packages $package --driver-memory 5G --num-executors 6 --executor-memory 2G  --executor-cores 1 \
-    --conf spark.rpc.message.maxSize=1024 --total-executor-cores 6 \
+    --packages $package --driver-memory 5G --num-executors 8 --executor-memory 2G  --executor-cores 1 \
+    --conf spark.rpc.message.maxSize=1024 --total-executor-cores 8 \
     test/testdoublekmeans.py > $abpath 
     #--num-executors 8 --executor-memory 1G 
     #--master local[32]

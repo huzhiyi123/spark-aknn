@@ -1,0 +1,157 @@
+nohup: ignoring input
+/aknn/alllog/1/1/48.log
+Ivy Default Cache set to: /root/.ivy2/cache
+The jars for the packages stored in: /root/.ivy2/jars
+:: loading settings :: url = jar:file:/usr/spark-2.4.1/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml
+com.github.jelmerk#hnswlib-spark_2.4_2.11 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-43018aa7-4f46-4253-bdc7-f4acfbabebc7;1.0
+	confs: [default]
+	found com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-utils;1.0.0 in central
+	found com.github.jelmerk#hnswlib-scala_2.11;1.0.0 in central
+	found com.github.jelmerk#hnswlib-core;1.0.0 in central
+	found org.eclipse.collections#eclipse-collections;9.2.0 in central
+	found org.eclipse.collections#eclipse-collections-api;9.2.0 in central
+:: resolution report :: resolve 151ms :: artifacts dl 4ms
+	:: modules in use:
+	com.github.jelmerk#hnswlib-core;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-scala_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-spark_2.4_2.11;1.0.0 from central in [default]
+	com.github.jelmerk#hnswlib-utils;1.0.0 from central in [default]
+	org.eclipse.collections#eclipse-collections;9.2.0 from central in [default]
+	org.eclipse.collections#eclipse-collections-api;9.2.0 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   6   |   0   |   0   |   0   ||   6   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-43018aa7-4f46-4253-bdc7-f4acfbabebc7
+	confs: [default]
+	0 artifacts copied, 6 already retrieved (0kB/4ms)
+2022-01-28 04:50:56,173 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2022-01-28 04:50:57,780 INFO spark.SparkContext: Running Spark version 2.4.1
+2022-01-28 04:50:57,797 INFO spark.SparkContext: Submitted application: mytest
+2022-01-28 04:50:57,836 INFO spark.SecurityManager: Changing view acls to: root
+2022-01-28 04:50:57,836 INFO spark.SecurityManager: Changing modify acls to: root
+2022-01-28 04:50:57,836 INFO spark.SecurityManager: Changing view acls groups to: 
+2022-01-28 04:50:57,836 INFO spark.SecurityManager: Changing modify acls groups to: 
+2022-01-28 04:50:57,837 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+2022-01-28 04:50:57,954 INFO util.Utils: Successfully started service 'sparkDriver' on port 7001.
+2022-01-28 04:50:57,968 INFO spark.SparkEnv: Registering MapOutputTracker
+2022-01-28 04:50:57,979 INFO spark.SparkEnv: Registering BlockManagerMaster
+2022-01-28 04:50:57,981 INFO storage.BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+2022-01-28 04:50:57,981 INFO storage.BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+2022-01-28 04:50:57,987 INFO storage.DiskBlockManager: Created local directory at /tmp/blockmgr-f9a70e53-16df-4992-8326-4e52086ce233
+2022-01-28 04:50:57,996 INFO memory.MemoryStore: MemoryStore started with capacity 2.5 GB
+2022-01-28 04:50:58,003 INFO spark.SparkEnv: Registering OutputCommitCoordinator
+2022-01-28 04:50:58,074 INFO util.log: Logging initialized @2772ms
+2022-01-28 04:50:58,126 INFO server.Server: jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown
+2022-01-28 04:50:58,140 INFO server.Server: Started @2839ms
+2022-01-28 04:50:58,152 INFO server.AbstractConnector: Started ServerConnector@7490f111{HTTP/1.1,[http/1.1]}{0.0.0.0:4040}
+2022-01-28 04:50:58,152 INFO util.Utils: Successfully started service 'SparkUI' on port 4040.
+2022-01-28 04:50:58,171 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@75b3da45{/jobs,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,172 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@25690cf5{/jobs/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,172 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@29eb064f{/jobs/job,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,173 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@36c38916{/jobs/job/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,173 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5b20359f{/stages,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,174 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@2a8899ca{/stages/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,174 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@65bc270d{/stages/stage,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,176 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@7b634c9e{/stages/stage/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,176 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@7fe388b0{/stages/pool,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,176 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5c9177f8{/stages/pool/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,177 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@17984f3f{/storage,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,177 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@76fee6ee{/storage/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,178 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@153b5689{/storage/rdd,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,178 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4242dd61{/storage/rdd/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,179 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@17f693a1{/environment,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,179 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@163ede27{/environment/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,180 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@59fe5d77{/executors,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,180 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@d833afc{/executors/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,181 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@2ecbcb76{/executors/threadDump,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,181 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4e64e76e{/executors/threadDump/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,186 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@655a1e30{/static,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,187 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@17d222b5{/,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,188 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@6efd585b{/api,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,188 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@5d500c7c{/jobs/job/kill,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,189 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@134fc1c9{/stages/stage/kill,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,191 INFO ui.SparkUI: Bound SparkUI to 0.0.0.0, and started at http://localhost:4040
+2022-01-28 04:50:58,204 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar at spark://master:7001/jars/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar with timestamp 1643345458204
+2022-01-28 04:50:58,204 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-utils-1.0.0.jar at spark://master:7001/jars/com.github.jelmerk_hnswlib-utils-1.0.0.jar with timestamp 1643345458204
+2022-01-28 04:50:58,204 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar at spark://master:7001/jars/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar with timestamp 1643345458204
+2022-01-28 04:50:58,205 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-core-1.0.0.jar at spark://master:7001/jars/com.github.jelmerk_hnswlib-core-1.0.0.jar with timestamp 1643345458205
+2022-01-28 04:50:58,205 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/org.eclipse.collections_eclipse-collections-9.2.0.jar at spark://master:7001/jars/org.eclipse.collections_eclipse-collections-9.2.0.jar with timestamp 1643345458205
+2022-01-28 04:50:58,205 INFO spark.SparkContext: Added JAR file:///root/.ivy2/jars/org.eclipse.collections_eclipse-collections-api-9.2.0.jar at spark://master:7001/jars/org.eclipse.collections_eclipse-collections-api-9.2.0.jar with timestamp 1643345458205
+2022-01-28 04:50:58,217 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar at spark://master:7001/files/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar with timestamp 1643345458216
+2022-01-28 04:50:58,218 INFO util.Utils: Copying /root/.ivy2/jars/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/com.github.jelmerk_hnswlib-spark_2.4_2.11-1.0.0.jar
+2022-01-28 04:50:58,246 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-utils-1.0.0.jar at spark://master:7001/files/com.github.jelmerk_hnswlib-utils-1.0.0.jar with timestamp 1643345458246
+2022-01-28 04:50:58,246 INFO util.Utils: Copying /root/.ivy2/jars/com.github.jelmerk_hnswlib-utils-1.0.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/com.github.jelmerk_hnswlib-utils-1.0.0.jar
+2022-01-28 04:50:58,248 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar at spark://master:7001/files/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar with timestamp 1643345458248
+2022-01-28 04:50:58,248 INFO util.Utils: Copying /root/.ivy2/jars/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/com.github.jelmerk_hnswlib-scala_2.11-1.0.0.jar
+2022-01-28 04:50:58,254 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/com.github.jelmerk_hnswlib-core-1.0.0.jar at spark://master:7001/files/com.github.jelmerk_hnswlib-core-1.0.0.jar with timestamp 1643345458254
+2022-01-28 04:50:58,254 INFO util.Utils: Copying /root/.ivy2/jars/com.github.jelmerk_hnswlib-core-1.0.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/com.github.jelmerk_hnswlib-core-1.0.0.jar
+2022-01-28 04:50:58,258 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/org.eclipse.collections_eclipse-collections-9.2.0.jar at spark://master:7001/files/org.eclipse.collections_eclipse-collections-9.2.0.jar with timestamp 1643345458258
+2022-01-28 04:50:58,258 INFO util.Utils: Copying /root/.ivy2/jars/org.eclipse.collections_eclipse-collections-9.2.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/org.eclipse.collections_eclipse-collections-9.2.0.jar
+2022-01-28 04:50:58,265 INFO spark.SparkContext: Added file file:///root/.ivy2/jars/org.eclipse.collections_eclipse-collections-api-9.2.0.jar at spark://master:7001/files/org.eclipse.collections_eclipse-collections-api-9.2.0.jar with timestamp 1643345458265
+2022-01-28 04:50:58,265 INFO util.Utils: Copying /root/.ivy2/jars/org.eclipse.collections_eclipse-collections-api-9.2.0.jar to /tmp/spark-79ec0d46-9ea1-468d-acb2-396df6c14bdf/userFiles-6ea90d71-92eb-4393-b43b-f72b00e77e2f/org.eclipse.collections_eclipse-collections-api-9.2.0.jar
+2022-01-28 04:50:58,316 INFO client.StandaloneAppClient$ClientEndpoint: Connecting to master spark://master:7077...
+2022-01-28 04:50:58,359 INFO client.TransportClientFactory: Successfully created connection to master/172.18.0.2:7077 after 34 ms (0 ms spent in bootstraps)
+2022-01-28 04:50:58,401 INFO cluster.StandaloneSchedulerBackend: Connected to Spark cluster with app ID app-20220128045058-0012
+2022-01-28 04:50:58,402 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/0 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,403 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/0 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,403 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/1 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,405 INFO util.Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 7005.
+2022-01-28 04:50:58,405 INFO netty.NettyBlockTransferService: Server created on master:7005
+2022-01-28 04:50:58,406 INFO storage.BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+2022-01-28 04:50:58,406 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/1 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,407 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/2 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,407 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/2 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,407 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/3 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,407 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/3 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,407 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/4 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,408 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/4 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,408 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/5 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,408 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/5 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,408 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/6 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,408 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/6 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,408 INFO client.StandaloneAppClient$ClientEndpoint: Executor added: app-20220128045058-0012/7 on worker-20220128034137-172.18.0.3-18881 (172.18.0.3:18881) with 1 core(s)
+2022-01-28 04:50:58,409 INFO cluster.StandaloneSchedulerBackend: Granted executor ID app-20220128045058-0012/7 on hostPort 172.18.0.3:18881 with 1 core(s), 2.0 GB RAM
+2022-01-28 04:50:58,413 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/0 is now RUNNING
+2022-01-28 04:50:58,414 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/1 is now RUNNING
+2022-01-28 04:50:58,415 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/2 is now RUNNING
+2022-01-28 04:50:58,417 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/3 is now RUNNING
+2022-01-28 04:50:58,418 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/4 is now RUNNING
+2022-01-28 04:50:58,419 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/5 is now RUNNING
+2022-01-28 04:50:58,420 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/6 is now RUNNING
+2022-01-28 04:50:58,422 INFO storage.BlockManagerMaster: Registering BlockManager BlockManagerId(driver, master, 7005, None)
+2022-01-28 04:50:58,423 INFO client.StandaloneAppClient$ClientEndpoint: Executor updated: app-20220128045058-0012/7 is now RUNNING
+2022-01-28 04:50:58,425 INFO storage.BlockManagerMasterEndpoint: Registering block manager master:7005 with 2.5 GB RAM, BlockManagerId(driver, master, 7005, None)
+2022-01-28 04:50:58,427 INFO storage.BlockManagerMaster: Registered BlockManager BlockManagerId(driver, master, 7005, None)
+2022-01-28 04:50:58,428 INFO storage.BlockManager: Initialized BlockManager: BlockManagerId(driver, master, 7005, None)
+2022-01-28 04:50:58,437 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@3e225750{/metrics/json,null,AVAILABLE,@Spark}
+2022-01-28 04:50:58,450 INFO cluster.StandaloneSchedulerBackend: SchedulerBackend is ready for scheduling beginning after reached minRegisteredResourcesRatio: 0.0
+2022-01-28 04:50:58,504 WARN spark.SparkContext: Spark is not running in local mode, therefore the checkpoint directory must not be on the local filesystem. Directory '/tmp' appears to be on the local filesystem.
+2022-01-28 04:51:00,366 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:32994) with ID 2
+2022-01-28 04:51:00,445 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:32998) with ID 7
+2022-01-28 04:51:00,482 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33002) with ID 4
+2022-01-28 04:51:00,484 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7005 with 912.3 MB RAM, BlockManagerId(2, 172.18.0.3, 7005, None)
+2022-01-28 04:51:00,500 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33000) with ID 6
+2022-01-28 04:51:00,512 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33004) with ID 5
+2022-01-28 04:51:00,549 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7006 with 912.3 MB RAM, BlockManagerId(7, 172.18.0.3, 7006, None)
+2022-01-28 04:51:00,554 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33006) with ID 0
+2022-01-28 04:51:00,584 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7007 with 912.3 MB RAM, BlockManagerId(4, 172.18.0.3, 7007, None)
+2022-01-28 04:51:00,595 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33008) with ID 1
+2022-01-28 04:51:00,600 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7008 with 912.3 MB RAM, BlockManagerId(6, 172.18.0.3, 7008, None)
+2022-01-28 04:51:00,631 INFO cluster.CoarseGrainedSchedulerBackend$DriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.18.0.3:33010) with ID 3
+2022-01-28 04:51:00,633 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7009 with 912.3 MB RAM, BlockManagerId(5, 172.18.0.3, 7009, None)
+2022-01-28 04:51:00,647 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7010 with 912.3 MB RAM, BlockManagerId(0, 172.18.0.3, 7010, None)
+2022-01-28 04:51:00,672 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7011 with 912.3 MB RAM, BlockManagerId(1, 172.18.0.3, 7011, None)
+2022-01-28 04:51:00,712 INFO storage.BlockManagerMasterEndpoint: Registering block manager 172.18.0.3:7012 with 912.3 MB RAM, BlockManagerId(3, 172.18.0.3, 7012, None)
+2022-01-28 04:51:09,582 INFO internal.SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir ('file:/aknn/spark-warehouse').
+2022-01-28 04:51:09,582 INFO internal.SharedState: Warehouse path is 'file:/aknn/spark-warehouse'.
+2022-01-28 04:51:09,591 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@771b2e74{/SQL,null,AVAILABLE,@Spark}
+2022-01-28 04:51:09,591 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@4b00605b{/SQL/json,null,AVAILABLE,@Spark}
+2022-01-28 04:51:09,591 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@47062f51{/SQL/execution,null,AVAILABLE,@Spark}
+2022-01-28 04:51:09,591 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@62b18827{/SQL/execution/json,null,AVAILABLE,@Spark}
+2022-01-28 04:51:09,593 INFO handler.ContextHandler: Started o.s.j.s.ServletContextHandler@1d8b18b1{/static/sql,null,AVAILABLE,@Spark}
+2022-01-28 04:51:09,897 INFO state.StateStoreCoordinatorRef: Registered StateStoreCoordinator endpoint

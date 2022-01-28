@@ -49,8 +49,8 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=6
-    topkPartitionNum=4
+    partitionnum=8
+    topkPartitionNum=3
     sc = 1
     m = int(50)
     distanceFunction='cosine'
