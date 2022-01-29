@@ -6,3 +6,4 @@
 aknnfold=/aknn
 cd $aknnfold
 bash 2.sh $1
+

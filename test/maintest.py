@@ -36,7 +36,19 @@ from datasets import *
 import time 
 from time import sleep
 findspark.init() 
-
+def initparams():
+    global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+    maxelement = 100000000
+    k=10
+    partitionnum=10
+    topkPartitionNum=4
+    sc = 1
+    m = int(50)
+    distanceFunction='cosine'
+    kmeanstrainrate=0.05
+    efConstruction=100
+    ef = efConstruction
+    usesift=True
 
 def testk(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0_2.11:0.0.50-SNAPSHOT')
     APP_NAME = "mytest" #setMaster("local[2]").
@@ -61,7 +73,6 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     print("SparkHnsw():")
     APP_NAME = "mytest" 
     conf = (SparkConf().setAppName(APP_NAME))#.setSparkHome("/home/yaoheng/sparkhub/spark-2.3.0-bin-hadoop2.7")
-    conf = setconf(conf)
     sc = SparkContext(conf=conf)
     sc.setCheckpointDir(gettempdir())
     sql_context = SQLContext(sc)
@@ -70,7 +81,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     nfcolname="normalized_features"
     featuresCol="features"
     # 分区并且 训练分布式hnsw 这里没有归一化
-    traindata = fvecs_read(traindatapath)[0:300]   #.reshape(-1,128)  #[0,base*num:-1]
+    traindata = fvecs_read(traindatapath) #.reshape(-1,128)  #[0,base*num:-1]
     #print(type(traindata),traindata.shape)
     # 2 4 6 8
     T1 = time.time()
@@ -82,14 +93,13 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     # id features partition
     curschema = StructType([StructField("id", IntegerType()),StructField("features",ArrayType(DoubleType())),StructField(partitioncolname, IntegerType() )])
     words_df = sql_context.createDataFrame(df,curschema)
-    #words_df.show()
-    #,queryPartitionsCol=queryPartitionsCol
     hnsw = HnswSimilarity(identifierCol='id',queryIdentifierCol='id',featuresCol=featuresCol, 
                         distanceFunction=distanceFunction, m=m, ef=ef, k=k, efConstruction=ef, numPartitions=partitionnum, 
                         excludeSelf=True, predictionCol='approximate', outputFormat='minimal')
     hnsw.setPartitionCol(partitioncolname)
     T3 = time.time()
     #print("word_df.count()",words_df.count())
+    print("model=hnsw.fit(words_df)")
     model=hnsw.fit(words_df)
     T4 = time.time()
     localindexconstructtime=(T4-T3)*1000
@@ -112,6 +122,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
                                 partitionCol=partitioncolname,partitionnum=partitionnum,\
                                 topkPartitionNum=topkPartitionNum,knnQueryNum=30)    
 
+    
     curschema = StructType([ StructField("id", IntegerType() ),StructField(featuresCol,ArrayType(DoubleType())),StructField(queryPartitionsCol,ArrayType(IntegerType()))])
     query_df = sql_context.createDataFrame(queryvec,curschema)
     #query_df.printSchema()
@@ -120,7 +131,7 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     print("start query")
     result=model.transform(query_df).orderBy("id")
     #print("result.count()",result.count())
-    result.count()
+    print("result.count()",result.count())
     print("end query")
     T7 = time.time()
     
@@ -140,11 +151,11 @@ def SparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_
     #input("ffew")
     print("hello world SparkHnsw\n")
     totalsearchtime=localsearchtime+globalserchtime
-    print("searchtimeUsed: ",totalsearchtime,"globalindextime",globalserchtime,"localsearchtime",localsearchtime)
     totalconstructtime=kmeanstime+localindexconstructtime+globalindeconstructtime
     print("totalconstructtime",totalconstructtime,\
         "kmeanstime",kmeanstime,"localindexconstructtime",localindexconstructtime,\
         "globalindeconstructtime",globalindeconstructtime)
+    print("searchtimeUsed: ",totalsearchtime,"globalindextime",globalserchtime,"localsearchtime",localsearchtime)
     #return recall1
 
 
@@ -236,12 +247,17 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     sc.stop()
 
 if __name__ == "__main__":
-    print("gist efConstruction \n")
+    print("/aknn/test/maintest.py")
+    print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:\n",\
+    maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
+    partitionnum=8
+    topkPartitionNum=3
     initparams()
-    #usesift = False
-    klist = [10,20,30,40,50]
-    for ki in klist:
+    #efConstructionlist = [12,15,20,50,100,150]
+    eflist=[12,15,20,30,40]#,100,150]  print("topkPartitionNum cmp",i)
+    for i in eflist:
         initparams()
-        k=ki
-        print("gist SparkHnsw klist = [10,20,30,40,50]  usesift = true",ki)
+        print("efConstruction cmp",i)
+        efConstruction=i
+        ef = efConstruction
         SparkHnsw()

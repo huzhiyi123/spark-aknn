@@ -1,0 +1,84 @@
+/aknn/test/maintest.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:
+ 100000000 10 8 3 88 50 cosine 0.05 35 True
+SparkHnsw():
+fractions = df {0: 0.05, 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05, 6: 0.05, 7: 0.05}
+hnsw_global_index test
+Adding first batch of 49861 elements
+model.knn_query(queryVec, k=knnQueryNum) global index search time 78.13310623168945
+print(curdf[0]),curdf.shape (49861,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 77010   l 10000 k 10
+recall: 0.7701
+hello world SparkHnsw
+
+searchtimeUsed:  12155.202150344849 globalindextime 78.13310623168945 localsearchtime 12077.06904411316
+totalconstructtime 149322.30591773987 kmeanstime 21193.592309951782 localindexconstructtime 115776.43251419067 globalindeconstructtime 12352.281093597412
+SparkHnsw():
+fractions = df {0: 0.05, 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05, 6: 0.05, 7: 0.05}
+hnsw_global_index test
+Adding first batch of 49861 elements
+model.knn_query(queryVec, k=knnQueryNum) global index search time 85.12282371520996
+print(curdf[0]),curdf.shape (49861,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 81028   l 10000 k 10
+recall: 0.81028
+hello world SparkHnsw
+
+searchtimeUsed:  11620.830059051514 globalindextime 85.12282371520996 localsearchtime 11535.707235336304
+totalconstructtime 148146.08693122864 kmeanstime 21304.36873435974 localindexconstructtime 114942.70753860474 globalindeconstructtime 11899.01065826416
+SparkHnsw():
+fractions = df {0: 0.05, 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05, 6: 0.05, 7: 0.05}
+hnsw_global_index test
+Adding first batch of 49861 elements
+model.knn_query(queryVec, k=knnQueryNum) global index search time 84.99979972839355
+print(curdf[0]),curdf.shape (49861,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 85153   l 10000 k 10
+recall: 0.85153
+hello world SparkHnsw
+
+searchtimeUsed:  12906.627178192139 globalindextime 84.99979972839355 localsearchtime 12821.627378463745
+totalconstructtime 149080.12676239014 kmeanstime 22619.478225708008 localindexconstructtime 114708.76979827881 globalindeconstructtime 11751.87873840332
+SparkHnsw():
+fractions = df {0: 0.05, 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05, 6: 0.05, 7: 0.05}
+hnsw_global_index test
+Adding first batch of 49861 elements
+model.knn_query(queryVec, k=knnQueryNum) global index search time 103.77907752990723
+print(curdf[0]),curdf.shape (49861,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 94370   l 10000 k 10
+recall: 0.9437
+hello world SparkHnsw
+
+searchtimeUsed:  17722.986459732056 globalindextime 103.77907752990723 localsearchtime 17619.20738220215
+totalconstructtime 172383.34345817566 kmeanstime 20170.989513397217 localindexconstructtime 138561.43975257874 globalindeconstructtime 13650.914192199707
+SparkHnsw():
+fractions = df {0: 0.05, 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05, 6: 0.05, 7: 0.05}
+hnsw_global_index test
+Adding first batch of 49861 elements
+model.knn_query(queryVec, k=knnQueryNum) global index search time 130.6915283203125
+print(curdf[0]),curdf.shape (49861,) <class 'pandas.core.series.Series'>
+start query
+result.count() 10000
+end query
+l 10000 k 10
+recall = cnt/float(l*k) 98557   l 10000 k 10
+recall: 0.98557
+hello world SparkHnsw
+
+searchtimeUsed:  30042.640447616577 globalindextime 130.6915283203125 localsearchtime 29911.948919296265
+totalconstructtime 308963.2279872894 kmeanstime 24308.090448379517 localindexconstructtime 271170.91155052185 globalindeconstructtime 13484.225988388062
+SparkHnsw():

@@ -161,8 +161,8 @@ def getrepartitionmap(repartitionres,k1,k2):
 
 def hnsw_global_index(data,max_elements,dim):
     p = hnswlib.Index(space='cosine', dim=dim)  # possible options are l2, cosine or ip
-    p.init_index(max_elements=max_elements, ef_construction=100, M=16)
-    p.set_ef(10)
+    p.init_index(max_elements=max_elements, ef_construction=100, M=32)
+    p.set_ef(30)
     p.set_num_threads(4)  # by default using all available cores
     p.add_items(data)
     return p

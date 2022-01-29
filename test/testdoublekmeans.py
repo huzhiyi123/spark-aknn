@@ -50,7 +50,7 @@ def initparams():
     maxelement = 100000000
     k=10
     partitionnum=10
-    topkPartitionNum=6
+    topkPartitionNum=4
     sc = 1
     m = int(50)
     distanceFunction='cosine'
@@ -477,10 +477,11 @@ def testdoublekmeansHnswV2(): #.set('spark.jars.packages', 'com.github.jelmerk:h
 if __name__ == "__main__":
     rate = 5
     initparams()
+    print("/aknn/test/testdoublekmeans.py")
     print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift\n",
     maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
     #usesift = False
-    efConstructionlist = [12,15,20,50,100,150]
+    efConstructionlist = [12]#,15,20,30,40] #[12,15,20,50,100,150] [12,15,20,30,40,50]
     # efConstructionlist = [12,15,18,20,30,50,100,200]
     for i in efConstructionlist:
         initparams()
