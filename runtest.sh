@@ -6,4 +6,3 @@
 aknnfold=/aknn
 cd $aknnfold
 bash 2.sh $1
-#cat test/params.py >> $logfold$log
