@@ -1,0 +1,101 @@
+/aknn/test/maintest.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:
+ 100000000 10 8 3 88 50 cosine 0.05 35 True
+efConstruction cmp 10
+(result.count()) 10000
+searchtimeUsed:  14957.33642578125
+constructtimeUsed:  55346.391916275024
+l 10000 k 10
+recall: 0.73514
+efConstruction cmp 15
+(result.count()) 10000
+searchtimeUsed:  14992.94400215149
+constructtimeUsed:  54001.84631347656
+l 10000 k 10
+recall: 0.74817
+efConstruction cmp 30
+(result.count()) 10000
+searchtimeUsed:  16680.29499053955
+constructtimeUsed:  63879.18519973755
+l 10000 k 10
+recall: 0.88357
+efConstruction cmp 50
+(result.count()) 10000
+searchtimeUsed:  20293.18141937256
+constructtimeUsed:  100263.1561756134
+l 10000 k 10
+recall: 0.98081
+efConstruction cmp 875
+(result.count()) 10000
+searchtimeUsed:  131844.40541267395
+constructtimeUsed:  1055134.7393989563
+l 10000 k 10
+recall: 0.99227
+efConstruction cmp 100
+(result.count()) 10000
+searchtimeUsed:  29686.089038848877
+constructtimeUsed:  187152.2924900055
+l 10000 k 10
+recall: 0.99109
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+ 100000000 10 8 3 88 50 cosine 0.05 35 True
+efConstruction cmp 20
+(result.count()) 10000
+searchtimeUsed:  15987.164735794067
+constructtimeUsed:  55099.28750991821
+l 10000 k 10
+recall: 0.78758
+efConstruction cmp 25
+(result.count()) 10000
+searchtimeUsed:  15932.564496994019
+constructtimeUsed:  54887.579917907715
+l 10000 k 10
+recall: 0.82576
+efConstruction cmp 40
+(result.count()) 10000
+searchtimeUsed:  18304.012298583984
+constructtimeUsed:  85368.66545677185
+l 10000 k 10
+recall: 0.9592
+
+
+sc = 1
+m = int(50)
+distanceFunction='cosine'
+kmeanstrainrate=0.05
+
+efConstruction=35
+ef = int(4*22)
+usesift=True
+
+kmeanspath="/aknn/kmeans/"
+
+gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+
+"""
+datapath="/my/siftsmall/"
+traindatapath=datapath+"siftsmall_base.fvecs"
+querydatapath=datapath+"siftsmall_query.fvecs"
+querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
+"""
+datapath="/data/"
+traindatapath=datapath+"sift_base.fvecs"
+querydatapath=datapath+"sift_query.fvecs"
+querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+
+gistpath="/data/mnist.hdf5"
+# ef=10, efConstruction=200
+
+
+recall: 0.73514
+recall: 0.74817
+recall: 0.88357
+recall: 0.98081
+recall: 0.99227
+recall: 0.99109

@@ -49,8 +49,8 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=10
-    topkPartitionNum=4
+    partitionnum=4
+    topkPartitionNum=3
     sc = 1
     m = int(50)
     distanceFunction='cosine'
@@ -481,7 +481,7 @@ if __name__ == "__main__":
     print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift\n",
     maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
     #usesift = False
-    efConstructionlist = [12]#,15,20,30,40] #[12,15,20,50,100,150] [12,15,20,30,40,50]
+    efConstructionlist = [80,120]#,15,20,30,40] #[12,15,20,50,100,150] [12,15,20,30,40,50]
     # efConstructionlist = [12,15,18,20,30,50,100,200]
     for i in efConstructionlist:
         initparams()
@@ -491,7 +491,16 @@ if __name__ == "__main__":
         print("topkPartitionNum cmp",i)
         testdoublekmeansHnswV2()
     print("end topkPartitionNum cmp\n")
-
+"""
+    for i in efConstructionlist:
+        initparams()
+        efConstruction = i
+        ef = efConstruction
+        usesift = True
+        print("topkPartitionNum cmp",i)
+        testdoublekmeansHnswV2()
+    print("end topkPartitionNum cmp\n")
+"""
 
 
 """

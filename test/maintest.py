@@ -40,10 +40,10 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=10
-    topkPartitionNum=4
+    partitionnum=4
+    topkPartitionNum=3
     sc = 1
-    m = int(35) #20 #int(50)
+    m = int(25) #20 #int(50)
     distanceFunction='cosine'
     kmeanstrainrate=0.05
     efConstruction=100
@@ -261,7 +261,7 @@ if __name__ == "__main__":
     topkPartitionNum=3
     initparams()
     #efConstructionlist = [12,15,20,50,100,150]
-    eflist=[10,15,30]#,15,20,30,40]#,100,150]  print("topkPartitionNum cmp",i)
+    eflist= [20,25,30,40,50,65,80] # [12,16]  # [10,15,30,40,80]  #,15,20,30,40]#,100,150]  print("topkPartitionNum cmp",i)
     for i in eflist:
         initparams()
         print("efConstruction cmp",i)

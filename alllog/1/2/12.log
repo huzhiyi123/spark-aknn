@@ -48,6 +48,39 @@ k=10
 partitionnum=8
 topkPartitionNum=3
 
+/aknn/test/maintest.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:
+ 100000000 10 8 3 88 50 cosine 0.05 35 True
+efConstruction cmp 10
+(result.count()) 10000
+searchtimeUsed:  17695.40500640869
+constructtimeUsed:  58891.425132751465
+l 10000 k 10
+recall = cnt/float(l*k) 62456   l 10000 k 10
+recall: 0.62456
+efConstruction cmp 15
+(result.count()) 10000
+searchtimeUsed:  17455.52921295166
+constructtimeUsed:  59247.00927734375
+l 10000 k 10
+recall = cnt/float(l*k) 69199   l 10000 k 10
+recall: 0.69199
+efConstruction cmp 30
+(result.count()) 10000
+searchtimeUsed:  21461.42816543579
+constructtimeUsed:  83575.70552825928
+l 10000 k 10
+recall = cnt/float(l*k) 89506   l 10000 k 10
+recall: 0.89506
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+
+
+
+
 sc = 1
 m = int(50)
 distanceFunction='cosine'

@@ -1,0 +1,87 @@
+/aknn/test/maintest.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:
+ 100000000 10 8 3 88 50 cosine 0.05 35 True
+efConstruction cmp 20
+(result.count()) 10000
+searchtimeUsed:  15841.038942337036
+constructtimeUsed:  40852.49948501587
+l 10000 k 10
+recall: 0.83015
+efConstruction cmp 25
+(result.count()) 10000
+searchtimeUsed:  16105.677127838135
+constructtimeUsed:  40351.08041763306
+l 10000 k 10
+recall: 0.86405
+efConstruction cmp 30
+(result.count()) 10000
+searchtimeUsed:  16972.1896648407
+constructtimeUsed:  46474.865436553955
+l 10000 k 10
+recall: 0.87093
+efConstruction cmp 40
+(result.count()) 10000
+searchtimeUsed:  17847.17893600464
+constructtimeUsed:  59041.348695755005
+l 10000 k 10
+recall: 0.93974
+efConstruction cmp 50
+(result.count()) 10000
+searchtimeUsed:  18725.956678390503
+constructtimeUsed:  68499.0713596344
+l 10000 k 10
+recall: 0.98016
+efConstruction cmp 65
+(result.count()) 10000
+searchtimeUsed:  20176.183938980103
+constructtimeUsed:  84593.96433830261
+l 10000 k 10
+recall: 0.98749
+efConstruction cmp 80
+(result.count()) 10000
+searchtimeUsed:  22559.295415878296
+constructtimeUsed:  102411.94248199463
+l 10000 k 10
+recall: 0.98978
+maxelement = 100000000
+k=10
+partitionnum=8
+topkPartitionNum=3
+
+sc = 1
+m = int(50)
+distanceFunction='cosine'
+kmeanstrainrate=0.05
+
+efConstruction=35
+ef = int(4*22)
+usesift=True
+
+kmeanspath="/aknn/kmeans/"
+
+gistlist=["gistpartition.csv","gistcentroids2.csv","gistcentroids1.csv"]  
+siftlist=["siftpartition.csv","siftcentroids1.csv","siftcentroids2.csv"]
+
+"""
+datapath="/my/siftsmall/"
+traindatapath=datapath+"siftsmall_base.fvecs"
+querydatapath=datapath+"siftsmall_query.fvecs"
+querygroundtruthpath=datapath+"siftsmall_groundtruth.ivecs"
+"""
+datapath="/data/"
+traindatapath=datapath+"sift_base.fvecs"
+querydatapath=datapath+"sift_query.fvecs"
+querygroundtruthpath=datapath+"sift_groundtruth.ivecs"
+
+
+gistpath="/data/mnist.hdf5"
+# ef=10, efConstruction=200
+
+
+recall: 0.83015
+recall: 0.86405
+recall: 0.87093
+recall: 0.93974
+recall: 0.98016
+recall: 0.98749
+recall: 0.98978
