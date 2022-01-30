@@ -68,18 +68,18 @@ def pic(x,y1,y2,png,p):
     for i in range(len(y2)):
         y2[i] = (1-y2[i])
 
-    fig = plt.figure(figsize=(7,6),dpi=600)
+    fig = plt.figure(figsize=(7.4,6),dpi=600)
     # 添加Axes坐标轴实例，创建1个画板
     ax = fig.add_subplot(111)  
     # 制作第一条折现
-    lin1 = ax.plot(x, y1, label='cost2', color='r')
+    lin1 = ax.plot(x, y1, label='unbalance cost', color='r',marker='o')
     ax.set_xlabel('repartition rate')
     # 设置Y轴1
     ax.set_ylabel('cost1')
     # 使用twinx()函数实现共用一个x轴
     ax2 = ax.twinx()
     # 制作第二条折现
-    lin2 = ax2.plot(x, y2, label='cost1', color='green')
+    lin2 = ax2.plot(x, y2, label='cluster cost', color='green',marker='o')
     # 设置Y轴2
     ax2.set_ylabel('cost2')
     # 合并图例
@@ -89,7 +89,6 @@ def pic(x,y1,y2,png,p):
     # 增加网格线
     #ax.grid()
     plt.savefig(png)
-
 
 pnglist=["5.png","8.png","10.png","12.png"]
 for i in range(len(pnglist)):

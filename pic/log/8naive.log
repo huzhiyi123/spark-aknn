@@ -1,0 +1,15 @@
+/aknn/test/maintest.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift:
+10000000010838850cosine0.0535True
+efConstructioncmp10
+
+[14756.173372268677,
+0.84829,
+15023.348569869995,
+0.87351,
+16748.36564064026,
+0.90257,
+19724.00736808777,
+0.96621,
+28937.756061553955,
+0.99039]

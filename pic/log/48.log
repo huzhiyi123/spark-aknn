@@ -167,3 +167,7 @@ recall = cnt/float(l*k) 97458   l 10000 k 10
 recall: 0.97458
 recall = cnt/float(l*k) 97923   l 10000 k 10
 recall: 0.97923
+
+
+
+kmeanspartitiontime 55031.230211257935 localindexconstructtime 279392.8453922272 globalindexconstructtime 1339.5884037017822
