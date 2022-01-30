@@ -43,7 +43,7 @@ def initparams():
     partitionnum=10
     topkPartitionNum=4
     sc = 1
-    m = int(50)
+    m = int(35) #20 #int(50)
     distanceFunction='cosine'
     kmeanstrainrate=0.05
     efConstruction=100
@@ -226,24 +226,31 @@ def testmain_naiveSparkHnsw(): #.set('spark.jars.packages', 'com.github.jelmerk:
     hnsw = HnswSimilarity(identifierCol='id', queryIdentifierCol='id',featuresCol='normalized_features',
                          distanceFunction=distanceFunction,m=m, ef=ef, k=k,efConstruction=ef,
                          numPartitions=partitionnum,  predictionCol='approximate',excludeSelf=True)
+    T3 = time.time()
     model=hnsw.fit(words_df)
-
+    T4 = time.time()
     # 读取查询向量 并且全局索引查询预测的分区
     query_df = readDataSparkDf(sql_context,querydatapath)
     #print("query_df.printSchema()")
-    query_df.printSchema()
-    query_df.show()
+    #query_df.printSchema()
+    #query_df.show()
     # todo with index
     T1 = time.time()
-    result=model.transform(query_df)
+    result=model.transform(query_df).orderBy("id")
+    print("(result.count())",result.count())
     T2 = time.time()
     timeUsed = (T2-T1)*1000
-    print("timeUsed: ",timeUsed)
+    print("searchtimeUsed: ",timeUsed)
+    print("constructtimeUsed: ",(T4-T3)*1000)
     #print("result.printSchema()")
     #result.printSchema()
-    result = result.orderBy("id")
-    result.count()
+    
     predict = processSparkDfResult(result)
+    groundtruth = ivecs_read(querygroundtruthpath)
+    #print("groundtruth[0:5]:",groundtruth[:,0:k])
+    if(len(predict) != 0):
+        recall1 = evaluatePredict(predict,groundtruth,k)
+        print("recall:",recall1)
     sc.stop()
 
 if __name__ == "__main__":
@@ -254,10 +261,11 @@ if __name__ == "__main__":
     topkPartitionNum=3
     initparams()
     #efConstructionlist = [12,15,20,50,100,150]
-    eflist=[12,15,20,30,40]#,100,150]  print("topkPartitionNum cmp",i)
+    eflist=[10,15,30]#,15,20,30,40]#,100,150]  print("topkPartitionNum cmp",i)
     for i in eflist:
         initparams()
         print("efConstruction cmp",i)
         efConstruction=i
         ef = efConstruction
-        SparkHnsw()
+        testmain_naiveSparkHnsw()
+        #SparkHnsw()

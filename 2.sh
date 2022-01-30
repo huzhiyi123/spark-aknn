@@ -9,8 +9,8 @@ function function_name {
     echo $abpath
     nohup spark-submit \
     --master spark://master:7077 \
-    --packages $package --driver-memory 10G --num-executors 10 --executor-memory 1G  --executor-cores 1 \
-    --total-executor-cores 10 \
+    --packages $package --driver-memory 10G --num-executors 4 --executor-memory 1G  --executor-cores 1 \
+    --total-executor-cores 4 \
     --conf spark.rpc.message.maxSize=1024 \
     test/maintest.py > $abpath 
     #--num-executors 8 --executor-memory 1G 
