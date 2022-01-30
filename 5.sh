@@ -48,24 +48,12 @@ function function_name2 {
     #cat $abpath | grep "map at KnnAlgorithm.scala:507) finished in" >> $abpath
 }
 
-
-
-totalcores=4
+totalcores=16
 pyfile=$totalcores
-function_name2 $1
+function_name $1
 
 
-totalcores=6
-pyfile=$totalcores
-function_name2 $1
 
-totalcores=8
-pyfile=$totalcores
-function_name2 $1
-
-totalcores=10
-pyfile=$totalcores
-function_name2 $1
 
 echo $aknnpath
 

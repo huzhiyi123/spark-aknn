@@ -481,7 +481,7 @@ if __name__ == "__main__":
     print("maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift\n",
     maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift)
     #usesift = False
-    efConstructionlist = [80,120]#,15,20,30,40] #[12,15,20,50,100,150] [12,15,20,30,40,50]
+    efConstructionlist = [15,20,50,100,150] # [80,120]#,15,20,30,40] #[12,15,20,50,100,150] [12,15,20,30,40,50]
     # efConstructionlist = [12,15,18,20,30,50,100,200]
     for i in efConstructionlist:
         initparams()
