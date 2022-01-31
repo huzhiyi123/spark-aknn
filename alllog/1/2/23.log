@@ -14,62 +14,14 @@ centroids2 (20, 128)
 20
 len(repartitionres) 4
 partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
-/aknn/test/testdoublekmeans.py
-maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
- 100000000 10 4 3 100 50 cosine 0.05 100 True
-topkPartitionNum cmp 15
-partitionnumreal,partitionnummap 4 20
-type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
- [7]
- [7]
- [7]
- [2]] (1000000, 1) (1000000, 3)
-centroids1.shape,centroids2.shape (4, 128) (20, 128)
-centroids1 (4, 128)
-centroids2 (20, 128)
-20
-len(repartitionres) 4
-partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
-/aknn/test/testdoublekmeans.py
-maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
- 100000000 10 4 3 100 50 cosine 0.05 100 True
-topkPartitionNum cmp 15
-partitionnumreal,partitionnummap 4 20
-type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
- [7]
- [7]
- [7]
- [2]] (1000000, 1) (1000000, 3)
-centroids1.shape,centroids2.shape (4, 128) (20, 128)
-centroids1 (4, 128)
-centroids2 (20, 128)
-20
-len(repartitionres) 4
-partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
-/aknn/test/testdoublekmeans.py
-maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
- 100000000 10 4 3 100 50 cosine 0.05 100 True
-topkPartitionNum cmp 15
-partitionnumreal,partitionnummap 4 20
-type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
- [7]
- [7]
- [7]
- [2]] (1000000, 1) (1000000, 3)
-centroids1.shape,centroids2.shape (4, 128) (20, 128)
-centroids1 (4, 128)
-centroids2 (20, 128)
-20
-len(repartitionres) 4
-partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
 print(curdf[0]),curdf.shape (49999,) <class 'pandas.core.series.Series'>
 start query
 result.count() 10000
 end query
 l 10000 k 10
-recall: 0.79152
-totalconstructtime 183988.13319206238 kmeanspartitiontime 9322.953224182129 localindexconstructtime 173351.99213027954 globalindexconstructtime 1313.187837600708
-totalsearchtime 9604.735136032104 localsearchtime 9527.68063545227 globalsearchtime 77.05450057983398
+recall: 0.79189
+totalconstructtime 186671.76842689514 kmeanspartitiontime 9322.935581207275 localindexconstructtime 176021.27933502197 globalindexconstructtime 1327.5535106658936
+totalsearchtime 10656.338453292847 localsearchtime 10577.515363693237 globalsearchtime 78.82308959960938
 hello world testdoublekmeansHnsw
 
 topkPartitionNum cmp 20
@@ -90,9 +42,9 @@ start query
 result.count() 10000
 end query
 l 10000 k 10
-recall: 0.83783
-totalconstructtime 185240.2307987213 kmeanspartitiontime 8242.174625396729 localindexconstructtime 175668.62726211548 globalindexconstructtime 1329.4289112091064
-totalsearchtime 9908.817768096924 localsearchtime 9832.8275680542 globalsearchtime 75.99020004272461
+recall: 0.83854
+totalconstructtime 186451.30848884583 kmeanspartitiontime 8347.543001174927 localindexconstructtime 176765.58780670166 globalindexconstructtime 1338.1776809692383
+totalsearchtime 10347.779989242554 localsearchtime 10267.186641693115 globalsearchtime 80.59334754943848
 hello world testdoublekmeansHnsw
 
 topkPartitionNum cmp 50
@@ -113,9 +65,9 @@ start query
 result.count() 10000
 end query
 l 10000 k 10
-recall: 0.93662
-totalconstructtime 182619.00210380554 kmeanspartitiontime 9644.745349884033 localindexconstructtime 171647.30286598206 globalindexconstructtime 1326.9538879394531
-totalsearchtime 12354.978084564209 localsearchtime 12281.671047210693 globalsearchtime 73.30703735351562
+recall: 0.93685
+totalconstructtime 183653.78880500793 kmeanspartitiontime 9523.504972457886 localindexconstructtime 172797.6517677307 globalindexconstructtime 1332.632064819336
+totalsearchtime 12602.102994918823 localsearchtime 12527.380228042603 globalsearchtime 74.7227668762207
 hello world testdoublekmeansHnsw
 
 topkPartitionNum cmp 100
@@ -136,9 +88,9 @@ start query
 result.count() 10000
 end query
 l 10000 k 10
-recall: 0.98367
-totalconstructtime 375900.44713020325 kmeanspartitiontime 8355.700492858887 localindexconstructtime 366215.90399742126 globalindexconstructtime 1328.8426399230957
-totalsearchtime 18217.910289764404 localsearchtime 18136.831521987915 globalsearchtime 81.07876777648926
+recall: 0.98342
+totalconstructtime 373628.43585014343 kmeanspartitiontime 8536.837100982666 localindexconstructtime 363755.8045387268 globalindexconstructtime 1335.79421043396
+totalsearchtime 18700.17957687378 localsearchtime 18620.787620544434 globalsearchtime 79.3919563293457
 hello world testdoublekmeansHnsw
 
 topkPartitionNum cmp 150
@@ -159,9 +111,9 @@ start query
 result.count() 10000
 end query
 l 10000 k 10
-recall: 0.98909
-totalconstructtime 571575.2239227295 kmeanspartitiontime 9711.066246032715 localindexconstructtime 560541.7392253876 globalindexconstructtime 1322.418451309204
-totalsearchtime 24230.894804000854 localsearchtime 24152.430772781372 globalsearchtime 78.46403121948242
+recall: 0.9894
+totalconstructtime 568130.1774978638 kmeanspartitiontime 9739.2897605896 localindexconstructtime 557064.7745132446 globalindexconstructtime 1326.113224029541
+totalsearchtime 25279.078722000122 localsearchtime 25204.61392402649 globalsearchtime 74.46479797363281
 hello world testdoublekmeansHnsw
 
 end topkPartitionNum cmp
@@ -201,8 +153,8 @@ gistpath="/data/mnist.hdf5"
 # ef=10, efConstruction=200
 
 
-recall: 0.79152
-recall: 0.83783
-recall: 0.93662
-recall: 0.98367
-recall: 0.98909
+recall: 0.79189
+recall: 0.83854
+recall: 0.93685
+recall: 0.98342
+recall: 0.9894

@@ -49,8 +49,8 @@ function function_name2 {
     #cat $abpath | grep "map at KnnAlgorithm.scala:507) finished in" >> $abpath
 }
 
-totalcores=16
-executorcores=4
+totalcores=8
+executorcores=2
 pyfile=testdoublekmeans.py
 function_name $1
 
