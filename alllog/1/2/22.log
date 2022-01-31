@@ -1,0 +1,64 @@
+/aknn/test/testdoublekmeans.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 4 3 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 4 20
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
+ [7]
+ [7]
+ [7]
+ [2]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (4, 128) (20, 128)
+centroids1 (4, 128)
+centroids2 (20, 128)
+20
+len(repartitionres) 4
+partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
+/aknn/test/testdoublekmeans.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 4 3 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 4 20
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
+ [7]
+ [7]
+ [7]
+ [2]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (4, 128) (20, 128)
+centroids1 (4, 128)
+centroids2 (20, 128)
+20
+len(repartitionres) 4
+partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
+/aknn/test/testdoublekmeans.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 4 3 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 4 20
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
+ [7]
+ [7]
+ [7]
+ [2]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (4, 128) (20, 128)
+centroids1 (4, 128)
+centroids2 (20, 128)
+20
+len(repartitionres) 4
+partitionnumreal,partitionnummap,len(partitionmap) 4 20 20
+/aknn/test/testdoublekmeans.py
+maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
+ 100000000 10 4 3 100 50 cosine 0.05 100 True
+topkPartitionNum cmp 15
+partitionnumreal,partitionnummap 4 20
+type(tmp),tmp[0:100],tmp.shape <class 'numpy.ndarray'> [[7]
+ [7]
+ [7]
+ [7]
+ [2]] (1000000, 1) (1000000, 3)
+centroids1.shape,centroids2.shape (4, 128) (20, 128)
+centroids1 (4, 128)
+centroids2 (20, 128)
+20
+len(repartitionres) 4
+partitionnumreal,partitionnummap,len(partitionmap) 4 20 20

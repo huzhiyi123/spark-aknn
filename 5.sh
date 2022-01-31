@@ -3,6 +3,7 @@ source env.sh
 #spark://b53cb1e828da:7077 \ --master local-cluster[8,1,1024] \  local[8] --master spark://master:7077
 # 90c8cd91fc05
 totalcores=0
+executorcores=0
 function function_name {
     cd $aknnpath
     filename=$1
@@ -10,8 +11,8 @@ function function_name {
     echo $abpath
     nohup spark-submit \
     --master spark://master:7077 \
-    --packages $package --driver-memory 5G  --executor-memory 2G  --executor-cores $totalcores \
-    --conf spark.rpc.message.maxSize=1024 --total-executor-cores 10 \
+    --packages $package --driver-memory 5G  --executor-memory 2G  --executor-cores $executorcores \
+    --conf spark.rpc.message.maxSize=1024 --total-executor-cores $totalcores \
     test/testdoublekmeans.py >> $abpath 
     #--num-executors 8 --executor-memory 1G 
     #--master local[32]
@@ -39,7 +40,7 @@ function function_name2 {
     --master spark://master:7077 \
     --packages $package --driver-memory 5G  --executor-memory 2G  --executor-cores $totalcores \
     --conf spark.rpc.message.maxSize=1024 --total-executor-cores 10 \
-    test/$pyfile.py >> $abpath 
+    test/$pyfile >> $abpath 
     #--num-executors 8 --executor-memory 1G 
     #--master local[32]
     # --master spark://90c8cd91fc05:7077 \
@@ -49,10 +50,9 @@ function function_name2 {
 }
 
 totalcores=16
-pyfile=$totalcores
+executorcores=4
+pyfile=testdoublekmeans.py
 function_name $1
-
-
 
 
 echo $aknnpath
