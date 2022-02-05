@@ -1,5 +1,0 @@
-nohup: ignoring input
-/aknn/alllog/1/1/24.log
-nohup: failed to run command 'spark-submit': No such file or directory
-/aknn
-com.github.jelmerk:hnswlib-spark_2.4_2.11:1.0.0
