@@ -28,13 +28,13 @@ import pyspark.sql.functions as F
 import hnswlib
 from sklearn.preprocessing import normalize
 import sys
-aknnfold="/aknn/"
-sys.path.append(aknnfold)
-sys.path.append(aknnfold+"test")
+
+#aknnfold="/aknn/"
+sys.path.append("./")
+sys.path.append("./main")
 from utils import *
 from datasets import *
 from kmeans_repartition_utils import *
-from maintest import *
 
 import time 
 from time import sleep
@@ -49,7 +49,7 @@ def initparams():
     global maxelement,k,partitionnum,topkPartitionNum,ef,m,distanceFunction,kmeanstrainrate,efConstruction,usesift
     maxelement = 100000000
     k=10
-    partitionnum=4
+    partitionnum=8
     topkPartitionNum=3
     sc = 1
     m = int(50)
@@ -65,7 +65,6 @@ numpyquerydata = 0
 groundtruth = 0
 
 gistpath="/data/mnist.hdf5"
-
 
 rate = 5
 

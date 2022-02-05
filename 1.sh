@@ -4,6 +4,7 @@ source env.sh
 # 90c8cd91fc05
 totalcores=0
 executorcores=0
+pyfile=main/main.py
 function function_name {
     cd $aknnpath
     filename=$1
@@ -13,11 +14,11 @@ function function_name {
     --master spark://master:7077 \
     --packages $package --driver-memory 5G  --executor-memory 2G  --executor-cores $executorcores \
     --conf spark.rpc.message.maxSize=1024 --total-executor-cores $totalcores \
-    test/testdoublekmeans.py >> $abpath 
+    main/main.py >> $abpath 
     #--num-executors 8 --executor-memory 1G 
     #--master local[32]
     # --master spark://90c8cd91fc05:7077 \
-    cat test/params.py >> $abpath
+    cat main/params.py >> $abpath
     cat $abpath | grep recall >> $abpath
     #cat $abpath | grep "map at KnnAlgorithm.scala:507) finished in" >> $abpath
 }
@@ -30,33 +31,10 @@ function function_name {
 #--driver-memory 512M 
 #--num-executors 1 
 
-pyfile=0
-function function_name2 {
-    cd $aknnpath
-    filename=$1
-    abpath=$logfold$filename
-    echo $abpath
-    nohup spark-submit \
-    --master spark://master:7077 \
-    --packages $package --driver-memory 5G  --executor-memory 2G  --executor-cores $totalcores \
-    --conf spark.rpc.message.maxSize=1024 --total-executor-cores 10 \
-    test/$pyfile >> $abpath 
-    #--num-executors 8 --executor-memory 1G 
-    #--master local[32]
-    # --master spark://90c8cd91fc05:7077 \
-    cat test/params.py >> $abpath
-    cat $abpath | grep recall >> $abpath
-    #cat $abpath | grep "map at KnnAlgorithm.scala:507) finished in" >> $abpath
-}
-
-totalcores=8
+totalcores=16
 executorcores=2
-pyfile=testdoublekmeans.py
+pyfile=main/main.py
 function_name $1
 
-
-echo $aknnpath
-
-echo $package
 
 
