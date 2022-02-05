@@ -32,6 +32,7 @@ import sys
 #aknnfold="/aknn/"
 #sys.path.append("./")
 sys.path.append("./main")
+sys.path.append("../")
 from utils import *
 from datasets import *
 from kmeans_repartition_utils import *
