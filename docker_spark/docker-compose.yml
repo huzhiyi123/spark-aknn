@@ -1,0 +1,52 @@
+version: "2.2"
+services:
+  master:
+    image: aknnmaster:aknn #aknn-gettyimages
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h master
+    hostname: master
+    environment:
+      MASTER: spark://master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: localhost
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7077
+      - 6066
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 18080:18080
+    volumes:
+      - ./conf/master:/conf
+      -  /home/yaoheng/newaknn/spark-aknn:/aknn
+      -  /data:/data
+      -  /aknn:/aknn
+  worker1:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:7077
+    hostname: worker1
+    environment:
+      SPARK_CONF_DIR: /conf
+      SPARK_WORKER_CORES: 16
+      SPARK_WORKER_MEMORY: 24g
+      SPARK_WORKER_PORT: 18881
+      SPARK_WORKER_WEBUI_PORT: 18081
+      SPARK_PUBLIC_DNS: localhost
+    links:
+      - master
+    expose:
+      - 7012
+      - 7013
+      - 7014
+      - 7015
+      - 8881
+    ports:
+      - 18081:18081
+    volumes:
+      - ./conf/worker:/conf
+      - ./data:/tmp/data

@@ -1,0 +1,42 @@
+# Default system properties included when running spark-submit.
+# This is useful for setting default environmental settings.
+spark.driver.port 7001
+spark.fileserver.port 7002
+spark.broadcast.port 7003
+spark.replClassServer.port 7004
+spark.blockManager.port 7005
+
+spark.broadcast.factory=org.apache.spark.broadcast.HttpBroadcastFactory
+spark.port.maxRetries 4
+spark.network.timeout 420000
+
+#spark.dynamicAllocation.minExecutors
+spark.shuffle.service.enabled=true 
+spark.dynamicAllocation.enabled=false
+
+
+spark.scheduler.minRegisteredResourcesRatio 1.0
+spark.scheduler.maxRegisteredResourcesWaitingTime 3600
+spark.speculation false
+spark.task.maxFailures 1
+spark.dynamicAllocation.enabled false
+set spark.hnswlib.settings.index.cache_folder /tmp
+#spark.daemon.memory 10g
+spark.driver.maxResultSize 2g 
+spark.executor.memoryOverhead 2g
+spark.driver.memoryOverhead 4g
+
+spark.driver.memory 6g
+
+spark.executor.instances 8
+spark.executor.cores 1
+spark.task.cpus 1
+spark.executor.memory 3g
+
+spark.scheduler.listenerbus.eventqueue.capacity 100000
+
+spark.executor.heartbeatInterval 60s
+
+spark.rpc.message.maxSize=1024 
+spark.default.parallelism 300
+spark.dynamicAllocation.enabled false
