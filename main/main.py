@@ -172,9 +172,9 @@ def aknn(): #.set('spark.jars.packages', 'com.github.jelmerk:hnswlib-spark_2.3.0
     print(predict)
     
     #print("groundtruth[0:5]:",groundtruth[:,0:k])
-    if(len(predict) != 0):
-        recall1 = evaluatePredict(predict,groundtruth,k)
-        print("recall:",recall1)
+    #if(len(predict) != 0):
+    #    recall1 = evaluatePredict(predict,groundtruth,k)
+    #    print("recall:",recall1)
     sc.stop()
     totalsearchtime = localsearchtime + globalsearchtime
     totalconstructtime=kmeanspartitiontime+localindexconstructtime+globalindexconstructtime
