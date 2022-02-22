@@ -33,10 +33,11 @@ import sys
 #sys.path.append("./")
 sys.path.append("./main")
 sys.path.append("../")
+sys.path.append("../vec")
 from utils import *
 from datasets import *
 from kmeans_repartition_utils import *
-
+from transformer import wav2vec
 import time 
 from time import sleep
 
